@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5b6ef5">
+<title>Estudín — Organizador de facultad</title>
+<style>
+:root{
+  --primary:#5b6ef5; --primary-dark:#4353d4; --accent:#ff8a4c;
+  --ok:#22b573; --warn:#f0a020; --danger:#e5484d;
+  --bg:#eef1fb; --surface:#fff; --text:#16223a; --muted:#6b7a90;
+  --line:#e0e5f5; --shadow:0 8px 30px rgba(22,34,58,.10); --r:18px;
+  --mind:#22b573; --mind-dark:#149a5a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100dvh;max-width:820px;margin:0 auto;position:relative}
+.topbar{display:flex;align-items:center;gap:8px;
+  padding:calc(env(safe-area-inset-top) + 10px) 12px 10px;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);z-index:20;flex:none}
+.icon-btn{width:40px;height:40px;display:grid;place-items:center;border:none;
+  border-radius:13px;background:#eef1fb;color:var(--text);font-size:18px;cursor:pointer;
+  transition:.15s;flex:none}
+.icon-btn:active{transform:scale(.92)}
+.brand{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:800;font-size:16px}
+.brand svg{width:26px;height:32px}
+.badge-rol{font-size:10px;font-weight:700;padding:3px 7px;border-radius:99px;
+  background:#e8ecff;color:var(--primary-dark);letter-spacing:.3px;text-transform:uppercase}
+.views{flex:1;overflow-y:auto;position:relative}
+.view{display:none;padding:14px 14px 24px;animation:fade .25s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.h1{font-size:20px;margin:4px 0 4px;letter-spacing:-.3px}
+.sub{color:var(--muted);font-size:13.5px;margin:0 0 14px;line-height:1.45}
+.card{background:var(--surface);border-radius:var(--r);padding:16px;
+  box-shadow:var(--shadow);margin-bottom:14px}
+.card h3{margin:0 0 10px;font-size:15px;letter-spacing:-.2px;
+  display:flex;align-items:center;gap:8px;justify-content:space-between}
+.card h3 .h3-actions{display:flex;gap:6px}
+.card h3 .h3-btn{background:#eef1fb;border:none;border-radius:8px;
+  padding:5px 9px;font-size:12px;font-weight:700;color:var(--primary-dark);
+  cursor:pointer;font-family:inherit;transition:.15s}
+.card h3 .h3-btn:active{transform:scale(.95)}
+.hint{font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.4}
+.empty{text-align:center;color:var(--muted);font-size:13.5px;padding:24px 12px;line-height:1.5}
+.pill{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.2px}
+.pill.ok{background:#dbf3e5;color:#149a5a}
+.pill.warn{background:#fef3dd;color:#a76a00}
+.pill.danger{background:#fde9e9;color:#c92c32}
+.pill.info{background:#e8ecff;color:var(--primary-dark)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px 18px;border:none;border-radius:14px;font-family:inherit;
+  font-size:14.5px;font-weight:700;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;box-shadow:0 8px 20px rgba(91,110,245,.3);width:100%}
+.btn-secondary{background:#eef1fb;color:var(--text)}
+.btn-danger{background:#fdecec;color:var(--danger)}
+.btn-mini{padding:6px 11px;font-size:12.5px;border-radius:10px;width:auto}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);
+  margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.field input[type=text],.field input[type=number],.field input[type=date],
+.field input[type=time],.field textarea,.field select{width:100%;padding:11px 13px;
+  border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14.5px;
+  background:#f6f8fd;outline:none;transition:.15s;color:var(--text)}
+.field textarea{resize:vertical;min-height:70px;line-height:1.4}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--primary);background:#fff}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.switch-row{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid var(--line);gap:12px}
+.switch-row:last-child{border-bottom:none}
+.switch-row span{font-size:14px;font-weight:600;flex:1;min-width:0}
+.switch{position:relative;width:48px;height:28px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#cdd8e8;border-radius:99px;cursor:pointer;transition:.2s}
+.slider::before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;
+  background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+.switch input:checked + .slider{background:var(--primary)}
+.switch input:checked + .slider::before{transform:translateX(20px)}
+
+/* ==== COLOR PICKER ==== */
+.color-picker{display:flex;gap:8px;flex-wrap:wrap}
+.color-dot{width:32px;height:32px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:.15s}
+.color-dot.on{border-color:var(--text);transform:scale(1.1)}
+
+/* ==== MATERIA CARDS ==== */
+.materia-card{background:#fff;border-radius:16px;padding:14px;
+  box-shadow:var(--shadow);margin-bottom:10px;border-left:6px solid var(--primary);
+  cursor:pointer;transition:.15s;position:relative}
+.materia-card:active{transform:scale(.99)}
+.materia-card h4{margin:0 0 4px;font-size:15px;letter-spacing:-.2px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px}
+.materia-card .meta{font-size:12.5px;color:var(--muted);line-height:1.4}
+.materia-card .hoy-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;
+  background:var(--ok);color:#fff;letter-spacing:.3px}
+
+/* ==== TAREA ITEM ==== */
+.tarea-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+  border-bottom:1px solid var(--line)}
+.tarea-item:last-child{border-bottom:none}
+.tarea-chk{width:24px;height:24px;flex:none;border:2px solid var(--line);
+  border-radius:8px;background:#fff;cursor:pointer;display:grid;place-items:center;
+  font-size:14px;color:#fff;transition:.15s;margin-top:2px}
+.tarea-chk.done{background:var(--ok);border-color:var(--ok)}
+.tarea-chk.done::after{content:"✓"}
+.tarea-body{flex:1;min-width:0}
+.tarea-body strong{font-size:14.5px;display:block;margin-bottom:3px;line-height:1.3}
+.tarea-body.done strong{text-decoration:line-through;color:var(--muted)}
+.tarea-body .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tarea-body .materia-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;
+  background:#eef1fb;color:var(--primary-dark)}
+.tarea-del{background:none;border:none;color:var(--danger);font-size:15px;cursor:pointer;padding:4px;flex:none}
+.grupo-titulo{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--muted);margin:16px 0 6px}
+.grupo-titulo:first-child{margin-top:0}
+.grupo-titulo.urgente{color:var(--danger)}
+.grupo-titulo.hoy{color:var(--accent)}
+.grupo-titulo.manana{color:var(--warn)}
+
+/* ==== EXAMEN ==== */
+.examen-card{background:#fff;border-radius:16px;padding:14px;
+  box-shadow:var(--shadow);margin-bottom:10px;display:flex;gap:14px;align-items:center;
+  border-left:6px solid var(--accent);cursor:pointer;transition:.15s}
+.examen-card:active{transform:scale(.99)}
+.examen-count{flex:none;text-align:center;min-width:60px}
+.examen-count b{display:block;font-size:28px;font-weight:800;line-height:1;
+  color:var(--primary-dark);font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.examen-count small{font-size:10.5px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;font-weight:700;margin-top:3px;display:block}
+.examen-count.urgente b{color:var(--danger)}
+.examen-info{flex:1;min-width:0}
+.examen-info strong{font-size:14.5px;display:block;margin-bottom:3px;line-height:1.3}
+.examen-info .meta{font-size:12px;color:var(--muted);line-height:1.4}
+.examen-info .tipo-tag{font-size:10.5px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.5px;padding:2px 7px;border-radius:99px;
+  background:#fff2e8;color:#c95a1f;margin-right:6px}
+
+/* ==== HORARIO ==== */
+.horario-dia{background:#fff;border-radius:16px;padding:14px;
+  box-shadow:var(--shadow);margin-bottom:10px}
+.horario-dia.hoy{background:linear-gradient(135deg,#eef1fb,#f8f9ff);
+  border:1.5px solid var(--primary)}
+.horario-dia h4{margin:0 0 10px;font-size:14px;letter-spacing:-.2px;
+  display:flex;align-items:center;justify-content:space-between}
+.horario-dia h4 .hoy-tag{font-size:10px;font-weight:800;padding:3px 8px;
+  background:var(--primary);color:#fff;border-radius:99px;text-transform:uppercase;
+  letter-spacing:.5px}
+.horario-clase{display:flex;gap:10px;align-items:stretch;padding:9px 0;
+  border-bottom:1px solid var(--line)}
+.horario-clase:last-child{border-bottom:none}
+.horario-clase .barra{width:5px;border-radius:99px;flex:none}
+.horario-clase .info{flex:1;min-width:0}
+.horario-clase .info strong{font-size:14px;display:block;margin-bottom:2px}
+.horario-clase .info small{font-size:12px;color:var(--muted);display:block;line-height:1.4}
+
+/* ==== ASISTENCIA ==== */
+.asist-row{display:flex;gap:8px;align-items:center;padding:10px 0;
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.asist-row:last-child{border-bottom:none}
+.asist-row .as-fecha{font-size:13px;font-weight:700;min-width:80px;flex:none}
+.asist-row .as-btns{display:flex;gap:5px;flex-wrap:wrap}
+.asist-btn{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:8px;
+  border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;
+  font-family:inherit;transition:.15s}
+.asist-btn:active{transform:scale(.95)}
+.asist-btn.on.presente{background:var(--ok);color:#fff;border-color:var(--ok)}
+.asist-btn.on.ausente{background:var(--danger);color:#fff;border-color:var(--danger)}
+.asist-btn.on.tarde{background:var(--warn);color:#fff;border-color:var(--warn)}
+.asist-btn.on.justificado{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ==== APUNTES ==== */
+.apunte-card{background:#fff;border-radius:14px;padding:13px 15px;
+  box-shadow:var(--shadow);margin-bottom:10px;cursor:pointer;transition:.15s}
+.apunte-card:active{transform:scale(.99)}
+.apunte-card h4{margin:0 0 6px;font-size:14.5px;letter-spacing:-.2px}
+.apunte-card p{margin:0;font-size:13px;color:var(--muted);line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.apunte-card .meta{font-size:11px;color:var(--muted);margin-top:8px;
+  display:flex;gap:8px;justify-content:space-between;align-items:center}
+
+/* ==== POMODORO ==== */
+.pomo-hero{background:linear-gradient(135deg,#5b6ef5,#7a5cff);color:#fff;
+  border-radius:var(--r);padding:26px 20px;text-align:center;
+  box-shadow:0 12px 30px rgba(91,110,245,.32);margin-bottom:14px}
+.pomo-ring{position:relative;width:200px;height:200px;margin:0 auto 12px}
+.pomo-ring svg{transform:rotate(-90deg)}
+.pomo-ring .ring-bg{fill:none;stroke:rgba(255,255,255,.22);stroke-width:12}
+.pomo-ring .ring-fg{fill:none;stroke:#fff;stroke-width:12;stroke-linecap:round;
+  transition:stroke-dashoffset .8s linear}
+.pomo-ring .center{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;line-height:1.05}
+.pomo-ring .center b{font-size:44px;font-weight:800;font-variant-numeric:tabular-nums;
+  letter-spacing:-2px}
+.pomo-ring .center small{font-size:12px;opacity:.85;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;margin-top:4px}
+.pomo-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.pomo-btn{background:rgba(255,255,255,.22);border:none;color:#fff;
+  padding:11px 20px;border-radius:12px;font-family:inherit;font-weight:700;
+  font-size:14px;cursor:pointer;transition:.15s;min-width:100px}
+.pomo-btn:active{transform:scale(.95)}
+.pomo-btn.primary{background:#fff;color:var(--primary-dark)}
+.pomo-selector{background:rgba(255,255,255,.14);color:#fff;border:none;
+  border-radius:10px;padding:8px 12px;font-family:inherit;font-size:13px;
+  font-weight:600;margin-top:12px;min-width:180px;text-align:center}
+.pomo-selector option{color:var(--text)}
+
+/* ==== TÉCNICAS ==== */
+.tec-card{background:#fff;border-radius:16px;padding:16px;
+  box-shadow:var(--shadow);margin-bottom:10px;cursor:pointer;transition:.15s;
+  border-left:5px solid var(--primary)}
+.tec-card:active{transform:scale(.99)}
+.tec-card h4{margin:0 0 6px;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.tec-card p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.45}
+
+/* ==== MINDFULNESS ==== */
+.mind-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.mind-card{background:#fff;border-radius:16px;padding:16px;
+  box-shadow:var(--shadow);display:flex;gap:14px;align-items:center;
+  cursor:pointer;transition:.15s;border-left:5px solid var(--mind)}
+.mind-card:active{transform:scale(.99)}
+.mind-card.blue{border-left-color:#5b6ef5}
+.mind-card.orange{border-left-color:var(--accent)}
+.mind-card.purple{border-left-color:#9b59b6}
+.mind-ico{font-size:28px;flex:none;line-height:1;width:38px;text-align:center}
+.mind-body{flex:1;min-width:0}
+.mind-body h3{margin:0 0 4px;font-size:14.5px;letter-spacing:-.2px}
+.mind-body p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
+.mind-body small{display:block;margin-top:6px;font-size:11px;
+  color:var(--mind-dark);font-weight:700}
+
+/* ==== RACHAS ==== */
+.racha-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.racha-card{background:#fff;border-radius:16px;padding:16px;
+  box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden}
+.racha-card .fire{font-size:34px;line-height:1;margin-bottom:4px;display:block}
+.racha-card b{display:block;font-size:34px;font-weight:800;line-height:1;
+  color:var(--primary-dark);font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.racha-card small{display:block;font-size:11.5px;color:var(--muted);margin-top:5px;
+  text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.racha-card.cold b{color:var(--muted)}
+
+/* ==== MASCOTA ==== */
+.mascot{width:100%;height:100%;display:block;overflow:visible}
+.mascot .body{fill:var(--primary)}
+.mascot .screen{fill:#f2f4ff}
+.mascot .ant{stroke:var(--primary-dark);stroke-width:4;stroke-linecap:round}
+.mascot .ant-ball{fill:var(--accent);animation:antGlow 2.4s infinite}
+.mascot .eye{fill:#16223a;transform-box:fill-box;transform-origin:center;animation:eyeBlink 4.6s infinite}
+.mascot .eye.right{animation-delay:.07s}
+.mascot .mouth{fill:none;stroke:#16223a;stroke-width:3.4;stroke-linecap:round;
+  transform-box:fill-box;transform-origin:center}
+.mascot .cheek{fill:#ff9db1;opacity:.55}
+.mascot .home{fill:#f2f4ff;opacity:.85}
+/* ANTEJOS DE ESTUDIOSO */
+.mascot .glens{fill:none;stroke:#16223a;stroke-width:2;stroke-linecap:round}
+.mascot .gbridge{fill:none;stroke:#16223a;stroke-width:2;stroke-linecap:round}
+.mascot .garm{fill:none;stroke:#16223a;stroke-width:2;stroke-linecap:round}
+@keyframes eyeBlink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+@keyframes antGlow{0%,100%{opacity:1}50%{opacity:.45}}
+.mascot.talking .mouth{animation:talk .26s infinite alternate}
+@keyframes talk{from{transform:scaleY(.35) scaleX(.94)}to{transform:scaleY(1.25) scaleX(1.06)}}
+.mascot.talking{animation:bob .7s infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+
+/* ==== CHAT ==== */
+.chat-wrap{display:flex;flex-direction:column;height:100%}
+.chat{padding:14px 14px 8px;display:flex;flex-direction:column;gap:12px;flex:1}
+.row{display:flex;gap:9px;align-items:flex-end;animation:pop .28s ease both}
+.row.user{flex-direction:row-reverse}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.avatar{width:36px;height:44px;flex:none;display:grid;place-items:center}
+.bubble{max-width:80%;padding:11px 15px;border-radius:var(--r);font-size:14.5px;
+  line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.row.bot .bubble{background:#fff;border-bottom-left-radius:6px;box-shadow:var(--shadow)}
+.row.user .bubble{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;border-bottom-right-radius:6px;box-shadow:0 8px 22px rgba(91,110,245,.32)}
+.typing{display:flex;gap:4px;padding:4px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#b7c6dc;animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}
+.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{border:1px solid var(--line);background:#fff;color:var(--text);
+  padding:8px 13px;border-radius:999px;font-size:13px;font-weight:600;
+  cursor:pointer;transition:.15s;font-family:inherit}
+.chip:active{transform:scale(.95)}
+.chip:hover{border-color:var(--primary);color:var(--primary)}
+.composer{display:flex;align-items:flex-end;gap:8px;flex:none;
+  padding:10px 12px calc(env(safe-area-inset-bottom) + 10px);
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+#chatInput{flex:1;min-height:44px;max-height:120px;padding:12px 16px;
+  border:1px solid var(--line);border-radius:22px;background:#f6f8fd;
+  font-family:inherit;font-size:15px;color:var(--text);resize:none;outline:none;
+  line-height:1.35;transition:.15s}
+#chatInput:focus{border-color:var(--primary);background:#fff}
+.round-btn{width:44px;height:44px;flex:none;border:none;border-radius:50%;
+  display:grid;place-items:center;font-size:18px;cursor:pointer;transition:.15s}
+.round-btn:active{transform:scale(.9)}
+#micBtn{background:#eef1fb;color:var(--primary)}
+#micBtn.listening{background:var(--danger);color:#fff;animation:pulse 1.3s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.5)}70%{box-shadow:0 0 0 14px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+#sendBtn{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 6px 16px rgba(91,110,245,.35)}
+
+/* ==== SHEETS ==== */
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);
+  width:100%;max-width:520px;max-height:88dvh;background:#fff;
+  border-radius:26px 26px 0 0;z-index:60;transition:transform .32s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom);
+  box-shadow:0 -10px 40px rgba(16,26,45,.2)}
+.sheet.show{transform:translate(-50%,0)}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 12px;border-bottom:1px solid var(--line);flex:none}
+.sheet-head h2{margin:0;font-size:17px}
+.sheet-body{padding:16px 18px 26px;overflow-y:auto}
+.sheet-actions{display:flex;gap:8px;margin-top:8px}
+.sheet-actions .btn{flex:1}
+
+/* ==== OVERLAY ==== */
+.overlay{position:fixed;inset:0;background:rgba(16,26,45,.45);opacity:0;
+  pointer-events:none;transition:.25s;z-index:40}
+.overlay.show{opacity:1;pointer-events:auto}
+
+/* ==== DRAWER ==== */
+.drawer{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:82vw;
+  background:#fff;z-index:50;transform:translateX(-102%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top);box-shadow:12px 0 40px rgba(16,26,45,.18)}
+.drawer.show{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;gap:12px;padding:18px 16px 14px;
+  background:linear-gradient(135deg,#5b6ef5,#8b5cff);color:#fff}
+.drawer-head svg{width:40px;height:50px;flex:none}
+.drawer-head strong{display:block;font-size:16px}
+.drawer-head span{font-size:12px;opacity:.9}
+.drawer-nav{padding:10px 8px;overflow-y:auto;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;
+  border:none;background:none;border-radius:13px;font-family:inherit;font-size:14.5px;
+  font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:.15s}
+.nav-item:hover,.nav-item:active{background:#eef1fb}
+.nav-item.active{background:#e8ecff;color:var(--primary-dark)}
+.nav-item .ico{font-size:18px;width:24px;text-align:center;flex:none}
+.drawer-foot{padding:12px 16px calc(env(safe-area-inset-bottom) + 14px);
+  font-size:11px;color:var(--muted);border-top:1px solid var(--line)}
+
+/* ==== TOAST ==== */
+.toast{position:fixed;top:calc(env(safe-area-inset-top) + 70px);left:50%;
+  transform:translateX(-50%);background:#16223a;color:#fff;padding:12px 18px;
+  border-radius:14px;font-size:14px;font-weight:600;z-index:500;
+  box-shadow:0 8px 24px rgba(0,0,0,.3);animation:fade .3s ease;max-width:88vw;
+  text-align:center;line-height:1.35}
+.toast.ok{background:linear-gradient(135deg,#22b573,#149a5a)}
+.toast.warn{background:linear-gradient(135deg,#f0a020,#c07a00)}
+
+/* ==== RESPIRACIÓN ==== */
+.breath-overlay{position:fixed;inset:0;background:#0b1424;color:#e6edfa;z-index:200;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 20px);
+  overflow:hidden}
+.breath-overlay.show{display:flex}
+.breath-top{position:absolute;top:calc(env(safe-area-inset-top) + 16px);left:16px;right:16px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:2}
+.breath-top .btitle{font-size:13px;color:#8fa2c4;font-weight:700;letter-spacing:.3px}
+.breath-top .bclose{background:rgba(255,255,255,.1);color:#e6edfa;border:none;
+  padding:9px 14px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700}
+.breath-stage{position:relative;width:min(72vw,320px);height:min(72vw,320px);
+  display:flex;align-items:center;justify-content:center;margin-bottom:30px}
+.breath-circle{position:absolute;width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle at 50% 40%,rgba(91,110,245,.55),rgba(91,110,245,.15));
+  border:2px solid rgba(91,110,245,.6);
+  transform:scale(.6);transition:transform linear;
+  box-shadow:0 0 80px rgba(91,110,245,.4)}
+.breath-stage .b-text{position:relative;z-index:2;text-align:center;pointer-events:none}
+.breath-stage .b-fase{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.breath-stage .b-cont{font-size:52px;font-weight:800;font-variant-numeric:tabular-nums;
+  line-height:1;letter-spacing:-2px;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.4)}
+.breath-info{text-align:center;font-size:13px;color:#8fa2c4;line-height:1.5;max-width:340px}
+.breath-info strong{color:#e6edfa;display:block;margin-bottom:2px}
+.breath-controls{margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.breath-controls button{background:rgba(255,255,255,.12);color:#e6edfa;border:none;
+  padding:12px 22px;border-radius:12px;font-family:inherit;font-weight:700;
+  font-size:14px;cursor:pointer;transition:.15s}
+.breath-controls button:active{transform:scale(.95)}
+.breath-controls button.primary{background:linear-gradient(135deg,#5b6ef5,#8b5cff);color:#fff;
+  box-shadow:0 8px 22px rgba(91,110,245,.4)}
+
+@media (max-width:380px){
+  .h1{font-size:18px}
+  .racha-grid{grid-template-columns:1fr}
+  .row-2,.row-3{grid-template-columns:1fr}
+  .pomo-ring{width:170px;height:170px}
+  .pomo-ring .center b{font-size:36px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ MASCOTA CON ANTEJOS DE ESTUDIOSO ============ -->
+<template id="tplMascota">
+  <svg class="mascot" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <line class="ant" x1="50" y1="30" x2="50" y2="11"/>
+    <circle class="ant-ball" cx="50" cy="8" r="6"/>
+    <rect class="body" x="16" y="26" width="68" height="98" rx="21"/>
+    <rect class="screen" x="25" y="36" width="50" height="62" rx="12"/>
+    <ellipse class="eye left" cx="39" cy="58" rx="5.2" ry="7"/>
+    <ellipse class="eye right" cx="61" cy="58" rx="5.2" ry="7"/>
+    <circle class="cheek" cx="31" cy="73" r="4.2"/>
+    <circle class="cheek" cx="69" cy="73" r="4.2"/>
+    <path class="mouth" d="M42 73 Q50 82 58 73"/>
+    <circle class="home" cx="50" cy="109" r="6"/>
+    <!-- ANTEJOS DE ESTUDIOSO -->
+    <circle class="glens" cx="39" cy="58" r="9.5"/>
+    <circle class="glens" cx="61" cy="58" r="9.5"/>
+    <path class="gbridge" d="M48.5 57 Q50 55.5 51.5 57"/>
+    <path class="garm" d="M29.7 55.5 L27 53"/>
+    <path class="garm" d="M70.3 55.5 L73 53"/>
+  </svg>
+</template>
+
+<div class="app">
+  <header class="topbar">
+    <button class="icon-btn" id="menuBtn">☰</button>
+    <div class="brand">
+      <span data-mascota style="width:26px;height:32px"></span>
+      Estudín
+      <span class="badge-rol">Facultad</span>
+    </div>
+    <button class="icon-btn" id="muteBtn">🔊</button>
+  </header>
+
+  <div class="views" id="views">
+
+    <!-- ============ HOY ============ -->
+    <section class="view active" id="view-hoy">
+      <div id="hoyContent"></div>
+    </section>
+
+    <!-- ============ CHAT ============ -->
+    <section class="view" id="view-chat">
+      <div class="chat-wrap">
+        <div class="chat" id="chat"></div>
+      </div>
+    </section>
+
+    <!-- ============ MATERIAS ============ -->
+    <section class="view" id="view-materias">
+      <h1 class="h1">📚 Materias</h1>
+      <p class="sub">Tus materias del cuatrimestre, con horarios, profesor y notas.</p>
+      <button class="btn btn-primary" id="nuevaMateriaBtn" style="margin-bottom:14px">➕ Nueva materia</button>
+      <div id="listaMaterias"></div>
+    </section>
+
+    <!-- ============ TAREAS ============ -->
+    <section class="view" id="view-tareas">
+      <h1 class="h1">📝 Tareas y entregas</h1>
+      <p class="sub">Todo lo que tenés que entregar. Agrupado por urgencia.</p>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="btn btn-primary" id="nuevaTareaBtn" style="flex:1">➕ Nueva tarea</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto">
+        <button class="chip filtro-tarea on" data-filtro="pendientes">Pendientes</button>
+        <button class="chip filtro-tarea" data-filtro="todas">Todas</button>
+        <button class="chip filtro-tarea" data-filtro="completadas">Completadas</button>
+      </div>
+      <div id="listaTareas"></div>
+    </section>
+
+    <!-- ============ EXÁMENES ============ -->
+    <section class="view" id="view-examenes">
+      <h1 class="h1">🎯 Exámenes</h1>
+      <p class="sub">Parciales, finales, TPs. Con cuenta regresiva.</p>
+      <button class="btn btn-primary" id="nuevoExamenBtn" style="margin-bottom:14px">➕ Nuevo examen</button>
+      <div id="listaExamenes"></div>
+    </section>
+
+    <!-- ============ HORARIO ============ -->
+    <section class="view" id="view-horario">
+      <h1 class="h1">🗓️ Mi horario</h1>
+      <p class="sub">Armado automáticamente con los horarios de cada materia.</p>
+      <div id="horarioGrid"></div>
+    </section>
+
+    <!-- ============ APUNTES ============ -->
+    <section class="view" id="view-apuntes">
+      <h1 class="h1">📓 Apuntes</h1>
+      <p class="sub">Notas rápidas, ideas sueltas, recordatorios de lectura.</p>
+      <button class="btn btn-primary" id="nuevoApunteBtn" style="margin-bottom:14px">➕ Nuevo apunte</button>
+      <div id="listaApuntes"></div>
+    </section>
+
+    <!-- ============ ESTUDIO ============ -->
+    <section class="view" id="view-estudio">
+      <h1 class="h1">⏱️ Estudiar</h1>
+      <p class="sub">Pomodoro para concentrarte, más técnicas que sí sirven.</p>
+      <div id="pomoHero"></div>
+      <div class="card">
+        <h3>📓 Últimas sesiones</h3>
+        <div id="sesionesLista"></div>
+      </div>
+      <h2 class="h1" style="font-size:16px;margin-top:20px">🧠 Técnicas de estudio</h2>
+      <div id="tecnicasLista"></div>
+    </section>
+
+    <!-- ============ MINDFULNESS ============ -->
+    <section class="view" id="view-mindfulness">
+      <h1 class="h1">🧘 Mindfulness</h1>
+      <p class="sub">Guiado por voz, para bajar revoluciones antes o después de estudiar.</p>
+      <div class="mind-grid">
+        <div class="mind-card blue" data-patron="cuadrada">
+          <div class="mind-ico">🟦</div>
+          <div class="mind-body">
+            <h3>Respiración cuadrada</h3>
+            <p>Inhalá · Sostené · Exhalá · Sostené. 4 tiempos cada uno.</p>
+            <small>▶ Con voz · ~2 min</small>
+          </div>
+        </div>
+        <div class="mind-card" data-patron="478">
+          <div class="mind-ico">🌙</div>
+          <div class="mind-body">
+            <h3>4-7-8 relajante</h3>
+            <p>Ideal antes de un examen o para bajar ansiedad.</p>
+            <small>▶ Con voz · ~2 min</small>
+          </div>
+        </div>
+        <div class="mind-card orange" data-patron="coherencia">
+          <div class="mind-ico">💗</div>
+          <div class="mind-body">
+            <h3>Coherencia cardíaca</h3>
+            <p>Inhalá 5 · Exhalá 5. Equilibra el sistema nervioso.</p>
+            <small>▶ Con voz · ~1 min</small>
+          </div>
+        </div>
+        <div class="mind-card purple" data-patron="bodyscan">
+          <div class="mind-ico">🫧</div>
+          <div class="mind-body">
+            <h3>Body scan corto</h3>
+            <p>Recorrido guiado por el cuerpo, de pies a cabeza.</p>
+            <small>▶ Con voz · ~3 min</small>
+          </div>
+        </div>
+        <div class="mind-card" data-patron="libre">
+          <div class="mind-ico">⏱️</div>
+          <div class="mind-body">
+            <h3>Meditación libre</h3>
+            <p>Elegís la duración. Silencio o campanas suaves cada minuto.</p>
+            <small>▶ Con voz al inicio y al cierre</small>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>Sesiones recientes</h3>
+        <div id="mindHistorial"></div>
+      </div>
+    </section>
+
+    <!-- ============ RACHAS ============ -->
+    <section class="view" id="view-rachas">
+      <h1 class="h1">🔥 Rachas</h1>
+      <p class="sub">Días seguidos sosteniendo cada hábito. Un día flojo no rompe todo.</p>
+      <div class="racha-grid" id="rachaGrid"></div>
+    </section>
+
+    <!-- ============ AJUSTES ============ -->
+    <section class="view" id="view-ajustes">
+      <h1 class="h1">⚙️ Ajustes</h1>
+
+      <div class="card">
+        <div class="field"><label>¿Cómo querés que te llame?</label>
+          <input type="text" id="setNombre" placeholder="Tu nombre"></div>
+        <div class="switch-row"><span>🔊 Que Estudín hable</span>
+          <label class="switch"><input type="checkbox" id="setVoz"><span class="slider"></span></label></div>
+        <div class="field" style="margin-top:14px"><label>Velocidad de la voz</label>
+          <input type="range" id="setVel" min="0.7" max="1.4" step="0.05"></div>
+        <button class="btn btn-primary" id="guardarAjustes">Guardar</button>
+      </div>
+
+      <div class="card">
+        <h3>⏱️ Pomodoro</h3>
+        <div class="row-2">
+          <div class="field"><label>Trabajo (min)</label>
+            <input type="number" id="setPomoTrabajo" min="5" max="90" step="1"></div>
+          <div class="field"><label>Descanso (min)</label>
+            <input type="number" id="setPomoDescanso" min="1" max="30" step="1"></div>
+        </div>
+        <button class="btn btn-secondary" style="width:100%" id="guardarPomo">Guardar Pomodoro</button>
+      </div>
+
+      <div class="card">
+        <h3>🎯 Metas</h3>
+        <div class="field"><label>Meta semanal de estudio (min)</label>
+          <input type="number" id="setMetaEstudio" min="60" max="3000" step="30"></div>
+        <button class="btn btn-secondary" style="width:100%" id="guardarMetas">Guardar meta</button>
+      </div>
+
+      <div class="card">
+        <h3>📦 Tus datos</h3>
+        <p class="hint">Todo se guarda localmente en tu dispositivo.</p>
+        <button class="btn btn-secondary" style="width:100%;margin-bottom:8px" onclick="Estudin.exportar()">⬇️ Exportar datos</button>
+        <button class="btn btn-danger" style="width:100%" onclick="Estudin.borrarTodo()">🗑️ Borrar todo</button>
+      </div>
+
+      <div class="card">
+        <h3>ℹ️ Sobre Estudín</h3>
+        <p class="hint">Organizador personal para la facultad. Hecho para que ordenarte no sea el problema, sino estudiar.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Composer sólo visible en chat -->
+  <div class="composer" id="composer" style="display:none">
+    <button class="round-btn" id="micBtn">🎤</button>
+    <textarea id="chatInput" rows="1" placeholder="Escribí o hablame..." autocomplete="off"></textarea>
+    <button class="round-btn" id="sendBtn">➤</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span data-mascota style="width:40px;height:50px"></span>
+    <div><strong>Estudín</strong><span>Tu compañero de facu</span></div>
+  </div>
+  <nav class="drawer-nav" id="nav">
+    <button class="nav-item active" data-view="hoy"><span class="ico">🏠</span> Hoy</button>
+    <button class="nav-item" data-view="chat"><span class="ico">💬</span> Hablar con Estudín</button>
+    <button class="nav-item" data-view="materias"><span class="ico">📚</span> Materias</button>
+    <button class="nav-item" data-view="tareas"><span class="ico">📝</span> Tareas</button>
+    <button class="nav-item" data-view="examenes"><span class="ico">🎯</span> Exámenes</button>
+    <button class="nav-item" data-view="horario"><span class="ico">🗓️</span> Horario</button>
+    <button class="nav-item" data-view="apuntes"><span class="ico">📓</span> Apuntes</button>
+    <button class="nav-item" data-view="estudio"><span class="ico">⏱️</span> Estudiar</button>
+    <button class="nav-item" data-view="mindfulness"><span class="ico">🧘</span> Mindfulness</button>
+    <button class="nav-item" data-view="rachas"><span class="ico">🔥</span> Rachas</button>
+    <button class="nav-item" data-view="ajustes"><span class="ico">⚙️</span> Ajustes</button>
+  </nav>
+  <div class="drawer-foot">Estudín v1 · Datos en tu dispositivo</div>
+</aside>
+
+<!-- ============ SHEET MATERIA ============ -->
+<section class="sheet" id="sheetMateria">
+  <div class="sheet-head"><h2 id="materiaTitle">Nueva materia</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <input type="hidden" id="m-id">
+    <div class="field"><label>Nombre</label>
+      <input type="text" id="m-nombre" placeholder="Ej: Antropología Social"></div>
+    <div class="row-2">
+      <div class="field"><label>Profesor/a</label>
+        <input type="text" id="m-profesor" placeholder="Opcional"></div>
+      <div class="field"><label>Cuatrimestre</label>
+        <input type="text" id="m-cuatri" placeholder="Ej: 2025-1"></div>
+    </div>
+    <div class="field"><label>Color</label>
+      <div class="color-picker" id="m-colores"></div></div>
+    <div class="field"><label>Notas</label>
+      <textarea id="m-notas" placeholder="Datos útiles: aula fija, link del campus, etc."></textarea></div>
+
+    <h3 style="margin-top:16px;font-size:14px">Horarios de cursada</h3>
+    <div id="horariosEditor"></div>
+    <button class="btn btn-secondary" id="agregarHorarioBtn" style="width:100%;margin-top:8px">➕ Agregar horario</button>
+
+    <div class="sheet-actions" style="margin-top:16px">
+      <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
+      <button class="btn btn-primary" id="guardarMateria">Guardar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHEET DETALLE MATERIA ============ -->
+<section class="sheet" id="sheetDetalleMateria">
+  <div class="sheet-head"><h2 id="detalleTitle">Materia</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body" id="detalleBody"></div>
+</section>
+
+<!-- ============ SHEET TAREA ============ -->
+<section class="sheet" id="sheetTarea">
+  <div class="sheet-head"><h2 id="tareaTitle">Nueva tarea</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <input type="hidden" id="t-id">
+    <div class="field"><label>Título</label>
+      <input type="text" id="t-titulo" placeholder="Ej: Leer cap. 3 de Geertz"></div>
+    <div class="field"><label>Materia</label>
+      <select id="t-materia"><option value="">Sin materia</option></select></div>
+    <div class="row-2">
+      <div class="field"><label>Fecha de entrega</label>
+        <input type="date" id="t-fecha"></div>
+      <div class="field"><label>Prioridad</label>
+        <select id="t-prioridad">
+          <option value="baja">Baja</option>
+          <option value="media" selected>Media</option>
+          <option value="alta">Alta</option>
+        </select></div>
+    </div>
+    <div class="field"><label>Descripción</label>
+      <textarea id="t-desc" placeholder="Detalles, consignas, links..."></textarea></div>
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
+      <button class="btn btn-primary" id="guardarTarea">Guardar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHEET EXAMEN ============ -->
+<section class="sheet" id="sheetExamen">
+  <div class="sheet-head"><h2 id="examenTitle">Nuevo examen</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <input type="hidden" id="e-id">
+    <div class="field"><label>Título</label>
+      <input type="text" id="e-titulo" placeholder="Ej: Parcial 1"></div>
+    <div class="field"><label>Materia</label>
+      <select id="e-materia"><option value="">Sin materia</option></select></div>
+    <div class="row-2">
+      <div class="field"><label>Tipo</label>
+        <select id="e-tipo">
+          <option value="parcial">Parcial</option>
+          <option value="final">Final</option>
+          <option value="tp">TP</option>
+          <option value="recuperatorio">Recuperatorio</option>
+          <option value="otro">Otro</option>
+        </select></div>
+      <div class="field"><label>Fecha</label>
+        <input type="date" id="e-fecha"></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label>Hora</label>
+        <input type="time" id="e-hora"></div>
+      <div class="field"><label>Aula</label>
+        <input type="text" id="e-aula" placeholder="Opcional"></div>
+    </div>
+    <div class="field"><label>Notas</label>
+      <textarea id="e-notas" placeholder="Temas, modalidad, qué llevar..."></textarea></div>
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
+      <button class="btn btn-primary" id="guardarExamen">Guardar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHEET APUNTE ============ -->
+<section class="sheet" id="sheetApunte">
+  <div class="sheet-head"><h2 id="apunteTitle">Nuevo apunte</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <input type="hidden" id="a-id">
+    <div class="field"><label>Título</label>
+      <input type="text" id="a-titulo" placeholder="Ej: Ideas del texto de Turner"></div>
+    <div class="field"><label>Materia</label>
+      <select id="a-materia"><option value="">Sin materia</option></select></div>
+    <div class="field"><label>Contenido</label>
+      <textarea id="a-contenido" rows="8" placeholder="Todo lo que quieras anotar..."></textarea></div>
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
+      <button class="btn btn-primary" id="guardarApunte">Guardar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHEET SESIÓN DE ESTUDIO (manual) ============ -->
+<section class="sheet" id="sheetSesion">
+  <div class="sheet-head"><h2>Registrar sesión</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <div class="field"><label>Materia</label>
+      <select id="s-materia"><option value="">Sin materia</option></select></div>
+    <div class="field"><label>Minutos</label>
+      <input type="number" id="s-minutos" min="5" max="600" placeholder="Ej: 45"></div>
+    <div class="field"><label>Tema</label>
+      <input type="text" id="s-tema" placeholder="Ej: Unidad 2 - Levi-Strauss"></div>
+    <div class="field"><label>Notas (opcional)</label>
+      <textarea id="s-notas" placeholder="Qué te costó, qué te quedó claro..."></textarea></div>
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
+      <button class="btn btn-primary" id="guardarSesion">Guardar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHEET TÉCNICA ============ -->
+<section class="sheet" id="sheetTecnica">
+  <div class="sheet-head"><h2 id="tecTitle">Técnica</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body" id="tecBody"></div>
+</section>
+
+<!-- ============ OVERLAY RESPIRACIÓN ============ -->
+<div class="breath-overlay" id="breathOverlay">
+  <div class="breath-top">
+    <div class="btitle" id="bTitle">Respiración</div>
+    <button class="bclose" id="bClose">✕ Salir</button>
+  </div>
+  <div class="breath-stage">
+    <div class="breath-circle" id="bCircle"></div>
+    <div class="b-text">
+      <div class="b-fase" id="bFase">Preparate</div>
+      <div class="b-cont" id="bCont">3</div>
+    </div>
+  </div>
+  <div class="breath-info" id="bInfo">
+    <strong>Encontrá una posición cómoda</strong>
+    Cerrá los ojos cuando estés listo/a.
+  </div>
+  <div class="breath-controls">
+    <button class="primary" id="bPlay">▶ Empezar</button>
+    <button id="bStop">⏹ Detener</button>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   ESTUDÍN v1 · Organizador de facultad
+   ===================================================================== */
+
+const SCHEMA_VERSION = 1;
+
+const K = {
+  ajustes:'estudin.v1.ajustes',
+  materias:'estudin.v1.materias',
+  tareas:'estudin.v1.tareas',
+  examenes:'estudin.v1.examenes',
+  apuntes:'estudin.v1.apuntes',
+  sesiones:'estudin.v1.sesiones',
+  asistencia:'estudin.v1.asistencia',
+  mindfulness:'estudin.v1.mindfulness',
+  chat:'estudin.v1.chat',
+  pomo:'estudin.v1.pomo'
+};
+
+const Storage = {
+  cargar(k, def){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } },
+  guardar(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.error(e); } },
+  borrar(k){ localStorage.removeItem(k); }
+};
+
+/* ===== ESTADO ===== */
+let ajustes = Object.assign({
+  nombre:'', voz:true, velocidad:1,
+  pomoTrabajo:25, pomoDescanso:5, metaEstudio:600
+}, Storage.cargar(K.ajustes, {}));
+let materias = Storage.cargar(K.materias, []);
+let tareas = Storage.cargar(K.tareas, []);
+let examenes = Storage.cargar(K.examenes, []);
+let apuntes = Storage.cargar(K.apuntes, []);
+let sesiones = Storage.cargar(K.sesiones, []);
+let asistencia = Storage.cargar(K.asistencia, {}); // { materiaId: { fecha: 'presente'|'ausente'|'tarde'|'justificado' } }
+let mindfulnessHist = Storage.cargar(K.mindfulness, []);
+let historialChat = Storage.cargar(K.chat, []);
+let pomoStats = Storage.cargar(K.pomo, { ciclos:0, minutos:0, hoy:{} });
+
+/* ===== HELPERS ===== */
+const $ = (s,c=document) => c.querySelector(s);
+const $$ = (s,c=document) => [...c.querySelectorAll(s)];
+const uid = (p='id') => `${p}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
+const hoyISO = () => { const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10); };
+const isoDe = (d) => new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+const escapeHTML = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtFecha = iso => new Date(iso+'T12:00').toLocaleDateString('es-AR',{weekday:'long', day:'numeric', month:'long'});
+const fmtFechaCorta = iso => new Date(iso+'T12:00').toLocaleDateString('es-AR',{day:'2-digit', month:'2-digit'});
+const fmtHora = h => h && /^\d{2}:\d{2}$/.test(h) ? h : '';
+const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const DIAS_CORTOS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const PALETA = ['#5b6ef5','#8b5cff','#e5484d','#f0a020','#22b573','#2ea8e0','#ec4899','#14b8a6'];
+
+const dormir = ms => new Promise(r => setTimeout(r, ms));
+
+function diasHasta(iso){
+  const hoy = new Date(hoyISO()+'T00:00');
+  const f = new Date(iso+'T00:00');
+  return Math.round((f - hoy) / 86400000);
+}
+
+/* ===== MASCOTA ===== */
+const TPL = $('#tplMascota');
+const crearMascota = () => TPL.content.firstElementChild.cloneNode(true);
+function pintarMascotas(){ $$('[data-mascota]').forEach(c => { c.innerHTML=''; c.appendChild(crearMascota()); }); }
+function crearMascotaHTML(){ const t = document.createElement('div'); t.appendChild(crearMascota()); return t.innerHTML; }
+
+/* ===== VOZ ===== */
+let voces = [];
+const cargarVoces = () => { if ('speechSynthesis' in window) voces = speechSynthesis.getVoices(); };
+cargarVoces();
+if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = cargarVoces;
+const sinEmojis = s => s.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/gu,'');
+const hablando = on => $$('.mascot').forEach(m => m.classList.toggle('talking', on));
+
+function hablar(texto){
+  if (!ajustes.voz || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const limpio = sinEmojis(texto).replace(/[*_`#>•·]/g,'').replace(/\n+/g,'. ').trim();
+  if (!limpio) return;
+  const u = new SpeechSynthesisUtterance(limpio);
+  u.lang = 'es-AR'; u.rate = ajustes.velocidad || 1; u.pitch = 1.05;
+  const v = voces.find(x => /^es/i.test(x.lang));
+  if (v) u.voice = v;
+  u.onstart = () => hablando(true);
+  u.onend = () => hablando(false);
+  u.onerror = () => hablando(false);
+  speechSynthesis.speak(u);
+}
+function callar(){ if ('speechSynthesis' in window) speechSynthesis.cancel(); hablando(false); }
+
+/* ===== CHIME ===== */
+function chime(freq=660, dur=0.35, vol=0.14){
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.frequency.value = freq; osc.type = 'sine';
+    osc.connect(gain); gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    osc.start(); osc.stop(ctx.currentTime + dur);
+    setTimeout(() => ctx.close(), (dur+0.2)*1000);
+  } catch(e){}
+}
+
+/* ===== TOAST ===== */
+function toast(txt, tipo=''){
+  const t = document.createElement('div');
+  t.className = 'toast ' + tipo;
+  t.textContent = txt;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3800);
+}
+
+/* =====================================================================
+   DOMINIO
+   ===================================================================== */
+const Dominio = {
+  materias: {
+    listar(){ return materias.slice().sort((a,b) => a.nombre.localeCompare(b.nombre)); },
+    get(id){ return materias.find(m => m.id === id); },
+    guardar(data){
+      if (data.id){
+        const idx = materias.findIndex(m => m.id === data.id);
+        if (idx >= 0) materias[idx] = { ...materias[idx], ...data };
+      } else {
+        materias.push({ ...data, id: uid('mat'), ts: Date.now() });
+      }
+      Storage.guardar(K.materias, materias);
+    },
+    borrar(id){
+      materias = materias.filter(m => m.id !== id);
+      tareas = tareas.filter(t => t.materiaId !== id);
+      examenes = examenes.filter(e => e.materiaId !== id);
+      apuntes = apuntes.filter(a => a.materiaId !== id);
+      delete asistencia[id];
+      Storage.guardar(K.materias, materias);
+      Storage.guardar(K.tareas, tareas);
+      Storage.guardar(K.examenes, examenes);
+      Storage.guardar(K.apuntes, apuntes);
+      Storage.guardar(K.asistencia, asistencia);
+    },
+    colorDe(id){ const m = this.get(id); return m ? m.color : '#5b6ef5'; },
+    nombreDe(id){ const m = this.get(id); return m ? m.nombre : ''; }
+  },
+  tareas: {
+    listar(filtro = 'pendientes'){
+      if (filtro === 'completadas') return tareas.filter(t => t.estado === 'completada').sort((a,b) => (b.completadaTs||0) - (a.completadaTs||0));
+      if (filtro === 'todas') return tareas.slice().sort((a,b) => (a.estado === 'completada' ? 1 : 0) - (b.estado === 'completada' ? 1 : 0) || (a.fechaEntrega||'9999').localeCompare(b.fechaEntrega||'9999'));
+      return tareas.filter(t => t.estado !== 'completada').sort((a,b) => (a.fechaEntrega||'9999').localeCompare(b.fechaEntrega||'9999'));
+    },
+    get(id){ return tareas.find(t => t.id === id); },
+    guardar(data){
+      if (data.id){
+        const idx = tareas.findIndex(t => t.id === data.id);
+        if (idx >= 0) tareas[idx] = { ...tareas[idx], ...data };
+      } else {
+        tareas.push({ ...data, id: uid('tar'), ts: Date.now(), estado: 'pendiente' });
+      }
+      Storage.guardar(K.tareas, tareas);
+    },
+    toggle(id){
+      const t = tareas.find(x => x.id === id);
+      if (!t) return;
+      t.estado = t.estado === 'completada' ? 'pendiente' : 'completada';
+      t.completadaTs = t.estado === 'completada' ? Date.now() : null;
+      Storage.guardar(K.tareas, tareas);
+    },
+    borrar(id){
+      tareas = tareas.filter(t => t.id !== id);
+      Storage.guardar(K.tareas, tareas);
+    },
+    porFecha(fecha){ return tareas.filter(t => t.estado !== 'completada' && t.fechaEntrega === fecha); },
+    proximas(dias = 7){
+      const hoy = hoyISO();
+      const lim = new Date(); lim.setDate(lim.getDate()+dias);
+      const limIso = isoDe(lim);
+      return tareas.filter(t => t.estado !== 'completada' && t.fechaEntrega && t.fechaEntrega >= hoy && t.fechaEntrega <= limIso)
+        .sort((a,b) => (a.fechaEntrega||'').localeCompare(b.fechaEntrega||''));
+    },
+    vencidas(){
+      const hoy = hoyISO();
+      return tareas.filter(t => t.estado !== 'completada' && t.fechaEntrega && t.fechaEntrega < hoy);
+    }
+  },
+  examenes: {
+    listar(){
+      return examenes.slice().sort((a,b) => (a.fecha||'9999').localeCompare(b.fecha||'9999'));
+    },
+    proximos(dias = 30){
+      const hoy = hoyISO();
+      const lim = new Date(); lim.setDate(lim.getDate()+dias);
+      const limIso = isoDe(lim);
+      return examenes.filter(e => e.fecha && e.fecha >= hoy && e.fecha <= limIso)
+        .sort((a,b) => a.fecha.localeCompare(b.fecha));
+    },
+    get(id){ return examenes.find(e => e.id === id); },
+    guardar(data){
+      if (data.id){
+        const idx = examenes.findIndex(e => e.id === data.id);
+        if (idx >= 0) examenes[idx] = { ...examenes[idx], ...data };
+      } else {
+        examenes.push({ ...data, id: uid('exam'), ts: Date.now() });
+      }
+      Storage.guardar(K.examenes, examenes);
+    },
+    borrar(id){
+      examenes = examenes.filter(e => e.id !== id);
+      Storage.guardar(K.examenes, examenes);
+    }
+  },
+  apuntes: {
+    listar(){ return apuntes.slice().sort((a,b) => (b.ts||0) - (a.ts||0)); },
+    get(id){ return apuntes.find(a => a.id === id); },
+    guardar(data){
+      if (data.id){
+        const idx = apuntes.findIndex(a => a.id === data.id);
+        if (idx >= 0) apuntes[idx] = { ...apuntes[idx], ...data, ts: Date.now() };
+      } else {
+        apuntes.push({ ...data, id: uid('apu'), ts: Date.now() });
+      }
+      Storage.guardar(K.apuntes, apuntes);
+    },
+    borrar(id){
+      apuntes = apuntes.filter(a => a.id !== id);
+      Storage.guardar(K.apuntes, apuntes);
+    }
+  },
+  sesiones: {
+    listar(){ return sesiones.slice().sort((a,b) => (b.ts||0) - (a.ts||0)); },
+    porFecha(fecha){ return sesiones.filter(s => s.fecha === fecha); },
+    guardar(data){
+      sesiones.push({ ...data, id: uid('ses'), ts: Date.now() });
+      Storage.guardar(K.sesiones, sesiones);
+    },
+    minutosHoy(){ return this.porFecha(hoyISO()).reduce((a,b) => a + (b.minutos||0), 0); },
+    minutosSemana(){
+      const out = [];
+      for (let i=6; i>=0; i--){
+        const d = new Date(); d.setDate(d.getDate()-i);
+        const iso = isoDe(d);
+        const min = sesiones.filter(s => s.fecha === iso).reduce((a,b) => a + (b.minutos||0), 0);
+        out.push({ iso, min });
+      }
+      return out;
+    },
+    racha(){
+      let s = 0; const d = new Date();
+      for (let i=0; i<400; i++){
+        const iso = isoDe(d);
+        const min = sesiones.filter(x => x.fecha === iso).reduce((a,b) => a + (b.minutos||0), 0);
+        if (min >= 15) s++;
+        else if (i === 0){}
+        else break;
+        d.setDate(d.getDate()-1);
+      }
+      return s;
+    }
+  },
+  asistencia: {
+    get(materiaId, fecha){ return (asistencia[materiaId] || {})[fecha]; },
+    set(materiaId, fecha, estado){
+      if (!asistencia[materiaId]) asistencia[materiaId] = {};
+      asistencia[materiaId][fecha] = estado;
+      Storage.guardar(K.asistencia, asistencia);
+    },
+    stats(materiaId){
+      const mapa = asistencia[materiaId] || {};
+      const keys = Object.keys(mapa);
+      let presentes = 0, ausentes = 0, tardes = 0, justificados = 0;
+      keys.forEach(k => {
+        if (mapa[k] === 'presente') presentes++;
+        else if (mapa[k] === 'ausente') ausentes++;
+        else if (mapa[k] === 'tarde') tardes++;
+        else if (mapa[k] === 'justificado') justificados++;
+      });
+      const total = keys.length;
+      const efectivas = presentes + tardes + justificados;
+      return { presentes, ausentes, tardes, justificados, total, pct: total ? Math.round(efectivas/total*100) : 0 };
+    }
+  },
+  mindfulness: {
+    guardar(tipo, durSeg){
+      mindfulnessHist.push({ id: uid('min'), fecha: hoyISO(), tipo, durSeg, ts: Date.now() });
+      Storage.guardar(K.mindfulness, mindfulnessHist);
+    },
+    racha(){
+      const fechas = new Set(mindfulnessHist.map(m => m.fecha));
+      let s = 0; const d = new Date();
+      for (let i=0; i<400; i++){
+        const iso = isoDe(d);
+        if (fechas.has(iso)) s++;
+        else if (i === 0){}
+        else break;
+        d.setDate(d.getDate()-1);
+      }
+      return s;
+    }
+  }
+};
+
+/* Clases de un día específico */
+function clasesDelDia(diaSemana){
+  const out = [];
+  materias.forEach(m => {
+    (m.horarios || []).forEach(h => {
+      if (Number(h.dia) === diaSemana){
+        out.push({ materia:m, ...h });
+      }
+    });
+  });
+  return out.sort((a,b) => (a.inicio||'').localeCompare(b.inicio||''));
+}
+function clasesDeHoy(){ return clasesDelDia(new Date().getDay()); }
+
+/* =====================================================================
+   RENDER: HOY
+   ===================================================================== */
+function renderHoy(){
+  const cont = $('#hoyContent');
+  const h = new Date().getHours();
+  const saludo = h<12?'Buenos días': h<20?'Buenas tardes':'Buenas noches';
+  const nombre = ajustes.nombre ? `, ${ajustes.nombre}` : '';
+
+  const clases = clasesDeHoy();
+  const tareasHoy = Dominio.tareas.porFecha(hoyISO());
+  const tareasVencidas = Dominio.tareas.vencidas();
+  const tareasProx = Dominio.tareas.proximas(7);
+  const examenesProx = Dominio.examenes.proximos(30);
+  const minHoy = Dominio.sesiones.minutosHoy();
+  const rachaEst = Dominio.sesiones.racha();
+
+  let html = `
+    <div style="text-align:center;padding:8px 6px 4px">
+      <div style="width:100px;height:126px;margin:0 auto 6px">${crearMascotaHTML()}</div>
+      <h1 style="margin:6px 0 2px;font-size:22px">${saludo}${escapeHTML(nombre)}</h1>
+      <p style="margin:0;color:var(--muted);font-size:13.5px;text-transform:capitalize">${fmtFecha(hoyISO())}</p>
+    </div>
+  `;
+
+  if (rachaEst >= 3){
+    html += `<div class="card" style="background:linear-gradient(135deg,#fff7e8,#ffefd0);border-left:5px solid var(--accent);padding:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:28px">🔥</span>
+        <div>
+          <strong style="font-size:14.5px">¡${rachaEst} días seguidos estudiando!</strong>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Hoy ya llevás ${minHoy} min.</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  /* CLASES DE HOY */
+  html += `<div class="card">
+    <h3>🗓️ Hoy cursás <span class="pill ${clases.length?'info':'ok'}">${clases.length ? clases.length + (clases.length===1?' clase':' clases') : 'Libre'}</span></h3>`;
+  if (!clases.length){
+    html += `<p class="hint" style="margin:0">No tenés clases hoy. Buen momento para adelantar tareas 📚</p>`;
+  } else {
+    html += clases.map(c => {
+      const estado = Dominio.asistencia.get(c.materia.id, hoyISO());
+      return `<div class="horario-clase">
+        <div class="barra" style="background:${c.materia.color}"></div>
+        <div class="info">
+          <strong>${escapeHTML(c.materia.nombre)}</strong>
+          <small>${fmtHora(c.inicio)}${c.fin?' – '+fmtHora(c.fin):''}${c.aula?' · Aula '+escapeHTML(c.aula):''}${c.tipo?' · '+escapeHTML(c.tipo):''}</small>
+        </div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
+          <button class="asist-btn ${estado==='presente'?'on presente':''}" data-asist="${c.materia.id}|presente">✓</button>
+          <button class="asist-btn ${estado==='ausente'?'on ausente':''}" data-asist="${c.materia.id}|ausente">✗</button>
+          <button class="asist-btn ${estado==='tarde'?'on tarde':''}" data-asist="${c.materia.id}|tarde">⏱</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  html += `</div>`;
+
+  /* QUICK STATS */
+  html += `<div class="card" style="padding:14px">
+    <div class="row-3">
+      <div style="text-align:center">
+        <div style="font-size:26px;font-weight:800;color:var(--primary-dark)">${tareasHoy.length + tareasVencidas.length}</div>
+        <small style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px">PARA HOY</small>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:26px;font-weight:800;color:var(--primary-dark)">${tareasProx.length}</div>
+        <small style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px">ESTA SEMANA</small>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:26px;font-weight:800;color:var(--primary-dark)">${examenesProx.length}</div>
+        <small style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px">EXÁMENES</small>
+      </div>
+    </div>
+  </div>`;
+
+  /* ENTREGAS */
+  const entregasMostrar = [...tareasVencidas, ...tareasHoy, ...tareasProx].slice(0,5);
+  if (entregasMostrar.length){
+    html += `<div class="card">
+      <h3>📝 Próximas entregas
+        <span class="h3-actions"><button class="h3-btn" data-ir="tareas">Ver todas</button></span></h3>`;
+    html += entregasMostrar.map(t => {
+      const dd = t.fechaEntrega ? diasHasta(t.fechaEntrega) : null;
+      const txt = dd === null ? '' : dd < 0 ? `Hace ${-dd}d` : dd === 0 ? 'HOY' : dd === 1 ? 'Mañana' : `En ${dd} días`;
+      const cls = dd !== null && dd < 0 ? 'danger' : dd === 0 ? 'warn' : 'info';
+      return `<div class="tarea-item">
+        <div class="tarea-chk" data-toggle="${t.id}"></div>
+        <div class="tarea-body">
+          <strong>${escapeHTML(t.titulo)}</strong>
+          <div class="meta">
+            ${t.materiaId ? `<span class="materia-tag" style="background:${Dominio.materias.colorDe(t.materiaId)}22;color:${Dominio.materias.colorDe(t.materiaId)}">${escapeHTML(Dominio.materias.nombreDe(t.materiaId))}</span>` : ''}
+            ${t.fechaEntrega ? `<span class="pill ${cls}">${txt}</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    html += `</div>`;
+  }
+
+  /* EXÁMENES PRÓXIMOS */
+  if (examenesProx.length){
+    html += `<div class="card">
+      <h3>🎯 Próximos exámenes
+        <span class="h3-actions"><button class="h3-btn" data-ir="examenes">Ver todos</button></span></h3>`;
+    html += examenesProx.slice(0,3).map(e => {
+      const dd = diasHasta(e.fecha);
+      const txt = dd < 0 ? 'Pasado' : dd === 0 ? 'HOY' : dd === 1 ? 'Mañana' : `En ${dd} días`;
+      return `<div class="tarea-item">
+        <div style="width:24px;text-align:center;font-size:16px;flex:none">🎯</div>
+        <div class="tarea-body">
+          <strong>${escapeHTML(e.titulo)}</strong>
+          <div class="meta">
+            <span class="materia-tag" style="background:${Dominio.materias.colorDe(e.materiaId)}22;color:${Dominio.materias.colorDe(e.materiaId)}">${escapeHTML(Dominio.materias.nombreDe(e.materiaId))}</span>
+            <span class="pill ${dd<=3?'warn':'info'}">${txt}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    html += `</div>`;
+  }
+
+  /* POMODORO RÁPIDO */
+  html += `<div class="card" style="padding:14px;background:linear-gradient(135deg,#eef1fb,#f8f9ff);border:1px solid #c8cffb">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="font-size:26px">⏱️</span>
+      <div style="flex:1">
+        <strong style="font-size:14.5px">¿Arrancamos a estudiar?</strong>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${minHoy>0 ? 'Hoy llevás ' + minHoy + ' min' : 'Sesión de ' + ajustes.pomoTrabajo + ' min'}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" data-ir="estudio">▶ Pomodoro</button>
+      <button class="btn btn-secondary" style="flex:1" data-sesion="1">➕ Registrar sesión</button>
+    </div>
+  </div>`;
+
+  /* MINDFULNESS RÁPIDO */
+  html += `<div class="card" style="padding:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="font-size:26px">🧘</span>
+      <div style="flex:1">
+        <strong style="font-size:14.5px">Pausa mindful</strong>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">2 minutos que cambian el resto del día</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:1" data-patron="cuadrada">🟦 Respirar</button>
+      <button class="btn btn-secondary" style="flex:1" data-patron="478">🌙 4-7-8</button>
+    </div>
+  </div>`;
+
+  cont.innerHTML = html;
+
+  cont.querySelectorAll('[data-toggle]').forEach(b => {
+    b.onclick = (e) => {
+      e.stopPropagation();
+      Dominio.tareas.toggle(b.dataset.toggle);
+      chime(700, 0.15, 0.08);
+      renderHoy(); renderTareas();
+    };
+  });
+  cont.querySelectorAll('[data-ir]').forEach(b => {
+    b.onclick = () => irA(b.dataset.ir);
+  });
+  cont.querySelectorAll('[data-sesion]').forEach(b => {
+    b.onclick = () => abrirSheetSesion();
+  });
+  cont.querySelectorAll('[data-patron]').forEach(b => {
+    b.onclick = () => abrirRespiracion(b.dataset.patron);
+  });
+  cont.querySelectorAll('[data-asist]').forEach(b => {
+    b.onclick = () => {
+      const [matId, estado] = b.dataset.asist.split('|');
+      const actual = Dominio.asistencia.get(matId, hoyISO());
+      Dominio.asistencia.set(matId, hoyISO(), actual === estado ? null : estado);
+      if (actual !== estado) chime(660, 0.2, 0.08);
+      renderHoy();
+    };
+  });
+}
+
+/* =====================================================================
+   RENDER: MATERIAS
+   ===================================================================== */
+function renderMaterias(){
+  const cont = $('#listaMaterias');
+  const lista = Dominio.materias.listar();
+  if (!lista.length){
+    cont.innerHTML = `<div class="empty">Todavía no cargaste materias.<br>Tocá "➕ Nueva materia" para arrancar.</div>`;
+    return;
+  }
+  const hoy = new Date().getDay();
+  cont.innerHTML = lista.map(m => {
+    const tieneClaseHoy = (m.horarios||[]).some(h => Number(h.dia) === hoy);
+    const stats = Dominio.asistencia.stats(m.id);
+    const horariosTxt = (m.horarios||[]).map(h => `${DIAS_CORTOS[h.dia]} ${fmtHora(h.inicio)}`).join(' · ');
+    return `<div class="materia-card" style="border-left-color:${m.color}" data-materia="${m.id}">
+      <h4>${escapeHTML(m.nombre)} ${tieneClaseHoy ? '<span class="hoy-badge">HOY</span>' : ''}</h4>
+      <div class="meta">
+        ${m.profesor ? '👤 ' + escapeHTML(m.profesor) + '<br>' : ''}
+        ${m.cuatri ? '📅 ' + escapeHTML(m.cuatri) + '<br>' : ''}
+        ${horariosTxt ? '🗓️ ' + horariosTxt + '<br>' : ''}
+        ${stats.total ? `✅ Asistencia: ${stats.pct}% (${stats.total} clases)` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  cont.querySelectorAll('[data-materia]').forEach(b => {
+    b.onclick = () => abrirDetalleMateria(b.dataset.materia);
+  });
+}
+
+/* ===== SHEET MATERIA ===== */
+let horariosTemp = [];
+let colorTemp = PALETA[0];
+
+function renderColorPicker(){
+  const cont = $('#m-colores');
+  cont.innerHTML = PALETA.map(c => `<div class="color-dot ${c===colorTemp?'on':''}" style="background:${c}" data-color="${c}"></div>`).join('');
+  cont.querySelectorAll('[data-color]').forEach(b => {
+    b.onclick = () => { colorTemp = b.dataset.color; renderColorPicker(); };
+  });
+}
+function renderHorariosEditor(){
+  const cont = $('#horariosEditor');
+  if (!horariosTemp.length){
+    cont.innerHTML = '<p class="hint" style="margin:0 0 8px">Sin horarios cargados.</p>';
+    return;
+  }
+  cont.innerHTML = horariosTemp.map((h, i) => `
+    <div style="background:#f6f8fd;border-radius:12px;padding:10px;margin-bottom:8px">
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <select data-h="${i}" data-campo="dia" style="flex:1;padding:8px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
+          ${[1,2,3,4,5,6].map(d => `<option value="${d}" ${Number(h.dia)===d?'selected':''}>${DIAS[d]}</option>`).join('')}
+        </select>
+        <button type="button" class="icon-btn" data-eliminar="${i}" style="width:34px;height:34px;background:#fdecec;color:var(--danger)">🗑️</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+        <input type="time" data-h="${i}" data-campo="inicio" value="${h.inicio||''}" placeholder="Inicio" style="padding:8px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
+        <input type="time" data-h="${i}" data-campo="fin" value="${h.fin||''}" placeholder="Fin" style="padding:8px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
+      </div>
+      <input type="text" data-h="${i}" data-campo="aula" value="${escapeHTML(h.aula||'')}" placeholder="Aula (opcional)" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
+    </div>
+  `).join('');
+  cont.querySelectorAll('[data-h]').forEach(inp => {
+    inp.onchange = () => {
+      const i = Number(inp.dataset.h);
+      horariosTemp[i][inp.dataset.campo] = inp.value;
+    };
+  });
+  cont.querySelectorAll('[data-eliminar]').forEach(b => {
+    b.onclick = () => {
+      horariosTemp.splice(Number(b.dataset.eliminar), 1);
+      renderHorariosEditor();
+    };
+  });
+}
+
+function abrirSheetMateria(m = null){
+  $('#materiaTitle').textContent = m ? 'Editar materia' : 'Nueva materia';
+  $('#m-id').value = m ? m.id : '';
+  $('#m-nombre').value = m ? m.nombre : '';
+  $('#m-profesor').value = m ? (m.profesor || '') : '';
+  $('#m-cuatri').value = m ? (m.cuatri || '') : '';
+  $('#m-notas').value = m ? (m.notas || '') : '';
+  horariosTemp = m && m.horarios ? m.horarios.map(h => ({...h})) : [];
+  colorTemp = m ? m.color : PALETA[0];
+  renderColorPicker();
+  renderHorariosEditor();
+  abrirSheet('sheetMateria');
+}
+
+$('#nuevaMateriaBtn').onclick = () => abrirSheetMateria(null);
+$('#agregarHorarioBtn').onclick = () => {
+  horariosTemp.push({ dia:1, inicio:'09:00', fin:'11:00', aula:'' });
+  renderHorariosEditor();
+};
+$('#guardarMateria').onclick = () => {
+  const nombre = $('#m-nombre').value.trim();
+  if (!nombre){ alert('Poné un nombre'); return; }
+  Dominio.materias.guardar({
+    id: $('#m-id').value || null,
+    nombre,
+    profesor: $('#m-profesor').value.trim(),
+    cuatri: $('#m-cuatri').value.trim(),
+    color: colorTemp,
+    notas: $('#m-notas').value.trim(),
+    horarios: horariosTemp
+  });
+  cerrarSheets();
+  toast('Materia guardada ✅', 'ok');
+  renderMaterias(); renderHoy(); renderHorario(); actualizarSelects();
+};
+
+function abrirDetalleMateria(id){
+  const m = Dominio.materias.get(id);
+  if (!m) return;
+  $('#detalleTitle').textContent = m.nombre;
+  const stats = Dominio.asistencia.stats(id);
+  const tareasMat = tareas.filter(t => t.materiaId === id && t.estado !== 'completada');
+  const examenesMat = examenes.filter(e => e.materiaId === id && e.fecha >= hoyISO());
+  const mapaAsist = asistencia[id] || {};
+  const fechasAsist = Object.keys(mapaAsist).sort().reverse();
+  const body = $('#detalleBody');
+  body.innerHTML = `
+    <div style="border-left:5px solid ${m.color};padding-left:10px;margin-bottom:16px">
+      ${m.profesor ? `<div style="font-size:13px;color:var(--muted)">👤 ${escapeHTML(m.profesor)}</div>` : ''}
+      ${m.cuatri ? `<div style="font-size:13px;color:var(--muted)">📅 ${escapeHTML(m.cuatri)}</div>` : ''}
+    </div>
+    ${(m.horarios||[]).length ? `
+      <h3 style="font-size:14px;margin-top:8px">Horarios</h3>
+      ${m.horarios.map(h => `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)">${DIAS[h.dia]} · ${fmtHora(h.inicio)}${h.fin?'–'+fmtHora(h.fin):''}${h.aula?' · '+escapeHTML(h.aula):''}</div>`).join('')}
+    ` : ''}
+    ${m.notas ? `<h3 style="font-size:14px;margin-top:16px">Notas</h3><p style="font-size:13.5px;line-height:1.5;color:var(--muted)">${escapeHTML(m.notas)}</p>` : ''}
+    <h3 style="font-size:14px;margin-top:16px">📊 Asistencia</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--ok)">${stats.presentes}</div>
+        <small style="font-size:10.5px;color:var(--muted);font-weight:700">PRESENTE</small>
+      </div>
+      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--warn)">${stats.tardes}</div>
+        <small style="font-size:10.5px;color:var(--muted);font-weight:700">TARDE</small>
+      </div>
+      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--primary-dark)">${stats.justificados}</div>
+        <small style="font-size:10.5px;color:var(--muted);font-weight:700">JUSTIF.</small>
+      </div>
+      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--danger)">${stats.ausentes}</div>
+        <small style="font-size:10.5px;color:var(--muted);font-weight:700">AUSENTE</small>
+      </div>
+    </div>
+    ${fechasAsist.length ? `
+      <p class="hint" style="margin:6px 0">Marcá o corregí asistencia:</p>
+      ${fechasAsist.slice(0,15).map(f => {
+        const est = mapaAsist[f];
+        return `<div class="asist-row">
+          <span class="as-fecha">${fmtFechaCorta(f)}</span>
+          <div class="as-btns">
+            ${['presente','tarde','justificado','ausente'].map(k => `
+              <button class="asist-btn ${est===k?'on '+k:''}" data-asist2="${id}|${f}|${k}">${({presente:'✓',tarde:'⏱',justificado:'📝',ausente:'✗'})[k]}</button>
+            `).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    ` : '<p class="hint">Sin registros de asistencia todavía. Los podés marcar en "Hoy".</p>'}
+    ${tareasMat.length ? `
+      <h3 style="font-size:14px;margin-top:20px">📝 Tareas pendientes (${tareasMat.length})</h3>
+      ${tareasMat.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px">• ${escapeHTML(t.titulo)}${t.fechaEntrega?' <span style="color:var(--muted);font-size:12px">· '+fmtFechaCorta(t.fechaEntrega)+'</span>':''}</div>`).join('')}
+    ` : ''}
+    ${examenesMat.length ? `
+      <h3 style="font-size:14px;margin-top:16px">🎯 Exámenes próximos (${examenesMat.length})</h3>
+      ${examenesMat.map(e => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px">• ${escapeHTML(e.titulo)} <span style="color:var(--muted);font-size:12px">· ${fmtFechaCorta(e.fecha)}</span></div>`).join('')}
+    ` : ''}
+    <div style="display:flex;gap:8px;margin-top:20px">
+      <button class="btn btn-secondary" style="flex:1" id="editarMateriaBtn">✏️ Editar</button>
+      <button class="btn btn-danger" style="flex:1" id="borrarMateriaBtn">🗑️ Eliminar</button>
+    </div>
+  `;
+  body.querySelectorAll('[data-asist2]').forEach(b => {
+    b.onclick = () => {
+      const [mat, fecha, estado] = b.dataset.asist2.split('|');
+      Dominio.asistencia.set(mat, fecha, estado);
+      chime(660, 0.15, 0.06);
+      abrirDetalleMateria(id);
+      renderHoy(); renderMaterias();
+    };
+  });
+  $('#editarMateriaBtn').onclick = () => { cerrarSheets(); setTimeout(() => abrirSheetMateria(m), 150); };
+  $('#borrarMateriaBtn').onclick = () => {
+    if (!confirm('¿Eliminar la materia y todo su contenido asociado?')) return;
+    Dominio.materias.borrar(id);
+    cerrarSheets();
+    toast('Materia eliminada');
+    renderMaterias(); renderTareas(); renderExamenes(); renderHorario(); renderApuntes(); renderHoy();
+  };
+  abrirSheet('sheetDetalleMateria');
+}
+
+/* =====================================================================
+   RENDER: TAREAS
+   ===================================================================== */
+let filtroTareas = 'pendientes';
+$$('.filtro-tarea').forEach(b => {
+  b.onclick = () => {
+    filtroTareas = b.dataset.filtro;
+    $$('.filtro-tarea').forEach(x => x.classList.toggle('on', x === b));
+    renderTareas();
+  };
+});
+
+function renderTareas(){
+  const cont = $('#listaTareas');
+  const lista = Dominio.tareas.listar(filtroTareas);
+  if (!lista.length){
+    cont.innerHTML = `<div class="empty">${filtroTareas === 'completadas' ? 'Sin tareas completadas todavía.' : 'Sin tareas. ¡Bien ahí!'}</div>`;
+    return;
+  }
+  if (filtroTareas === 'completadas' || filtroTareas === 'todas'){
+    // Lista simple
+    cont.innerHTML = lista.map(t => tareaItemHTML(t)).join('');
+  } else {
+    // Agrupar por urgencia
+    const hoy = hoyISO();
+    const grupos = { vencidas:[], hoy:[], manana:[], semana:[], masTarde:[], sinFecha:[] };
+    lista.forEach(t => {
+      if (!t.fechaEntrega){ grupos.sinFecha.push(t); return; }
+      const d = diasHasta(t.fechaEntrega);
+      if (d < 0) grupos.vencidas.push(t);
+      else if (d === 0) grupos.hoy.push(t);
+      else if (d === 1) grupos.manana.push(t);
+      else if (d <= 7) grupos.semana.push(t);
+      else grupos.masTarde.push(t);
+    });
+    let html = '';
+    const render = (arr, label, cls) => {
+      if (!arr.length) return;
+      html += `<div class="grupo-titulo ${cls||''}">${label} <span style="font-weight:600;color:var(--muted)">(${arr.length})</span></div>`;
+      html += arr.map(t => tareaItemHTML(t)).join('');
+    };
+    render(grupos.vencidas, '⚠️ Vencidas', 'urgente');
+    render(grupos.hoy, '🔥 Hoy', 'hoy');
+    render(grupos.manana, '📅 Mañana', 'manana');
+    render(grupos.semana, '📆 Esta semana');
+    render(grupos.masTarde, '🗓️ Más adelante');
+    render(grupos.sinFecha, '📌 Sin fecha');
+    cont.innerHTML = html;
+  }
+  cont.querySelectorAll('[data-toggle]').forEach(b => {
+    b.onclick = (e) => {
+      e.stopPropagation();
+      Dominio.tareas.toggle(b.dataset.toggle);
+      chime(700, 0.15, 0.08);
+      renderTareas(); renderHoy();
+    };
+  });
+  cont.querySelectorAll('[data-editar-tarea]').forEach(b => {
+    b.onclick = (e) => { e.stopPropagation(); abrirSheetTarea(Dominio.tareas.get(b.dataset.editarTarea)); };
+  });
+  cont.querySelectorAll('[data-borrar-tarea]').forEach(b => {
+    b.onclick = (e) => {
+      e.stopPropagation();
+      if (!confirm('¿Borrar esta tarea?')) return;
+      Dominio.tareas.borrar(b.dataset.borrarTarea);
+      renderTareas(); renderHoy();
+    };
+  });
+}
+function tareaItemHTML(t){
+  const dd = t.fechaEntrega ? diasHasta(t.fechaEntrega) : null;
+  const txt = dd === null ? '' : dd < 0 ? `Hace ${-dd}d` : dd === 0 ? 'HOY' : dd === 1 ? 'Mañana' : `En ${dd} días`;
+  const cls = dd !== null && dd < 0 ? 'danger' : dd === 0 ? 'warn' : 'info';
+  const prio = t.prioridad || 'media';
+  const prioCol = prio === 'alta' ? 'danger' : prio === 'baja' ? 'info' : 'warn';
+  return `<div class="tarea-item">
+    <div class="tarea-chk ${t.estado==='completada'?'done':''}" data-toggle="${t.id}"></div>
+    <div class="tarea-body ${t.estado==='completada'?'done':''}">
+      <strong>${escapeHTML(t.titulo)}</strong>
+      <div class="meta">
+        ${t.materiaId ? `<span class="materia-tag" style="background:${Dominio.materias.colorDe(t.materiaId)}22;color:${Dominio.materias.colorDe(t.materiaId)}">${escapeHTML(Dominio.materias.nombreDe(t.materiaId))}</span>` : ''}
+        ${t.fechaEntrega ? `<span class="pill ${cls}">${txt} · ${fmtFechaCorta(t.fechaEntrega)}</span>` : ''}
+        <span class="pill ${prioCol}">${prio}</span>
+      </div>
+      ${t.desc ? `<div style="font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.4">${escapeHTML(t.desc)}</div>` : ''}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <button class="tarea-del" data-editar-tarea="${t.id}" title="Editar">✏️</button>
+      <button class="tarea-del" data-borrar-tarea="${t.id}" title="Eliminar">🗑️</button>
+    </div>
+  </div>`;
+}
+
+function abrirSheetTarea(t = null){
+  $('#tareaTitle').textContent = t ? 'Editar tarea' : 'Nueva tarea';
+  $('#t-id').value = t ? t.id : '';
+  $('#t-titulo').value = t ? t.titulo : '';
+  $('#t-fecha').value = t && t.fechaEntrega ? t.fechaEntrega : hoyISO();
+  $('#t-prioridad').value = t ? (t.prioridad || 'media') : 'media';
+  $('#t-desc').value = t ? (t.desc || '') : '';
+  actualizarSelects();
+  $('#t-materia').value = t && t.materiaId ? t.materiaId : '';
+  abrirSheet('sheetTarea');
+}
+$('#nuevaTareaBtn').onclick = () => abrirSheetTarea(null);
+$('#guardarTarea').onclick = () => {
+  const titulo = $('#t-titulo').value.trim();
+  if (!titulo){ alert('Poné un título'); return; }
+  Dominio.tareas.guardar({
+    id: $('#t-id').value || null,
+    titulo,
+    materiaId: $('#t-materia').value || null,
+    fechaEntrega: $('#t-fecha').value || null,
+    prioridad: $('#t-prioridad').value,
+    desc: $('#t-desc').value.trim()
+  });
+  cerrarSheets();
+  toast('Tarea guardada ✅', 'ok');
+  renderTareas(); renderHoy();
+};
+
+/* =====================================================================
+   RENDER: EXÁMENES
+   ===================================================================== */
+function renderExamenes(){
+  const cont = $('#listaExamenes');
+  const lista = Dominio.examenes.listar();
+  if (!lista.length){
+    cont.innerHTML = `<div class="empty">Sin exámenes cargados.</div>`;
+    return;
+  }
+  cont.innerHTML = lista.map(e => {
+    const dd = diasHasta(e.fecha);
+    const txt = dd < 0 ? 'Pasado' : dd === 0 ? '¡HOY!' : dd === 1 ? 'Mañana' : `Faltan ${dd} días`;
+    const urgente = dd >= 0 && dd <= 7;
+    const tipoTxt = ({parcial:'Parcial',final:'Final',tp:'TP',recuperatorio:'Recup.',otro:'Examen'})[e.tipo] || 'Examen';
+    return `<div class="examen-card" data-examen="${e.id}" style="border-left-color:${Dominio.materias.colorDe(e.materiaId)||'var(--accent)'}">
+      <div class="examen-count ${urgente?'urgente':''}">
+        <b>${dd >= 0 ? dd : '—'}</b>
+        <small>${dd >= 0 ? (dd===0?'HOY':'días') : 'pasado'}</small>
+      </div>
+      <div class="examen-info">
+        <span class="tipo-tag">${tipoTxt}</span>
+        <strong style="margin-top:6px">${escapeHTML(e.titulo)}</strong>
+        <div class="meta">
+          ${e.materiaId ? `<span style="color:${Dominio.materias.colorDe(e.materiaId)};font-weight:700">${escapeHTML(Dominio.materias.nombreDe(e.materiaId))}</span> · ` : ''}
+          ${fmtFecha(e.fecha)}
+          ${e.hora ? ' · ' + e.hora : ''}
+          ${e.aula ? ' · Aula ' + escapeHTML(e.aula) : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  cont.querySelectorAll('[data-examen]').forEach(b => {
+    b.onclick = () => abrirSheetExamen(Dominio.examenes.get(b.dataset.examen));
+  });
+}
+
+function abrirSheetExamen(e = null){
+  $('#examenTitle').textContent = e ? 'Editar examen' : 'Nuevo examen';
+  $('#e-id').value = e ? e.id : '';
+  $('#e-titulo').value = e ? e.titulo : '';
+  $('#e-tipo').value = e ? (e.tipo || 'parcial') : 'parcial';
+  $('#e-fecha').value = e && e.fecha ? e.fecha : hoyISO();
+  $('#e-hora').value = e && e.hora ? e.hora : '';
+  $('#e-aula').value = e ? (e.aula || '') : '';
+  $('#e-notas').value = e ? (e.notas || '') : '';
+  actualizarSelects();
+  $('#e-materia').value = e && e.materiaId ? e.materiaId : '';
+  abrirSheet('sheetExamen');
+}
+$('#nuevoExamenBtn').onclick = () => abrirSheetExamen(null);
+$('#guardarExamen').onclick = () => {
+  const titulo = $('#e-titulo').value.trim();
+  if (!titulo){ alert('Poné un título'); return; }
+  const fecha = $('#e-fecha').value;
+  if (!fecha){ alert('Poné una fecha'); return; }
+  Dominio.examenes.guardar({
+    id: $('#e-id').value || null,
+    titulo,
+    materiaId: $('#e-materia').value || null,
+    tipo: $('#e-tipo').value,
+    fecha,
+    hora: $('#e-hora').value,
+    aula: $('#e-aula').value.trim(),
+    notas: $('#e-notas').value.trim()
+  });
+  cerrarSheets();
+  toast('Examen guardado ✅', 'ok');
+  renderExamenes(); renderHoy();
+};
+
+/* =====================================================================
+   RENDER: HORARIO
+   ===================================================================== */
+function renderHorario(){
+  const cont = $('#horarioGrid');
+  const hoy = new Date().getDay();
+  const dias = [1,2,3,4,5,6];
+  const hayClases = materias.some(m => (m.horarios||[]).length);
+  if (!hayClases){
+    cont.innerHTML = `<div class="empty">Cargá horarios en tus materias y acá aparece la grilla.</div>`;
+    return;
+  }
+  cont.innerHTML = dias.map(d => {
+    const clases = clasesDelDia(d);
+    const esHoy = d === hoy;
+    return `<div class="horario-dia ${esHoy?'hoy':''}">
+      <h4>${DIAS[d]} ${esHoy ? '<span class="hoy-tag">Hoy</span>' : ''}</h4>
+      ${clases.length ? clases.map(c => `
+        <div class="horario-clase">
+          <div class="barra" style="background:${c.materia.color}"></div>
+          <div class="info">
+            <strong>${escapeHTML(c.materia.nombre)}</strong>
+            <small>${fmtHora(c.inicio)}${c.fin?' – '+fmtHora(c.fin):''}${c.aula?' · Aula '+escapeHTML(c.aula):''}</small>
+          </div>
+        </div>
+      `).join('') : '<p class="hint" style="margin:0">Sin clases</p>'}
+    </div>`;
+  }).join('');
+}
+
+/* =====================================================================
+   RENDER: APUNTES
+   ===================================================================== */
+function renderApuntes(){
+  const cont = $('#listaApuntes');
+  const lista = Dominio.apuntes.listar();
+  if (!lista.length){
+    cont.innerHTML = `<div class="empty">Sin apuntes todavía.</div>`;
+    return;
+  }
+  cont.innerHTML = lista.map(a => {
+    const m = a.materiaId ? Dominio.materias.get(a.materiaId) : null;
+    return `<div class="apunte-card" data-apunte="${a.id}" style="${m?'border-left:5px solid '+m.color:''}">
+      <h4>${escapeHTML(a.titulo)}</h4>
+      <p>${escapeHTML(a.contenido)}</p>
+      <div class="meta">
+        <span>${m ? escapeHTML(m.nombre) : 'Sin materia'}</span>
+        <span>${new Date(a.ts).toLocaleDateString('es-AR')}</span>
+      </div>
+    </div>`;
+  }).join('');
+  cont.querySelectorAll('[data-apunte]').forEach(b => {
+    b.onclick = () => abrirSheetApunte(Dominio.apuntes.get(b.dataset.apunte));
+  });
+}
+function abrirSheetApunte(a = null){
+  $('#apunteTitle').textContent = a ? 'Editar apunte' : 'Nuevo apunte';
+  $('#a-id').value = a ? a.id : '';
+  $('#a-titulo').value = a ? a.titulo : '';
+  $('#a-contenido').value = a ? a.contenido : '';
+  actualizarSelects();
+  $('#a-materia').value = a && a.materiaId ? a.materiaId : '';
+  abrirSheet('sheetApunte');
+}
+$('#nuevoApunteBtn').onclick = () => abrirSheetApunte(null);
+$('#guardarApunte').onclick = () => {
+  const titulo = $('#a-titulo').value.trim();
+  const contenido = $('#a-contenido').value.trim();
+  if (!titulo){ alert('Poné un título'); return; }
+  Dominio.apuntes.guardar({
+    id: $('#a-id').value || null,
+    titulo,
+    contenido,
+    materiaId: $('#a-materia').value || null
+  });
+  cerrarSheets();
+  toast('Apunte guardado ✅', 'ok');
+  renderApuntes();
+};
+
+/* =====================================================================
+   POMODORO
+   ===================================================================== */
+let pomoEstado = {
+  activo:false,
+  modo:'trabajo', // 'trabajo' | 'descanso'
+  restanteSeg:0,
+  duracionSeg:0,
+  intervalo:null,
+  materiaId:null
+};
+
+function renderPomoHero(){
+  const min = Dominio.sesiones.minutosHoy();
+  const ciclos = pomoStats.ciclos || 0;
+  const esTrabajo = pomoEstado.modo === 'trabajo';
+  const total = pomoEstado.duracionSeg || (esTrabajo ? ajustes.pomoTrabajo*60 : ajustes.pomoDescanso*60);
+  const restante = pomoEstado.activo ? pomoEstado.restanteSeg : total;
+  const pct = 1 - (restante/total);
+  const R = 88, C = 2*Math.PI*R;
+  const offset = C - pct*C;
+  const mm = String(Math.floor(restante/60)).padStart(2,'0');
+  const ss = String(restante%60).padStart(2,'0');
+
+  const materiasOpts = materias.map(m => `<option value="${m.id}" ${pomoEstado.materiaId===m.id?'selected':''}>${escapeHTML(m.nombre)}</option>`).join('');
+
+  $('#pomoHero').innerHTML = `
+    <div class="pomo-hero">
+      <div class="pomo-ring">
+        <svg viewBox="0 0 200 200" width="200" height="200">
+          <circle class="ring-bg" cx="100" cy="100" r="${R}"></circle>
+          <circle class="ring-fg" cx="100" cy="100" r="${R}"
+            stroke-dasharray="${C}" stroke-dashoffset="${offset}"></circle>
+        </svg>
+        <div class="center">
+          <b>${mm}:${ss}</b>
+          <small>${esTrabajo ? 'Concentrate' : 'Descansá'}</small>
+        </div>
+      </div>
+      ${materias.length ? `<select class="pomo-selector" id="pomoMateria"><option value="">— Sin materia —</option>${materiasOpts}</select>` : ''}
+      <div class="pomo-actions">
+        ${pomoEstado.activo
+          ? `<button class="pomo-btn" id="pomoPausa">⏸ Pausar</button>
+             <button class="pomo-btn" id="pomoSalir">⏹ Terminar</button>`
+          : `<button class="pomo-btn primary" id="pomoStart">▶ ${esTrabajo?'Empezar a estudiar':'Empezar descanso'}</button>
+             ${esTrabajo ? '<button class="pomo-btn" id="pomoSkipDescanso">☕ Ir a descanso</button>' : ''}`}
+      </div>
+      <div style="margin-top:12px;font-size:12px;opacity:.85">
+        Hoy: <b>${min} min</b> · ${ciclos} pomodoros totales
+      </div>
+    </div>
+  `;
+
+  const mSel = $('#pomoMateria');
+  if (mSel) mSel.onchange = () => { pomoEstado.materiaId = mSel.value || null; };
+
+  const startBtn = $('#pomoStart');
+  if (startBtn) startBtn.onclick = iniciarPomodoro;
+  const pausaBtn = $('#pomoPausa');
+  if (pausaBtn) pausaBtn.onclick = pausarPomodoro;
+  const salirBtn = $('#pomoSalir');
+  if (salirBtn) salirBtn.onclick = terminarPomodoro;
+  const skipBtn = $('#pomoSkipDescanso');
+  if (skipBtn) skipBtn.onclick = () => {
+    pomoEstado.modo = 'descanso';
+    pomoEstado.duracionSeg = ajustes.pomoDescanso*60;
+    pomoEstado.restanteSeg = pomoEstado.duracionSeg;
+    renderPomoHero();
+    hablar('A descansar.');
+  };
+}
+
+function iniciarPomodoro(){
+  if (!pomoEstado.duracionSeg) pomoEstado.duracionSeg = (pomoEstado.modo === 'trabajo' ? ajustes.pomoTrabajo : ajustes.pomoDescanso) * 60;
+  pomoEstado.restanteSeg = pomoEstado.duracionSeg;
+  pomoEstado.activo = true;
+  if (pomoEstado.modo === 'trabajo') hablar('Arrancamos. Foco ' + ajustes.pomoTrabajo + ' minutos.');
+  tick();
+  pomoEstado.intervalo = setInterval(tick, 1000);
+}
+function tick(){
+  if (!pomoEstado.activo) return;
+  pomoEstado.restanteSeg--;
+  if (pomoEstado.restanteSeg <= 0){
+    clearInterval(pomoEstado.intervalo);
+    pomoEstado.activo = false;
+    const eraTrabajo = pomoEstado.modo === 'trabajo';
+    if (eraTrabajo){
+      // Log sesión
+      Dominio.sesiones.guardar({
+        fecha: hoyISO(),
+        materiaId: pomoEstado.materiaId,
+        minutos: ajustes.pomoTrabajo,
+        tema: 'Pomodoro',
+        notas: ''
+      });
+      pomoStats.ciclos = (pomoStats.ciclos || 0) + 1;
+      Storage.guardar(K.pomo, pomoStats);
+      chime(880, 0.5, 0.16);
+      hablar('¡Pomodoro completado! Buen laburo. Tomate ' + ajustes.pomoDescanso + ' minutos.');
+      toast('🍅 Pomodoro completado', 'ok');
+      pomoEstado.modo = 'descanso';
+      pomoEstado.duracionSeg = ajustes.pomoDescanso*60;
+      pomoEstado.restanteSeg = pomoEstado.duracionSeg;
+      renderPomoHero();
+      renderSesiones();
+      renderHoy();
+      renderRachas();
+    } else {
+      chime(660, 0.4, 0.14);
+      hablar('Descanso terminado. ¿Otro pomodoro?');
+      toast('☕ Descanso terminado');
+      pomoEstado.modo = 'trabajo';
+      pomoEstado.duracionSeg = ajustes.pomoTrabajo*60;
+      pomoEstado.restanteSeg = pomoEstado.duracionSeg;
+      renderPomoHero();
+    }
+    return;
+  }
+  // Update ring without re-render
+  const total = pomoEstado.duracionSeg;
+  const restante = pomoEstado.restanteSeg;
+  const pct = 1 - (restante/total);
+  const R = 88, C = 2*Math.PI*R;
+  const offset = C - pct*C;
+  const fg = document.querySelector('.pomo-ring .ring-fg');
+  if (fg) fg.setAttribute('stroke-dashoffset', offset);
+  const b = document.querySelector('.pomo-ring .center b');
+  if (b){
+    const mm = String(Math.floor(restante/60)).padStart(2,'0');
+    const ss = String(restante%60).padStart(2,'0');
+    b.textContent = `${mm}:${ss}`;
+  }
+}
+function pausarPomodoro(){
+  if (pomoEstado.intervalo) clearInterval(pomoEstado.intervalo);
+  pomoEstado.activo = false;
+  renderPomoHero();
+  hablar('En pausa.');
+}
+function terminarPomodoro(){
+  if (pomoEstado.intervalo) clearInterval(pomoEstado.intervalo);
+  if (pomoEstado.modo === 'trabajo' && pomoEstado.duracionSeg > pomoEstado.restanteSeg){
+    const transcurrido = Math.floor((pomoEstado.duracionSeg - pomoEstado.restanteSeg) / 60);
+    if (transcurrido >= 5){
+      Dominio.sesiones.guardar({
+        fecha: hoyISO(),
+        materiaId: pomoEstado.materiaId,
+        minutos: transcurrido,
+        tema: 'Sesión parcial',
+        notas: ''
+      });
+      renderSesiones(); renderHoy(); renderRachas();
+    }
+  }
+  pomoEstado = { activo:false, modo:'trabajo', restanteSeg:0, duracionSeg:ajustes.pomoTrabajo*60, intervalo:null, materiaId:null };
+  renderPomoHero();
+}
+
+function renderSesiones(){
+  const cont = $('#sesionesLista');
+  const lista = Dominio.sesiones.listar().slice(0,8);
+  if (!lista.length){
+    cont.innerHTML = `<div class="empty">Sin sesiones registradas.</div>`;
+    return;
+  }
+  cont.innerHTML = lista.map(s => {
+    const m = s.materiaId ? Dominio.materias.get(s.materiaId) : null;
+    return `<div class="mov-item" style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)">
+      <div style="font-size:22px;flex:none;width:32px;text-align:center">⏱️</div>
+      <div style="flex:1;min-width:0">
+        <strong style="font-size:14px;display:block">${s.minutos} min · ${escapeHTML(s.tema || 'Estudio')}</strong>
+        <small style="font-size:11.5px;color:var(--muted)">${m ? escapeHTML(m.nombre) + ' · ' : ''}${fmtFechaCorta(s.fecha)}</small>
+      </div>
+    </div>`;
+  }).join('');
+}
+function abrirSheetSesion(){
+  actualizarSelects();
+  $('#s-materia').value = '';
+  $('#s-minutos').value = '30';
+  $('#s-tema').value = '';
+  $('#s-notas').value = '';
+  abrirSheet('sheetSesion');
+}
+$('#guardarSesion').onclick = () => {
+  const minutos = parseInt($('#s-minutos').value, 10);
+  if (!minutos || minutos < 1){ alert('Poné una duración'); return; }
+  Dominio.sesiones.guardar({
+    fecha: hoyISO(),
+    materiaId: $('#s-materia').value || null,
+    minutos,
+    tema: $('#s-tema').value.trim() || 'Sesión',
+    notas: $('#s-notas').value.trim()
+  });
+  cerrarSheets();
+  toast('Sesión guardada ✅', 'ok');
+  renderSesiones(); renderHoy(); renderRachas();
+};
+
+/* ===== TÉCNICAS ===== */
+const TECNICAS = {
+  feynman: {
+    titulo:'🎓 Técnica Feynman',
+    html:`<p><strong>1.</strong> Elegí un concepto.</p>
+          <p><strong>2.</strong> Escribilo como si se lo explicaras a alguien que no sabe nada.</p>
+          <p><strong>3.</strong> Donde te trabes, ahí está el hueco.</p>
+          <p><strong>4.</strong> Volvé al material, rellená el hueco, simplificá.</p>
+          <p><strong>5.</strong> Repetí hasta que suene claro. Si no podés explicarlo simple, no lo entendiste del todo.</p>
+          <p style="color:var(--muted);font-size:12.5px;margin-top:10px">👉 Ideal para textos teóricos de antropología.</p>`
+  },
+  spaced: {
+    titulo:'📅 Repaso espaciado',
+    html:`<p>Repasá el mismo contenido en intervalos crecientes. Combate la curva del olvido.</p>
+          <p style="margin-top:10px"><strong>Repasos recomendados:</strong></p>
+          <ul style="padding-left:20px;line-height:1.7">
+            <li>Día 1 (después de la clase)</li>
+            <li>Día 3</li>
+            <li>Día 7</li>
+            <li>Día 15</li>
+            <li>Día 30</li>
+          </ul>
+          <p style="color:var(--muted);font-size:12.5px;margin-top:10px">👉 Anotá en un apunte el texto que leíste hoy y agendá los repasos.</p>`
+  },
+  sq3r: {
+    titulo:'📖 Método SQ3R',
+    html:`<p><strong>S</strong>urvey: hojeá el texto entero (títulos, gráficos, conclusiones).</p>
+          <p><strong>Q</strong>uestion: convertí los títulos en preguntas.</p>
+          <p><strong>R</strong>ead: leé buscando las respuestas.</p>
+          <p><strong>R</strong>ecite: decí en voz alta lo que entendiste, sin mirar.</p>
+          <p><strong>R</strong>eview: repasá al final y a los días.</p>
+          <p style="color:var(--muted);font-size:12.5px;margin-top:10px">👉 Perfecto para leer bibliografía extensa.</p>`
+  },
+  recall: {
+    titulo:'🧠 Active recall',
+    html:`<p>En vez de releer, cerrá el texto y preguntate:</p>
+          <ul style="padding-left:20px;line-height:1.7">
+            <li>¿Qué dijo este autor?</li>
+            <li>¿Cómo se relaciona con el anterior?</li>
+            <li>¿Qué ejemplo puedo dar?</li>
+            <li>¿Qué crítica le haría?</li>
+          </ul>
+          <p style="color:var(--muted);font-size:12.5px;margin-top:10px">👉 Solo después volvé al texto a verificar.</p>`
+  }
+};
+function renderTecnicas(){
+  $('#tecnicasLista').innerHTML = Object.entries(TECNICAS).map(([k, t]) => `
+    <div class="tec-card" data-tec="${k}">
+      <h4>${t.titulo}</h4>
+      <p>${t.html.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').slice(0,100)}…</p>
+    </div>
+  `).join('');
+  $('#tecnicasLista').querySelectorAll('[data-tec]').forEach(b => {
+    b.onclick = () => {
+      const t = TECNICAS[b.dataset.tec];
+      $('#tecTitle').textContent = t.titulo;
+      $('#tecBody').innerHTML = t.html;
+      abrirSheet('sheetTecnica');
+    };
+  });
+}
+
+/* =====================================================================
+   RENDER: MINDFULNESS
+   ===================================================================== */
+function renderMindfulness(){
+  const cont = $('#mindHistorial');
+  const ult = mindfulnessHist.slice().reverse().slice(0,5);
+  if (!ult.length){
+    cont.innerHTML = `<div class="empty">Todavía no hiciste sesiones.</div>`;
+  } else {
+    cont.innerHTML = ult.map(m => {
+      const min = Math.round(m.durSeg/60);
+      const fecha = new Date(m.ts).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+      return `<div style="display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)">
+        <div style="font-size:22px;flex:none;width:32px;text-align:center">🧘</div>
+        <div style="flex:1;min-width:0">
+          <strong style="font-size:14px;display:block">${escapeHTML(m.tipo)}</strong>
+          <small style="font-size:11.5px;color:var(--muted)">${min} min · ${fecha}</small>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* =====================================================================
+   RESPIRACIÓN GUIADA
+   ===================================================================== */
+const PATRONES = {
+  cuadrada: {
+    nombre:'Respiración cuadrada',
+    fases:[
+      { n:'Inhalá', seg:4, tipo:'in' },
+      { n:'Sostené', seg:4, tipo:'holdUp' },
+      { n:'Exhalá', seg:4, tipo:'out' },
+      { n:'Sostené', seg:4, tipo:'holdDown' }
+    ],
+    ciclos:6
+  },
+  '478': {
+    nombre:'Respiración 4-7-8',
+    fases:[
+      { n:'Inhalá', seg:4, tipo:'in' },
+      { n:'Sostené', seg:7, tipo:'holdUp' },
+      { n:'Exhalá', seg:8, tipo:'out' }
+    ],
+    ciclos:4
+  },
+  coherencia: {
+    nombre:'Coherencia cardíaca',
+    fases:[
+      { n:'Inhalá', seg:5, tipo:'in' },
+      { n:'Exhalá', seg:5, tipo:'out' }
+    ],
+    ciclos:6
+  }
+};
+let sesionMind = null;
+
+function abrirRespiracion(tipo){
+  const overlay = $('#breathOverlay');
+  overlay.classList.add('show');
+  $('#bTitle').textContent = tipo === 'bodyscan' ? 'Body scan' : (tipo === 'libre' ? 'Meditación libre' : (PATRONES[tipo]?.nombre || 'Respiración'));
+  $('#bFase').textContent = 'Preparate';
+  $('#bCont').textContent = '3';
+  $('#bInfo').innerHTML = `<strong>Encontrá una posición cómoda</strong>Cerrá los ojos cuando estés listo/a. Tocá Empezar.`;
+  $('#bPlay').textContent = '▶ Empezar';
+  $('#bCircle').style.transform = 'scale(.6)';
+  $('#bCircle').style.transition = 'transform .4s ease';
+  callar();
+  sesionMind = { tipo, activo:false, cancelado:false, corriendo:false };
+}
+$('#bClose').onclick = cerrarRespiracion;
+$('#bStop').onclick = () => {
+  if (sesionMind){ sesionMind.cancelado = true; sesionMind.activo = false; sesionMind.corriendo = false; }
+  callar();
+  $('#bPlay').textContent = '▶ Empezar';
+};
+$('#bPlay').onclick = () => {
+  if (!sesionMind) return;
+  if (sesionMind.corriendo){
+    sesionMind.cancelado = true; sesionMind.activo = false; sesionMind.corriendo = false;
+    callar();
+    $('#bPlay').textContent = '▶ Continuar';
+    return;
+  }
+  sesionMind.cancelado = false;
+  sesionMind.activo = true;
+  sesionMind.corriendo = true;
+  $('#bPlay').textContent = '⏸ Pausar';
+  correrSesionMind(sesionMind.tipo);
+};
+function cerrarRespiracion(){
+  if (sesionMind){ sesionMind.cancelado = true; sesionMind.activo = false; sesionMind.corriendo = false; }
+  callar();
+  $('#breathOverlay').classList.remove('show');
+  sesionMind = null;
+}
+async function correrSesionMind(tipo){
+  if (tipo === 'libre'){ await correrLibre(); return; }
+  if (tipo === 'bodyscan'){ await correrBodyScan(); return; }
+  const patron = PATRONES[tipo];
+  if (!patron) return;
+  hablar(patron.nombre + '. Vamos a hacer ' + patron.ciclos + ' ciclos.');
+  await esperar(3200);
+  if (!sesionMind || sesionMind.cancelado) return;
+  for (let c = 0; c < patron.ciclos; c++){
+    if (!sesionMind || sesionMind.cancelado) return;
+    for (const fase of patron.fases){
+      if (!sesionMind || sesionMind.cancelado) return;
+      await correrFaseMind(fase);
+    }
+    chime(660, 0.25, 0.1);
+    await esperar(400);
+  }
+  chime(880, 0.5, 0.14);
+  hablar('Muy bien. Podés abrir los ojos cuando estés listo.');
+  $('#bFase').textContent = 'Listo';
+  $('#bCont').textContent = '✓';
+  Dominio.mindfulness.guardar(patron.nombre, patron.fases.reduce((a,b)=>a+b.seg,0)*patron.ciclos);
+  setTimeout(() => {
+    if (sesionMind && !sesionMind.cancelado) cerrarRespiracion();
+    renderMindfulness(); renderHoy(); renderRachas();
+  }, 4500);
+}
+async function correrFaseMind(fase){
+  $('#bFase').textContent = fase.n;
+  hablar(fase.n);
+  const circle = $('#bCircle');
+  circle.style.transition = `transform ${fase.seg}s ${fase.tipo==='out'?'ease-in':'ease-out'}`;
+  if (fase.tipo === 'in') circle.style.transform = 'scale(1)';
+  else if (fase.tipo === 'out') circle.style.transform = 'scale(.6)';
+  for (let s = fase.seg; s >= 1; s--){
+    if (!sesionMind || sesionMind.cancelado) return;
+    $('#bCont').textContent = s;
+    await esperar(1000);
+  }
+}
+async function correrLibre(){
+  const min = prompt('¿Cuántos minutos querés meditar?', '5');
+  if (!min){ sesionMind.cancelado = true; return; }
+  const minutos = Math.max(1, Math.min(60, parseInt(min,10)||5));
+  hablar(`Meditación de ${minutos} minutos. Cuando quieras, cerrá los ojos.`);
+  $('#bFase').textContent = 'Meditación';
+  const totalSeg = minutos*60;
+  for (let s = totalSeg; s >= 1; s--){
+    if (!sesionMind || sesionMind.cancelado) return;
+    const m = Math.floor(s/60), ss = s%60;
+    $('#bCont').textContent = `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+    if (s % 60 === 0 && s !== totalSeg){ chime(520, 0.6, 0.09); }
+    await esperar(1000);
+  }
+  chime(880, 0.6, 0.15);
+  hablar('Terminó la meditación.');
+  $('#bFase').textContent = 'Listo';
+  $('#bCont').textContent = '✓';
+  Dominio.mindfulness.guardar('Meditación libre', totalSeg);
+  setTimeout(() => {
+    if (sesionMind && !sesionMind.cancelado) cerrarRespiracion();
+    renderMindfulness(); renderHoy(); renderRachas();
+  }, 4500);
+}
+async function correrBodyScan(){
+  const guion = [
+    'Sentate o acostate cómodo. Cerrá los ojos.',
+    'Llevá la atención a los pies. Notá el contacto con el suelo.',
+    'Subí a las pantorrillas. ¿Hay tensión? Soltala.',
+    'Rodillas y muslos. Dejalos descansar.',
+    'Cadera y pelvis. Respirá ahí.',
+    'Abdomen. Sentí cómo sube y baja.',
+    'Pecho y espalda. Aflojá los hombros.',
+    'Manos y brazos. Soltá los dedos.',
+    'Cuello y mandíbula. Aflojá la lengua.',
+    'Cara. Frente, ojos, mejillas. Todo suave.',
+    'Todo el cuerpo. Respirá profundo.',
+    'Muy bien. Abrí los ojos cuando estés listo.'
+  ];
+  for (const frase of guion){
+    if (!sesionMind || sesionMind.cancelado) return;
+    $('#bFase').textContent = 'Body scan';
+    $('#bInfo').innerHTML = `<em style="font-size:14.5px;color:#e6edfa;font-style:normal;line-height:1.5">${escapeHTML(frase)}</em>`;
+    hablar(frase);
+    await esperar(9000);
+  }
+  Dominio.mindfulness.guardar('Body scan', guion.length*9);
+  chime(880, 0.5, 0.14);
+  setTimeout(() => {
+    if (sesionMind && !sesionMind.cancelado) cerrarRespiracion();
+    renderMindfulness(); renderHoy(); renderRachas();
+  }, 3000);
+}
+function esperar(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+$$('[data-patron]').forEach(c => {
+  c.onclick = () => abrirRespiracion(c.dataset.patron);
+});
+
+/* =====================================================================
+   RENDER: RACHAS
+   ===================================================================== */
+function renderRachas(){
+  const hoy = hoyISO();
+  const estudioRacha = Dominio.sesiones.racha();
+  const mindRacha = Dominio.mindfulness.racha();
+  // Tareas: contar días seguidos donde haya completado al menos una tarea
+  const tareasPorDia = {};
+  tareas.filter(t => t.estado === 'completada' && t.completadaTs).forEach(t => {
+    const d = new Date(t.completadaTs);
+    const iso = isoDe(d);
+    tareasPorDia[iso] = (tareasPorDia[iso] || 0) + 1;
+  });
+  let tareasRacha = 0; const d0 = new Date();
+  for (let i=0; i<400; i++){
+    const iso = isoDe(d0);
+    if ((tareasPorDia[iso]||0) >= 1) tareasRacha++;
+    else if (i === 0){}
+    else break;
+    d0.setDate(d0.getDate()-1);
+  }
+  // Asistencia: días seguidos con marca
+  const asistenciaDias = new Set();
+  Object.values(asistencia).forEach(m => Object.keys(m).forEach(f => asistenciaDias.add(f)));
+  let asistRacha = 0; const d1 = new Date();
+  for (let i=0; i<400; i++){
+    const iso = isoDe(d1);
+    if (asistenciaDias.has(iso)) asistRacha++;
+    else if (i === 0){}
+    else break;
+    d1.setDate(d1.getDate()-1);
+  }
+
+  const r = [
+    { em:'📚', n: estudioRacha, label:'Estudiando' },
+    { em:'🧘', n: mindRacha, label:'Mindfulness' },
+    { em:'✅', n: tareasRacha, label:'Tareas' },
+    { em:'📋', n: asistRacha, label:'Asistencia' }
+  ];
+  $('#rachaGrid').innerHTML = r.map(x => `
+    <div class="racha-card ${x.n===0?'cold':''}">
+      <span class="fire">${x.n===0 ? '💤' : '🔥'}</span>
+      <b>${x.n}</b>
+      <small>${x.label}</small>
+    </div>
+  `).join('');
+}
+
+/* =====================================================================
+   CHAT
+   ===================================================================== */
+const chat = $('#chat');
+const chatInput = $('#chatInput');
+const sendBtn = $('#sendBtn');
+function scrollAbajo(){ requestAnimationFrame(() => chat.scrollTop = chat.scrollHeight); }
+
+function burbujaBot(texto){
+  const row = document.createElement('div'); row.className='row bot';
+  const av = document.createElement('div'); av.className='avatar'; av.appendChild(crearMascota());
+  const b = document.createElement('div'); b.className='bubble'; b.textContent = texto;
+  row.append(av,b); chat.appendChild(row); scrollAbajo();
+}
+function burbujaUser(texto){
+  const row = document.createElement('div'); row.className='row user';
+  const b = document.createElement('div'); b.className='bubble'; b.textContent = texto;
+  row.appendChild(b); chat.appendChild(row); scrollAbajo();
+}
+function escribiendo(on){
+  if (on){
+    const row = document.createElement('div'); row.className='row bot'; row.id='typing';
+    const av = document.createElement('div'); av.className='avatar'; av.appendChild(crearMascota());
+    const b = document.createElement('div'); b.className='bubble';
+    b.innerHTML = '<div class="typing"><i></i><i></i><i></i></div>';
+    row.append(av,b); chat.appendChild(row); scrollAbajo();
+  } else { const t = $('#typing'); if (t) t.remove(); }
+}
+function autoAjustar(){ chatInput.style.height='auto'; chatInput.style.height=Math.min(chatInput.scrollHeight,120)+'px'; }
+chatInput.addEventListener('input', autoAjustar);
+chatInput.addEventListener('keydown', e => {
+  if (e.key==='Enter' && !e.shiftKey){ e.preventDefault(); const t=chatInput.value.trim(); if(t) enviarMensaje(t); }
+});
+sendBtn.onclick = () => { const t=chatInput.value.trim(); if(t) enviarMensaje(t); };
+
+let ocupado = false;
+async function enviarMensaje(texto){
+  if (ocupado) return;
+  ocupado = true;
+  burbujaUser(texto); chatInput.value=''; autoAjustar();
+  historialChat.push({ rol:'user', texto, fecha:Date.now() });
+  escribiendo(true);
+  let respuesta;
+  try {
+    const t0 = Date.now();
+    respuesta = await responder(texto);
+    await dormir(Math.max(0, 380 - (Date.now() - t0)));
+  } catch(e){ respuesta = 'Se me trabó algo 😅'; }
+  escribiendo(false);
+  burbujaBot(respuesta); hablar(respuesta);
+  historialChat.push({ rol:'bot', texto:respuesta, fecha:Date.now() });
+  Storage.guardar(K.chat, historialChat.slice(-200));
+  ocupado = false;
+}
+
+async function responder(texto){
+  const t = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+
+  if (/^(hola|buenas|hey|que tal|qué tal)/.test(t)){
+    const h = new Date().getHours();
+    const s = h<12?'Buenos días':h<20?'Buenas tardes':'Buenas noches';
+    const n = ajustes.nombre ? `, ${ajustes.nombre}` : '';
+    return `${s}${n} 👋 ¿En qué te ayudo?`;
+  }
+
+  if (/(que tengo hoy|qué tengo hoy|hoy que|hoy qué|clases de hoy|hoy curso)/.test(t)){
+    const clases = clasesDeHoy();
+    if (!clases.length) return 'Hoy no tenés clases 🎉. ¿Aprovechamos para adelantar tareas?';
+    return `📅 Hoy tenés:\n\n${clases.map(c => `• ${c.materia.nombre} · ${fmtHora(c.inicio)}${c.fin?'–'+fmtHora(c.fin):''}${c.aula?' · Aula '+c.aula:''}`).join('\n')}`;
+  }
+
+  if (/(que tareas|qué tareas|tareas tengo|entregas|pendientes)/.test(t)){
+    const pend = Dominio.tareas.listar('pendientes');
+    if (!pend.length) return '¡Sin tareas pendientes! 🎉 Podés respirar tranquilo.';
+    const hoy = pend.filter(x => x.fechaEntrega === hoyISO());
+    const prox = pend.filter(x => x.fechaEntrega && x.fechaEntrega > hoyISO()).slice(0,5);
+    let txt = `📝 Tenés ${pend.length} tarea${pend.length>1?'s':''} pendiente${pend.length>1?'s':''}.\n`;
+    if (hoy.length) txt += `\n🔥 Para hoy:\n${hoy.map(x => '• ' + x.titulo).join('\n')}`;
+    if (prox.length) txt += `\n\n📅 Próximas:\n${prox.map(x => `• ${x.titulo} (${fmtFechaCorta(x.fechaEntrega)})`).join('\n')}`;
+    return txt;
+  }
+
+  if (/(proximos examenes|próximos exámenes|examenes|exámenes)/.test(t)){
+    const prox = Dominio.examenes.proximos(60);
+    if (!prox.length) return 'No tenés exámenes agendados en los próximos dos meses.';
+    return `🎯 Próximos exámenes:\n\n${prox.slice(0,5).map(e => {
+      const dd = diasHasta(e.fecha);
+      return `• ${e.titulo}${e.materiaId?' ('+Dominio.materias.nombreDe(e.materiaId)+')':''} — ${dd===0?'HOY':dd===1?'mañana':'en '+dd+'d'}`;
+    }).join('\n')}`;
+  }
+
+  if (/(mis materias|que materias|qué materias|materias tengo)/.test(t)){
+    if (!materias.length) return 'No tenés materias cargadas todavía.';
+    return `📚 Tus materias:\n\n${materias.map(m => `• ${m.nombre}${m.profesor?' — '+m.profesor:''}`).join('\n')}`;
+  }
+
+  if (/(mi horario|el horario|horario)/.test(t)){
+    let txt = '🗓️ Tu semana:\n';
+    [1,2,3,4,5,6].forEach(d => {
+      const clases = clasesDelDia(d);
+      if (clases.length){
+        txt += `\n${DIAS[d]}:\n${clases.map(c => `  • ${c.materia.nombre} ${fmtHora(c.inicio)}`).join('\n')}`;
+      }
+    });
+    return txt;
+  }
+
+  if (/(concentrar|concentrarme|pomodoro|estudiar|arrancar a estudiar)/.test(t)){
+    irA('estudio');
+    return `⏱️ Te llevo a la vista de estudio. Tocá "Empezar" para arrancar un Pomodoro de ${ajustes.pomoTrabajo} min.`;
+  }
+
+  if (/(resumen|cómo vengo|como vengo|mis datos|mi progreso)/.test(t)){
+    const minSem = Dominio.sesiones.minutosSemana().reduce((a,b) => a + b.min, 0);
+    const minHoy = Dominio.sesiones.minutosHoy();
+    const racha = Dominio.sesiones.racha();
+    const pend = Dominio.tareas.listar('pendientes').length;
+    return `📊 Tu panorama:\n\n• Hoy: ${minHoy} min estudiados\n• Esta semana: ${minSem} min\n• Racha: ${racha} día${racha!==1?'s':''}\n• Tareas pendientes: ${pend}\n• Materias: ${materias.length}`;
+  }
+
+  const mTarea = texto.match(/nueva tarea\s*[:\-]?\s*(.+)/i);
+  if (mTarea){
+    const titulo = mTarea[1].trim();
+    Dominio.tareas.guardar({ titulo, prioridad:'media', materiaId:null, fechaEntrega:null, desc:'' });
+    renderTareas(); renderHoy();
+    return `✅ Anoté la tarea: "${titulo}". Podés ponerle fecha y materia desde la vista de Tareas.`;
+  }
+
+  const mApunte = texto.match(/^(?:anota|apunta|recorda|recuerda|guarda)\s*[:\-]?\s*(.+)/i);
+  if (mApunte){
+    const contenido = mApunte[1].trim();
+    Dominio.apuntes.guardar({ titulo: contenido.slice(0,50), contenido, materiaId:null });
+    renderApuntes();
+    return `📓 Guardado como apunte.`;
+  }
+
+  if (/(gracias|genial|perfecto|buenisimo|buenísimo)/.test(t)) return `¡De nada${ajustes.nombre?', '+ajustes.nombre:''}! 📚`;
+  if (/(ayuda|comandos|que podes hacer|qué podés hacer)/.test(t)){
+    return `📋 Cosas que podés pedirme:\n\n• "¿qué tengo hoy?"\n• "¿qué tareas tengo?"\n• "próximos exámenes"\n• "mis materias"\n• "mi horario"\n• "quiero concentrarme"\n• "cómo vengo"\n• "nueva tarea: [título]"\n• "anotá: [texto]"`;
+  }
+
+  return `No te entendí del todo 🤔. Escribí "ayuda" para ver qué podés pedirme.`;
+}
+
+/* =====================================================================
+   NAVEGACIÓN
+   ===================================================================== */
+function irA(vista){
+  $$('.view').forEach(v => v.classList.toggle('active', v.id === 'view-'+vista));
+  $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === vista));
+  $('#views').scrollTop = 0;
+  $('#composer').style.display = vista === 'chat' ? 'flex' : 'none';
+  if (vista==='hoy') renderHoy();
+  if (vista==='materias') renderMaterias();
+  if (vista==='tareas') renderTareas();
+  if (vista==='examenes') renderExamenes();
+  if (vista==='horario') renderHorario();
+  if (vista==='apuntes') renderApuntes();
+  if (vista==='estudio'){ renderPomoHero(); renderSesiones(); renderTecnicas(); }
+  if (vista==='mindfulness') renderMindfulness();
+  if (vista==='rachas') renderRachas();
+  if (vista==='ajustes') renderAjustes();
+  if (vista==='chat') scrollAbajo();
+  cerrarDrawer();
+}
+$$('.nav-item').forEach(b => b.onclick = () => irA(b.dataset.view));
+
+const drawer = $('#drawer'), overlay = $('#overlay');
+$('#menuBtn').onclick = () => { drawer.classList.add('show'); overlay.classList.add('show'); };
+function cerrarDrawer(){
+  drawer.classList.remove('show');
+  if (!$$('.sheet.show').length) overlay.classList.remove('show');
+}
+overlay.onclick = () => {
+  cerrarDrawer();
+  $$('.sheet.show').forEach(s => s.classList.remove('show'));
+  overlay.classList.remove('show');
+};
+function abrirSheet(id){
+  $$('.sheet.show').forEach(s => s.classList.remove('show'));
+  $('#'+id).classList.add('show');
+  overlay.classList.add('show');
+}
+function cerrarSheets(){
+  $$('.sheet.show').forEach(s => s.classList.remove('show'));
+  overlay.classList.remove('show');
+}
+$$('[data-close-sheet]').forEach(b => b.onclick = cerrarSheets);
+
+function actualizarSelects(){
+  const opts = materias.map(m => `<option value="${m.id}">${escapeHTML(m.nombre)}</option>`).join('');
+  const base = '<option value="">Sin materia</option>';
+  ['#t-materia','#e-materia','#a-materia','#s-materia'].forEach(sel => {
+    const el = $(sel);
+    if (!el) return;
+    const val = el.value;
+    el.innerHTML = base + opts;
+    if (val) el.value = val;
+  });
+}
+
+/* =====================================================================
+   AJUSTES
+   ===================================================================== */
+function renderAjustes(){
+  $('#setNombre').value = ajustes.nombre || '';
+  $('#setVoz').checked = ajustes.voz;
+  $('#setVel').value = ajustes.velocidad || 1;
+  $('#setPomoTrabajo').value = ajustes.pomoTrabajo || 25;
+  $('#setPomoDescanso').value = ajustes.pomoDescanso || 5;
+  $('#setMetaEstudio').value = ajustes.metaEstudio || 600;
+}
+$('#guardarAjustes').onclick = () => {
+  ajustes.nombre = $('#setNombre').value.trim();
+  ajustes.voz = $('#setVoz').checked;
+  ajustes.velocidad = parseFloat($('#setVel').value) || 1;
+  Storage.guardar(K.ajustes, ajustes);
+  actualizarMute();
+  toast('Guardado ✅', 'ok');
+  hablar('Ajustes guardados.');
+};
+$('#guardarPomo').onclick = () => {
+  ajustes.pomoTrabajo = Math.max(5, Math.min(90, parseInt($('#setPomoTrabajo').value,10)||25));
+  ajustes.pomoDescanso = Math.max(1, Math.min(30, parseInt($('#setPomoDescanso').value,10)||5));
+  Storage.guardar(K.ajustes, ajustes);
+  pomoEstado.duracionSeg = ajustes.pomoTrabajo*60;
+  pomoEstado.restanteSeg = pomoEstado.duracionSeg;
+  renderPomoHero();
+  toast('Pomodoro guardado ✅', 'ok');
+};
+$('#guardarMetas').onclick = () => {
+  ajustes.metaEstudio = Math.max(60, Math.min(3000, parseInt($('#setMetaEstudio').value,10)||600));
+  Storage.guardar(K.ajustes, ajustes);
+  toast('Meta guardada ✅', 'ok');
+};
+
+/* =====================================================================
+   MUTE
+   ===================================================================== */
+const muteBtn = $('#muteBtn');
+function actualizarMute(){
+  muteBtn.textContent = ajustes.voz ? '🔊' : '🔇';
+  muteBtn.style.opacity = ajustes.voz ? '1' : '.55';
+}
+muteBtn.onclick = () => {
+  ajustes.voz = !ajustes.voz;
+  Storage.guardar(K.ajustes, ajustes);
+  actualizarMute();
+  if (!ajustes.voz) callar();
+  else hablar('Voz activada.');
+};
+
+/* =====================================================================
+   EXPORT / BORRAR
+   ===================================================================== */
+window.Estudin = {
+  irA,
+  exportar(){
+    const data = {
+      schemaVersion: SCHEMA_VERSION,
+      exportado: new Date().toISOString(),
+      ajustes, materias, tareas, examenes, apuntes, sesiones, asistencia,
+      mindfulness: mindfulnessHist, pomoStats
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `estudin-${hoyISO()}.json`; a.click();
+    URL.revokeObjectURL(url);
+    toast('Datos exportados ✅', 'ok');
+  },
+  borrarTodo(){
+    if (!confirm('¿Borrar TODO? No se puede deshacer.')) return;
+    if (!confirm('Última confirmación: se borran materias, tareas, exámenes, apuntes, sesiones y todo.')) return;
+    Object.values(K).forEach(k => Storage.borrar(k));
+    location.reload();
+  }
+};
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+function pintarBienvenida(){
+  const div = document.createElement('div');
+  div.style.cssText = 'text-align:center;padding:20px 8px 8px';
+  const hero = document.createElement('div');
+  hero.style.cssText = 'width:120px;height:150px;margin:0 auto 8px';
+  hero.appendChild(crearMascota());
+  const h1 = document.createElement('h1');
+  h1.style.cssText = 'margin:6px 0 4px;font-size:20px';
+  h1.textContent = ajustes.nombre ? `Hola, ${ajustes.nombre}` : 'Hola, soy Estudín';
+  const p = document.createElement('p');
+  p.style.cssText = 'margin:0 0 6px;color:var(--muted);font-size:14px;line-height:1.5';
+  p.innerHTML = 'Tu compañero de la facu. Te ayudo a organizarte para que puedas <b>estudiar y vivir</b>.';
+  const chips = document.createElement('div');
+  chips.className = 'chips'; chips.style.marginTop = '14px';
+  [
+    ['📅 ¿Qué tengo hoy?', () => enviarMensaje('¿Qué tengo hoy?')],
+    ['📝 Mis tareas', () => enviarMensaje('¿Qué tareas tengo?')],
+    ['🎯 Exámenes', () => enviarMensaje('Próximos exámenes')],
+    ['⏱️ Concentrarme', () => irA('estudio')],
+    ['🧘 Respirar', () => abrirRespiracion('cuadrada')],
+    ['❓ Ayuda', () => enviarMensaje('ayuda')]
+  ].forEach(([txt, fn]) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = txt; b.onclick = fn;
+    chips.appendChild(b);
+  });
+  div.append(hero, h1, p, chips);
+  chat.appendChild(div);
+}
+
+function iniciar(){
+  pintarMascotas();
+  actualizarMute();
+  actualizarSelects();
+  renderHoy();
+  renderMaterias();
+  renderTareas();
+  renderExamenes();
+  renderHorario();
+  renderApuntes();
+  renderSesiones();
+  renderTecnicas();
+  renderMindfulness();
+  renderRachas();
+  renderAjustes();
+  renderPomoHero();
+
+  if (historialChat.length){
+    historialChat.slice(-30).forEach(m => m.rol === 'user' ? burbujaUser(m.texto) : burbujaBot(m.texto));
+  } else {
+    pintarBienvenida();
+  }
+
+  if (ajustes.voz){
+    setTimeout(() => {
+      const h = new Date().getHours();
+      const s = h<12?'Buenos días':h<20?'Buenas tardes':'Buenas noches';
+      hablar(`${s}${ajustes.nombre?' '+ajustes.nombre:''}. Soy Estudín. ¿Arrancamos?`);
+    }, 900);
+  }
+}
+
+iniciar();
+</script>
+</body>
+</html>
