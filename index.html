@@ -259,9 +259,9 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .mascot .cheek{fill:#ff9db1;opacity:.55}
 .mascot .home{fill:#f2f4ff;opacity:.85}
 /* ANTEJOS DE ESTUDIOSO */
-.mascot .glens{fill:none;stroke:#16223a;stroke-width:2;stroke-linecap:round}
-.mascot .gbridge{fill:none;stroke:#16223a;stroke-width:2;stroke-linecap:round}
-.mascot .garm{fill:none;stroke:#16223a;stroke-width:2;stroke-linecap:round}
+.mascot .glens{fill:none;stroke:#16223a;stroke-width:2.5;stroke-linecap:round}
+.mascot .gbridge{fill:none;stroke:#16223a;stroke-width:2.5;stroke-linecap:round}
+.mascot .garm{fill:none;stroke:#16223a;stroke-width:2.5;stroke-linecap:round}
 @keyframes eyeBlink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
 @keyframes antGlow{0%,100%{opacity:1}50%{opacity:.45}}
 .mascot.talking .mouth{animation:talk .26s infinite alternate}
@@ -413,12 +413,13 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     <circle class="cheek" cx="69" cy="73" r="4.2"/>
     <path class="mouth" d="M42 73 Q50 82 58 73"/>
     <circle class="home" cx="50" cy="109" r="6"/>
-    <!-- ANTEJOS DE ESTUDIOSO -->
-    <circle class="glens" cx="39" cy="58" r="9.5"/>
-    <circle class="glens" cx="61" cy="58" r="9.5"/>
-    <path class="gbridge" d="M48.5 57 Q50 55.5 51.5 57"/>
-    <path class="garm" d="M29.7 55.5 L27 53"/>
-    <path class="garm" d="M70.3 55.5 L73 53"/>
+
+ <!-- ANTEJOS DE ESTUDIOSO (oversized, más grandes que la cara) -->
+    <circle class="glens" cx="34" cy="58" r="15"/>
+    <circle class="glens" cx="66" cy="58" r="15"/>
+    <path class="gbridge" d="M49 58 L51 58"/>
+    <path class="garm" d="M19.9 53 L14 49"/>
+    <path class="garm" d="M80.1 53 L86 49"/>
   </svg>
 </template>
 
