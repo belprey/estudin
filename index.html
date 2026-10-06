@@ -1663,44 +1663,42 @@ $('#guardarMateria').onclick = () => {
   renderDrawerMaterias();
 };
 
-function abrirDetalleMateria(id){
-  const m = Dominio.materias.get(id);
-  if (!m) return;
-  $('#detalleTitle').textContent = m.nombre;
-  const stats = Dominio.asistencia.stats(id);
-  const tareasMat = tareas.filter(t => t.materiaId === id && t.estado !== 'completada');
-  const examenesMat = examenes.filter(e => e.materiaId === id && e.fecha >= hoyISO());
-  const mapaAsist = asistencia[id] || {};
-  const fechasAsist = Object.keys(mapaAsist).sort().reverse();
-  const unidades = Dominio.materias.unidadesDe(id);
-  const body = $('#detalleBody');
+/* =====================================================================
+   DETALLE DE MATERIA · construido por bloques
+   ===================================================================== */
 
-  body.innerHTML = `
-    <div style="border-left:5px solid ${m.color};padding-left:10px;margin-bottom:16px">
-      ${m.profesor ? `<div style="font-size:13px;color:var(--muted)">👤 ${escapeHTML(m.profesor)}</div>` : ''}
-      ${m.cuatri ? `<div style="font-size:13px;color:var(--muted)">📅 ${escapeHTML(m.cuatri)}</div>` : ''}
-    </div>
-
+/* --- Bloque: Unidades + Bibliografía --- */
+function bloqueUnidades(m){
+  const unidades = Dominio.materias.unidadesDe(m.id);
+  if (!unidades.length){
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h3 style="font-size:15px;margin:0">📚 Unidades <span class="pill info">0</span></h3>
+        <button class="h3-btn" id="agregarUnidadBtn">➕ Agregar</button>
+      </div>
+      <div class="empty" style="padding:16px">Sin unidades cargadas todavía.<br>Tocá "➕ Agregar" para crear la primera.</div>
+    `;
+  }
+  let html = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
       <h3 style="font-size:15px;margin:0">📚 Unidades <span class="pill info">${unidades.length}</span></h3>
       <button class="h3-btn" id="agregarUnidadBtn">➕ Agregar</button>
     </div>
-
-     ${unidades.length ? unidades.map(u => {
-      const bibs = u.bibliografia || [];
-      const oblig = bibs.filter(b => b.tipo === 'obligatoria').length;
-      const comp = bibs.filter(b => b.tipo === 'complementaria').length;
-      const metaTxt = bibs.length === 0
-        ? 'Sin textos'
-        : `${bibs.length} texto${bibs.length===1?'':'s'}${oblig?' · '+oblig+' oblig':''}${comp?' · '+comp+' comp':''}`;
-      return `
+  `;
+  html += unidades.map(u => {
+    const bibs = u.bibliografia || [];
+    const oblig = bibs.filter(b => b.tipo === 'obligatoria').length;
+    const comp = bibs.filter(b => b.tipo === 'complementaria').length;
+    const metaTxt = bibs.length === 0
+      ? 'Sin textos'
+      : `${bibs.length} texto${bibs.length===1?'':'s'}${oblig?' · '+oblig+' oblig':''}${comp?' · '+comp+' comp':''}`;
+    return `
       <div class="unidad-card" style="border-left-color:${m.color}">
         <div class="unidad-head">
           <span class="u-num">UNIDAD ${u.numero}</span>
           <h4>${escapeHTML(u.titulo||'(sin título)')}</h4>
         </div>
         ${u.contenidos ? `<p class="unidad-cont">${escapeHTML(u.contenidos)}</p>` : ''}
-
         <div class="bib-lista">
           <div class="bib-header">
             <span>📖 ${metaTxt}</span>
@@ -1722,7 +1720,6 @@ function abrirDetalleMateria(id){
             </div>`;
           }).join('') : '<p class="hint" style="margin:6px 0 0;font-size:12px">Sin textos cargados. Tocá "➕ Texto" para agregar el primero.</p>'}
         </div>
-
         <div class="unidad-foot">
           <span class="u-meta"></span>
           <div class="unidad-acciones">
@@ -1732,14 +1729,34 @@ function abrirDetalleMateria(id){
         </div>
       </div>
     `;
-    }).join('') : `<div class="empty" style="padding:16px">Sin unidades cargadas todavía.<br>Tocá "➕ Agregar" para crear la primera.</div>`}
-    
-    ${(m.horarios||[]).length ? `
-      <h3 style="font-size:14px;margin-top:20px">Horarios</h3>
-      ${m.horarios.map(h => `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)">${DIAS[h.dia]} · ${fmtHora(h.inicio)}${h.fin?'–'+fmtHora(h.fin):''}${h.aula?' · '+escapeHTML(h.aula):''}</div>`).join('')}
-    ` : ''}
-    ${m.notas ? `<h3 style="font-size:14px;margin-top:16px">Notas</h3><p style="font-size:13.5px;line-height:1.5;color:var(--muted)">${escapeHTML(m.notas)}</p>` : ''}
+  }).join('');
+  return html;
+}
 
+/* --- Bloque: Horarios --- */
+function bloqueHorarios(m){
+  if (!(m.horarios||[]).length) return '';
+  return `
+    <h3 style="font-size:14px;margin-top:20px">🗓️ Horarios</h3>
+    ${m.horarios.map(h => `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)">${DIAS[h.dia]} · ${fmtHora(h.inicio)}${h.fin?'–'+fmtHora(h.fin):''}${h.aula?' · '+escapeHTML(h.aula):''}</div>`).join('')}
+  `;
+}
+
+/* --- Bloque: Notas --- */
+function bloqueNotas(m){
+  if (!m.notas) return '';
+  return `
+    <h3 style="font-size:14px;margin-top:16px">📝 Notas</h3>
+    <p style="font-size:13.5px;line-height:1.5;color:var(--muted)">${escapeHTML(m.notas)}</p>
+  `;
+}
+
+/* --- Bloque: Asistencia --- */
+function bloqueAsistencia(m){
+  const stats = Dominio.asistencia.stats(m.id);
+  const mapaAsist = asistencia[m.id] || {};
+  const fechasAsist = Object.keys(mapaAsist).sort().reverse();
+  return `
     <h3 style="font-size:14px;margin-top:20px">📊 Asistencia</h3>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
       <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
@@ -1765,27 +1782,50 @@ function abrirDetalleMateria(id){
         <span class="as-fecha">${fmtFechaCorta(f)}</span>
         <div class="as-btns">
           ${['presente','tarde','justificado','ausente'].map(k => `
-            <button class="asist-btn ${est===k?'on '+k:''}" data-asist2="${id}|${f}|${k}">${({presente:'✓',tarde:'⏱',justificado:'📝',ausente:'✗'})[k]}</button>
+            <button class="asist-btn ${est===k?'on '+k:''}" data-asist2="${m.id}|${f}|${k}">${({presente:'✓',tarde:'⏱',justificado:'📝',ausente:'✗'})[k]}</button>
           `).join('')}
         </div>
       </div>`;
     }).join('') : '<p class="hint">Sin registros de asistencia todavía.</p>'}
-    ${tareasMat.length ? `
+  `;
+}
+
+/* --- Bloque: Tareas y exámenes --- */
+function bloqueTareasExamenes(m){
+  const tareasMat = tareas.filter(t => t.materiaId === m.id && t.estado !== 'completada');
+  const examenesMat = examenes.filter(e => e.materiaId === m.id && e.fecha >= hoyISO());
+  if (!tareasMat.length && !examenesMat.length) return '';
+  let html = '';
+  if (tareasMat.length){
+    html += `
       <h3 style="font-size:14px;margin-top:20px">📝 Tareas pendientes (${tareasMat.length})</h3>
       ${tareasMat.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px">• ${escapeHTML(t.titulo)}${t.fechaEntrega?' <span style="color:var(--muted);font-size:12px">· '+fmtFechaCorta(t.fechaEntrega)+'</span>':''}</div>`).join('')}
-    ` : ''}
-    ${examenesMat.length ? `
+    `;
+  }
+  if (examenesMat.length){
+    html += `
       <h3 style="font-size:14px;margin-top:16px">🎯 Exámenes próximos (${examenesMat.length})</h3>
       ${examenesMat.map(e => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px">• ${escapeHTML(e.titulo)} <span style="color:var(--muted);font-size:12px">· ${fmtFechaCorta(e.fecha)}</span></div>`).join('')}
-    ` : ''}
+    `;
+  }
+  return html;
+}
 
+/* --- Bloque: Botones de acción (editar / eliminar materia) --- */
+function bloqueAccionesMateria(){
+  return `
     <div style="display:flex;gap:8px;margin-top:20px">
       <button class="btn btn-secondary" style="flex:1" id="editarMateriaBtn">✏️ Editar</button>
       <button class="btn btn-danger" style="flex:1" id="borrarMateriaBtn">🗑️ Eliminar</button>
     </div>
   `;
+}
 
-  /* Handlers de asistencia */
+/* --- Enganchar TODOS los handlers del detalle --- */
+function engancharHandlersDetalle(id){
+  const body = $('#detalleBody');
+
+  /* Asistencia */
   body.querySelectorAll('[data-asist2]').forEach(b => {
     b.onclick = () => {
       const [mat, fecha, estado] = b.dataset.asist2.split('|');
@@ -1796,7 +1836,7 @@ function abrirDetalleMateria(id){
     };
   });
 
-  /* Handlers de unidades */
+  /* Unidades */
   body.querySelectorAll('[data-edit-u]').forEach(b => {
     b.onclick = () => abrirSheetUnidad(id, b.dataset.editU);
   });
@@ -1811,7 +1851,7 @@ function abrirDetalleMateria(id){
   const addUBtn = $('#agregarUnidadBtn');
   if (addUBtn) addUBtn.onclick = () => abrirSheetUnidad(id, null);
 
-  /* Handlers de bibliografía */
+  /* Bibliografía */
   body.querySelectorAll('[data-add-bib]').forEach(b => {
     b.onclick = () => abrirSheetBib(id, b.dataset.addBib, null);
   });
@@ -1830,16 +1870,44 @@ function abrirDetalleMateria(id){
       renderDrawerMaterias();
     };
   });
-  /* Handlers de materia */
-  $('#editarMateriaBtn').onclick = () => { cerrarSheets(); setTimeout(() => abrirSheetMateria(m), 150); };
+
+  /* Materia */
+  $('#editarMateriaBtn').onclick = () => {
+    const m = Dominio.materias.get(id);
+    cerrarSheets(); setTimeout(() => abrirSheetMateria(m), 150);
+  };
   $('#borrarMateriaBtn').onclick = () => {
     if (!confirm('¿Eliminar la materia y todo su contenido asociado?')) return;
     Dominio.materias.borrar(id);
     cerrarSheets();
     toast('Materia eliminada');
-    renderMaterias(); renderTareas(); renderExamenes(); renderHorario(); renderApuntes(); renderHoy();
-    renderDrawerMaterias();
+    renderMaterias(); renderTareas(); renderExamenes(); renderHorario();
+    renderApuntes(); renderHoy(); renderDrawerMaterias();
   };
+}
+
+/* --- Función madre (solo arma el rompecabezas) --- */
+function abrirDetalleMateria(id){
+  const m = Dominio.materias.get(id);
+  if (!m) return;
+  $('#detalleTitle').textContent = m.nombre;
+
+  const body = $('#detalleBody');
+  body.innerHTML = `
+    <div style="border-left:5px solid ${m.color};padding-left:10px;margin-bottom:16px">
+      ${m.profesor ? `<div style="font-size:13px;color:var(--muted)">👤 ${escapeHTML(m.profesor)}</div>` : ''}
+      ${m.cuatri ? `<div style="font-size:13px;color:var(--muted)">📅 ${escapeHTML(m.cuatri)}</div>` : ''}
+    </div>
+
+    ${bloqueUnidades(m)}
+    ${bloqueHorarios(m)}
+    ${bloqueNotas(m)}
+    ${bloqueAsistencia(m)}
+    ${bloqueTareasExamenes(m)}
+    ${bloqueAccionesMateria()}
+  `;
+
+  engancharHandlersDetalle(id);
   abrirSheet('sheetDetalleMateria');
 }
 
