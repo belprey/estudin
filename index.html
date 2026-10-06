@@ -422,6 +422,33 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .unidad-acciones button:active{transform:scale(.9)}
 .unidad-acciones button.danger{background:#fdecec;color:var(--danger)}
 
+/* ==== BIBLIOGRAFÍA ==== */
+.bib-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;
+  border-bottom:1px solid var(--line)}
+.bib-item:last-child{border-bottom:none}
+.bib-body{flex:1;min-width:0}
+.bib-body strong{font-size:13.5px;display:block;margin-bottom:2px;
+  line-height:1.35;font-weight:600}
+.bib-body small{font-size:11.5px;color:var(--muted);display:block;line-height:1.4}
+.bib-body .tipo{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.4px;padding:2px 6px;border-radius:99px;display:inline-block;margin-top:4px}
+.bib-body .tipo.obligatoria{background:#fde9e9;color:#c92c32}
+.bib-body .tipo.complementaria{background:#e8ecff;color:var(--primary-dark)}
+.bib-acciones{display:flex;gap:4px;flex:none}
+.bib-acciones button{border:none;background:#eef1fb;width:28px;height:28px;
+  border-radius:8px;cursor:pointer;font-size:12px;transition:.15s}
+.bib-acciones button:active{transform:scale(.9)}
+.bib-acciones button.danger{background:#fdecec;color:var(--danger)}
+.bib-lista{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.bib-header{font-size:11.5px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;font-weight:800;margin-bottom:6px;
+  display:flex;align-items:center;justify-content:space-between}
+.bib-add-btn{background:var(--primary);color:#fff;border:none;
+  padding:5px 10px;border-radius:8px;font-family:inherit;font-size:11.5px;
+  font-weight:700;cursor:pointer;letter-spacing:0;transition:.15s;
+  text-transform:none}
+.bib-add-btn:active{transform:scale(.95)}
+  
   @media (max-width:380px){
   .h1{font-size:18px}
   .racha-grid{grid-template-columns:1fr}
@@ -827,6 +854,37 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   <div class="sheet-body" id="tecBody"></div>
 </section>
 
+<!-- ============ SHEET BIBLIOGRAFÍA ============ -->
+<section class="sheet" id="sheetBib">
+  <div class="sheet-head"><h2 id="bibTitle">Nuevo texto</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <input type="hidden" id="b-id">
+    <input type="hidden" id="b-materia">
+    <input type="hidden" id="b-unidad">
+    <div class="field"><label>Título del texto</label>
+      <input type="text" id="b-titulo" placeholder="Ej: Descripción densa"></div>
+    <div class="row-2">
+      <div class="field"><label>Autor/a</label>
+        <input type="text" id="b-autor" placeholder="Ej: Geertz"></div>
+      <div class="field"><label>Año</label>
+        <input type="number" id="b-anio" min="1900" max="2100" step="1"></div>
+    </div>
+    <div class="field"><label>Tipo</label>
+      <select id="b-tipo">
+        <option value="obligatoria">Obligatoria</option>
+        <option value="complementaria">Complementaria</option>
+      </select></div>
+    <div class="field"><label>Fuente / nota</label>
+      <input type="text" id="b-fuente" placeholder="Ej: Ficha de cátedra, cap. 3 del libro..."></div>
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
+      <button class="btn btn-primary" id="guardarBib">Guardar</button>
+    </div>
+  </div>
+</section>
+
+  
 <!-- ============ SHEET UNIDAD ============ -->
 <section class="sheet" id="sheetUnidad">
   <div class="sheet-head"><h2 id="unidadTitle">Nueva unidad</h2>
@@ -1051,14 +1109,60 @@ const Dominio = {
       Storage.guardar(K.materias, materias);
       return u;
     },
-    borrarUnidad(materiaId, unidadId){
+       borrarUnidad(materiaId, unidadId){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return;
       m.unidades = m.unidades.filter(x => x.id !== unidadId);
       Storage.guardar(K.materias, materias);
+    },
+
+    /* ===== BIBLIOGRAFÍA ===== */
+    bibDe(materiaId, unidadId){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return [];
+      const u = m.unidades.find(x => x.id === unidadId);
+      return u ? (u.bibliografia || []) : [];
+    },
+    agregarBib(materiaId, unidadId, data){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return null;
+      const u = m.unidades.find(x => x.id === unidadId);
+      if (!u) return null;
+      if (!u.bibliografia) u.bibliografia = [];
+      const b = {
+        id: uid('bib'),
+        titulo: data.titulo || '',
+        autor: data.autor || '',
+        anio: data.anio || null,
+        tipo: data.tipo || 'obligatoria',
+        fuente: data.fuente || '',
+        impreso: false
+      };
+      u.bibliografia.push(b);
+      Storage.guardar(K.materias, materias);
+      return b;
+    },
+    editarBib(materiaId, unidadId, bibId, data){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return null;
+      const u = m.unidades.find(x => x.id === unidadId);
+      if (!u) return null;
+      const b = (u.bibliografia || []).find(x => x.id === bibId);
+      if (!b) return null;
+      Object.assign(b, data);
+      Storage.guardar(K.materias, materias);
+      return b;
+    },
+    borrarBib(materiaId, unidadId, bibId){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return;
+      const u = m.unidades.find(x => x.id === unidadId);
+      if (!u) return;
+      u.bibliografia = (u.bibliografia || []).filter(x => x.id !== bibId);
+      Storage.guardar(K.materias, materias);
     }
   },
-    
+        
   tareas: {
     listar(filtro = 'pendientes'){
       if (filtro === 'completadas') return tareas.filter(t => t.estado === 'completada').sort((a,b) => (b.completadaTs||0) - (a.completadaTs||0));
@@ -1582,23 +1686,54 @@ function abrirDetalleMateria(id){
       <button class="h3-btn" id="agregarUnidadBtn">➕ Agregar</button>
     </div>
 
-    ${unidades.length ? unidades.map(u => `
+     ${unidades.length ? unidades.map(u => {
+      const bibs = u.bibliografia || [];
+      const oblig = bibs.filter(b => b.tipo === 'obligatoria').length;
+      const comp = bibs.filter(b => b.tipo === 'complementaria').length;
+      const metaTxt = bibs.length === 0
+        ? 'Sin textos'
+        : `${bibs.length} texto${bibs.length===1?'':'s'}${oblig?' · '+oblig+' oblig':''}${comp?' · '+comp+' comp':''}`;
+      return `
       <div class="unidad-card" style="border-left-color:${m.color}">
         <div class="unidad-head">
           <span class="u-num">UNIDAD ${u.numero}</span>
           <h4>${escapeHTML(u.titulo||'(sin título)')}</h4>
         </div>
         ${u.contenidos ? `<p class="unidad-cont">${escapeHTML(u.contenidos)}</p>` : ''}
+
+        <div class="bib-lista">
+          <div class="bib-header">
+            <span>📖 ${metaTxt}</span>
+            <button class="bib-add-btn" data-add-bib="${u.id}">➕ Texto</button>
+          </div>
+          ${bibs.length ? bibs.map(b => {
+            const meta = [b.autor, b.anio].filter(Boolean).join(' · ');
+            return `<div class="bib-item">
+              <div class="bib-body">
+                <strong>${escapeHTML(b.titulo)}</strong>
+                ${meta ? `<small>${escapeHTML(meta)}</small>` : ''}
+                ${b.fuente ? `<small style="font-style:italic">${escapeHTML(b.fuente)}</small>` : ''}
+                <span class="tipo ${b.tipo}">${b.tipo}</span>
+              </div>
+              <div class="bib-acciones">
+                <button data-edit-bib="${u.id}|${b.id}" title="Editar">✏️</button>
+                <button class="danger" data-del-bib="${u.id}|${b.id}" title="Eliminar">🗑️</button>
+              </div>
+            </div>`;
+          }).join('') : '<p class="hint" style="margin:6px 0 0;font-size:12px">Sin textos cargados. Tocá "➕ Texto" para agregar el primero.</p>'}
+        </div>
+
         <div class="unidad-foot">
-          <span class="u-meta">📖 ${(u.bibliografia||[]).length} texto${(u.bibliografia||[]).length===1?'':'s'}</span>
+          <span class="u-meta"></span>
           <div class="unidad-acciones">
-            <button data-edit-u="${u.id}" title="Editar">✏️</button>
-            <button class="danger" data-del-u="${u.id}" title="Eliminar">🗑️</button>
+            <button data-edit-u="${u.id}" title="Editar unidad">✏️</button>
+            <button class="danger" data-del-u="${u.id}" title="Eliminar unidad">🗑️</button>
           </div>
         </div>
       </div>
-    `).join('') : `<div class="empty" style="padding:16px">Sin unidades cargadas todavía.<br>Tocá "➕ Agregar" para crear la primera.</div>`}
-
+    `;
+    }).join('') : `<div class="empty" style="padding:16px">Sin unidades cargadas todavía.<br>Tocá "➕ Agregar" para crear la primera.</div>`}
+    
     ${(m.horarios||[]).length ? `
       <h3 style="font-size:14px;margin-top:20px">Horarios</h3>
       ${m.horarios.map(h => `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)">${DIAS[h.dia]} · ${fmtHora(h.inicio)}${h.fin?'–'+fmtHora(h.fin):''}${h.aula?' · '+escapeHTML(h.aula):''}</div>`).join('')}
@@ -1635,7 +1770,6 @@ function abrirDetalleMateria(id){
         </div>
       </div>`;
     }).join('') : '<p class="hint">Sin registros de asistencia todavía.</p>'}
-
     ${tareasMat.length ? `
       <h3 style="font-size:14px;margin-top:20px">📝 Tareas pendientes (${tareasMat.length})</h3>
       ${tareasMat.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px">• ${escapeHTML(t.titulo)}${t.fechaEntrega?' <span style="color:var(--muted);font-size:12px">· '+fmtFechaCorta(t.fechaEntrega)+'</span>':''}</div>`).join('')}
@@ -1668,15 +1802,34 @@ function abrirDetalleMateria(id){
   });
   body.querySelectorAll('[data-del-u]').forEach(b => {
     b.onclick = () => {
-      if (!confirm('¿Eliminar esta unidad?')) return;
+      if (!confirm('¿Eliminar esta unidad y todos sus textos?')) return;
       Dominio.materias.borrarUnidad(id, b.dataset.delU);
       abrirDetalleMateria(id);
-      renderMaterias();
+      renderMaterias(); renderDrawerMaterias();
     };
   });
   const addUBtn = $('#agregarUnidadBtn');
   if (addUBtn) addUBtn.onclick = () => abrirSheetUnidad(id, null);
 
+  /* Handlers de bibliografía */
+  body.querySelectorAll('[data-add-bib]').forEach(b => {
+    b.onclick = () => abrirSheetBib(id, b.dataset.addBib, null);
+  });
+  body.querySelectorAll('[data-edit-bib]').forEach(b => {
+    b.onclick = () => {
+      const [uId, bId] = b.dataset.editBib.split('|');
+      abrirSheetBib(id, uId, bId);
+    };
+  });
+  body.querySelectorAll('[data-del-bib]').forEach(b => {
+    b.onclick = () => {
+      const [uId, bId] = b.dataset.delBib.split('|');
+      if (!confirm('¿Eliminar este texto?')) return;
+      Dominio.materias.borrarBib(id, uId, bId);
+      abrirDetalleMateria(id);
+      renderDrawerMaterias();
+    };
+  });
   /* Handlers de materia */
   $('#editarMateriaBtn').onclick = () => { cerrarSheets(); setTimeout(() => abrirSheetMateria(m), 150); };
   $('#borrarMateriaBtn').onclick = () => {
@@ -1690,6 +1843,49 @@ function abrirDetalleMateria(id){
   abrirSheet('sheetDetalleMateria');
 }
 
+/* =====================================================================
+   SHEET BIBLIOGRAFÍA
+   ===================================================================== */
+function abrirSheetBib(materiaId, unidadId, bibId){
+  const m = Dominio.materias.get(materiaId);
+  if (!m) return;
+  const u = (m.unidades||[]).find(x => x.id === unidadId);
+  if (!u) return;
+  const b = bibId ? (u.bibliografia||[]).find(x => x.id === bibId) : null;
+  $('#bibTitle').textContent = b ? 'Editar texto' : 'Nuevo texto';
+  $('#b-id').value = b ? b.id : '';
+  $('#b-materia').value = materiaId;
+  $('#b-unidad').value = unidadId;
+  $('#b-titulo').value = b ? (b.titulo||'') : '';
+  $('#b-autor').value = b ? (b.autor||'') : '';
+  $('#b-anio').value = b ? (b.anio||'') : '';
+  $('#b-tipo').value = b ? (b.tipo||'obligatoria') : 'obligatoria';
+  $('#b-fuente').value = b ? (b.fuente||'') : '';
+  abrirSheet('sheetBib');
+}
+$('#guardarBib').onclick = () => {
+  const materiaId = $('#b-materia').value;
+  const unidadId = $('#b-unidad').value;
+  const bibId = $('#b-id').value;
+  const data = {
+    titulo: $('#b-titulo').value.trim(),
+    autor: $('#b-autor').value.trim(),
+    anio: parseInt($('#b-anio').value, 10) || null,
+    tipo: $('#b-tipo').value,
+    fuente: $('#b-fuente').value.trim()
+  };
+  if (!data.titulo){ alert('Poné un título'); return; }
+  if (bibId) Dominio.materias.editarBib(materiaId, unidadId, bibId, data);
+  else Dominio.materias.agregarBib(materiaId, unidadId, data);
+  cerrarSheets();
+  toast('Texto guardado ✅', 'ok');
+  setTimeout(() => {
+    abrirDetalleMateria(materiaId);
+    renderDrawerMaterias();
+  }, 120);
+};
+
+  
 /* =====================================================================
    SHEET UNIDAD
    ===================================================================== */
