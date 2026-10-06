@@ -389,6 +389,20 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .breath-controls button.primary{background:linear-gradient(135deg,#5b6ef5,#8b5cff);color:#fff;
   box-shadow:0 8px 22px rgba(91,110,245,.4)}
 
+/* ==== MATERIAS EN EL DRAWER ==== */
+.drawer-materias-label{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--muted);padding:10px 14px 4px}
+.drawer-materias{padding:2px 8px 8px;border-bottom:1px dashed var(--line);margin-bottom:6px}
+.drawer-materia{display:flex;align-items:center;gap:10px;width:100%;
+  padding:9px 14px;border:none;background:none;border-radius:11px;
+  font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text);
+  cursor:pointer;text-align:left;transition:.15s}
+.drawer-materia:hover,.drawer-materia:active{background:#eef1fb}
+.drawer-materia .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.drawer-materia .label{flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.drawer-materia .count{font-size:10.5px;color:var(--muted);font-weight:700;flex:none}
+  
 @media (max-width:380px){
   .h1{font-size:18px}
   .racha-grid{grid-template-columns:1fr}
@@ -632,6 +646,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     <button class="nav-item active" data-view="hoy"><span class="ico">🏠</span> Hoy</button>
     <button class="nav-item" data-view="chat"><span class="ico">💬</span> Hablar con Estudín</button>
     <button class="nav-item" data-view="materias"><span class="ico">📚</span> Materias</button>
+    <div id="drawerMaterias"></div>
     <button class="nav-item" data-view="tareas"><span class="ico">📝</span> Tareas</button>
     <button class="nav-item" data-view="examenes"><span class="ico">🎯</span> Exámenes</button>
     <button class="nav-item" data-view="horario"><span class="ico">🗓️</span> Horario</button>
@@ -1322,6 +1337,38 @@ function renderHoy(){
 }
 
 /* =====================================================================
+   RENDER: MATERIAS EN EL DRAWER
+   ===================================================================== */
+function renderDrawerMaterias(){
+  const cont = document.getElementById('drawerMaterias');
+  if (!cont) return;
+  const lista = Dominio.materias.listar();
+  if (!lista.length){ cont.innerHTML = ''; return; }
+  cont.innerHTML = `
+    <div class="drawer-materias-label">Mis materias</div>
+    <div class="drawer-materias">
+      ${lista.map(m => {
+        const unidades = (m.unidades||[]).length;
+        const pendientes = tareas.filter(t => t.materiaId === m.id && t.estado !== 'completada').length;
+        const count = pendientes > 0 ? pendientes + ' pend.' : (unidades > 0 ? unidades + ' u.' : '');
+        return `<button class="drawer-materia" data-materia-drawer="${m.id}">
+          <span class="dot" style="background:${m.color}"></span>
+          <span class="label">${escapeHTML(m.nombre)}</span>
+          ${count ? `<span class="count">${count}</span>` : ''}
+        </button>`;
+      }).join('')}
+    </div>
+  `;
+  cont.querySelectorAll('[data-materia-drawer]').forEach(b => {
+    b.onclick = () => {
+      drawer.classList.remove('show');
+      overlay.classList.remove('show');
+      abrirDetalleMateria(b.dataset.materiaDrawer);
+    };
+  });
+}
+  
+/* =====================================================================
    RENDER: MATERIAS
    ===================================================================== */
 function renderMaterias(){
@@ -1431,6 +1478,7 @@ $('#guardarMateria').onclick = () => {
   cerrarSheets();
   toast('Materia guardada ✅', 'ok');
   renderMaterias(); renderHoy(); renderHorario(); actualizarSelects();
+  renderDrawerMaterias();
 };
 
 function abrirDetalleMateria(id){
@@ -1516,6 +1564,7 @@ function abrirDetalleMateria(id){
     toast('Materia eliminada');
     renderMaterias(); renderTareas(); renderExamenes(); renderHorario(); renderApuntes(); renderHoy();
   };
+  renderDrawerMaterias();
   abrirSheet('sheetDetalleMateria');
 }
 
@@ -1638,6 +1687,7 @@ $('#guardarTarea').onclick = () => {
   cerrarSheets();
   toast('Tarea guardada ✅', 'ok');
   renderTareas(); renderHoy();
+  renderDrawerMaterias();
 };
 
 /* =====================================================================
@@ -2615,6 +2665,7 @@ function iniciar(){
   actualizarSelects();
   renderHoy();
   renderMaterias();
+  renderDrawerMaterias();
   renderTareas();
   renderExamenes();
   renderHorario();
