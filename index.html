@@ -403,7 +403,26 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   text-overflow:ellipsis;white-space:nowrap}
 .drawer-materia .count{font-size:10.5px;color:var(--muted);font-weight:700;flex:none}
   
-@media (max-width:380px){
+/* ==== UNIDADES ==== */
+.unidad-card{background:#fff;border-radius:16px;padding:14px;
+  box-shadow:var(--shadow);margin-bottom:10px;border-left:6px solid var(--primary)}
+.unidad-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.unidad-head .u-num{font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;
+  background:#eef1fb;color:var(--primary-dark);letter-spacing:.3px;flex:none}
+.unidad-head h4{margin:0;font-size:14.5px;letter-spacing:-.2px;flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis}
+.unidad-cont{font-size:12.5px;color:var(--muted);line-height:1.45;margin:0;
+  white-space:pre-wrap}
+.unidad-foot{display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.unidad-foot .u-meta{font-size:12px;color:var(--muted);font-weight:700}
+.unidad-acciones{display:flex;gap:4px}
+.unidad-acciones button{border:none;background:#eef1fb;width:32px;height:32px;
+  border-radius:9px;cursor:pointer;font-size:14px;transition:.15s}
+.unidad-acciones button:active{transform:scale(.9)}
+.unidad-acciones button.danger{background:#fdecec;color:var(--danger)}
+
+  @media (max-width:380px){
   .h1{font-size:18px}
   .racha-grid{grid-template-columns:1fr}
   .row-2,.row-3{grid-template-columns:1fr}
@@ -808,6 +827,29 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   <div class="sheet-body" id="tecBody"></div>
 </section>
 
+<!-- ============ SHEET UNIDAD ============ -->
+<section class="sheet" id="sheetUnidad">
+  <div class="sheet-head"><h2 id="unidadTitle">Nueva unidad</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <input type="hidden" id="u-id">
+    <input type="hidden" id="u-materia">
+    <div class="row-2">
+      <div class="field"><label>Número</label>
+        <input type="number" id="u-numero" min="1" max="30" step="1"></div>
+      <div class="field"><label>Título</label>
+        <input type="text" id="u-titulo" placeholder="Ej: Introducción"></div>
+    </div>
+    <div class="field"><label>Contenidos mínimos</label>
+      <textarea id="u-contenidos" rows="5"
+        placeholder="Los temas que abarca. Uno por línea o separados por coma."></textarea></div>
+    <div class="sheet-actions">
+      <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
+      <button class="btn btn-primary" id="guardarUnidad">Guardar</button>
+    </div>
+  </div>
+</section>
+  
 <!-- ============ OVERLAY RESPIRACIÓN ============ -->
 <div class="breath-overlay" id="breathOverlay">
   <div class="breath-top">
@@ -978,9 +1020,45 @@ const Dominio = {
       Storage.guardar(K.apuntes, apuntes);
       Storage.guardar(K.asistencia, asistencia);
     },
-    colorDe(id){ const m = this.get(id); return m ? m.color : '#5b6ef5'; },
-    nombreDe(id){ const m = this.get(id); return m ? m.nombre : ''; }
+        colorDe(id){ const m = this.get(id); return m ? m.color : '#5b6ef5'; },
+    nombreDe(id){ const m = this.get(id); return m ? m.nombre : ''; },
+
+    /* ===== UNIDADES ===== */
+    unidadesDe(id){
+      const m = this.get(id);
+      return (m && m.unidades) ? m.unidades.slice().sort((a,b)=>(a.numero||0)-(b.numero||0)) : [];
+    },
+    agregarUnidad(materiaId, data){
+      const m = this.get(materiaId); if (!m) return null;
+      if (!m.unidades) m.unidades = [];
+      const u = {
+        id: uid('uni'),
+        numero: data.numero || (m.unidades.length + 1),
+        titulo: data.titulo || '',
+        contenidos: data.contenidos || '',
+        bibliografia: []
+      };
+      m.unidades.push(u);
+      Storage.guardar(K.materias, materias);
+      return u;
+    },
+    editarUnidad(materiaId, unidadId, data){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return null;
+      const u = m.unidades.find(x => x.id === unidadId);
+      if (!u) return null;
+      Object.assign(u, data);
+      Storage.guardar(K.materias, materias);
+      return u;
+    },
+    borrarUnidad(materiaId, unidadId){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return;
+      m.unidades = m.unidades.filter(x => x.id !== unidadId);
+      Storage.guardar(K.materias, materias);
+    }
   },
+    
   tareas: {
     listar(filtro = 'pendientes'){
       if (filtro === 'completadas') return tareas.filter(t => t.estado === 'completada').sort((a,b) => (b.completadaTs||0) - (a.completadaTs||0));
@@ -1490,18 +1568,44 @@ function abrirDetalleMateria(id){
   const examenesMat = examenes.filter(e => e.materiaId === id && e.fecha >= hoyISO());
   const mapaAsist = asistencia[id] || {};
   const fechasAsist = Object.keys(mapaAsist).sort().reverse();
+  const unidades = Dominio.materias.unidadesDe(id);
   const body = $('#detalleBody');
+
   body.innerHTML = `
     <div style="border-left:5px solid ${m.color};padding-left:10px;margin-bottom:16px">
       ${m.profesor ? `<div style="font-size:13px;color:var(--muted)">👤 ${escapeHTML(m.profesor)}</div>` : ''}
       ${m.cuatri ? `<div style="font-size:13px;color:var(--muted)">📅 ${escapeHTML(m.cuatri)}</div>` : ''}
     </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <h3 style="font-size:15px;margin:0">📚 Unidades <span class="pill info">${unidades.length}</span></h3>
+      <button class="h3-btn" id="agregarUnidadBtn">➕ Agregar</button>
+    </div>
+
+    ${unidades.length ? unidades.map(u => `
+      <div class="unidad-card" style="border-left-color:${m.color}">
+        <div class="unidad-head">
+          <span class="u-num">UNIDAD ${u.numero}</span>
+          <h4>${escapeHTML(u.titulo||'(sin título)')}</h4>
+        </div>
+        ${u.contenidos ? `<p class="unidad-cont">${escapeHTML(u.contenidos)}</p>` : ''}
+        <div class="unidad-foot">
+          <span class="u-meta">📖 ${(u.bibliografia||[]).length} texto${(u.bibliografia||[]).length===1?'':'s'}</span>
+          <div class="unidad-acciones">
+            <button data-edit-u="${u.id}" title="Editar">✏️</button>
+            <button class="danger" data-del-u="${u.id}" title="Eliminar">🗑️</button>
+          </div>
+        </div>
+      </div>
+    `).join('') : `<div class="empty" style="padding:16px">Sin unidades cargadas todavía.<br>Tocá "➕ Agregar" para crear la primera.</div>`}
+
     ${(m.horarios||[]).length ? `
-      <h3 style="font-size:14px;margin-top:8px">Horarios</h3>
+      <h3 style="font-size:14px;margin-top:20px">Horarios</h3>
       ${m.horarios.map(h => `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)">${DIAS[h.dia]} · ${fmtHora(h.inicio)}${h.fin?'–'+fmtHora(h.fin):''}${h.aula?' · '+escapeHTML(h.aula):''}</div>`).join('')}
     ` : ''}
     ${m.notas ? `<h3 style="font-size:14px;margin-top:16px">Notas</h3><p style="font-size:13.5px;line-height:1.5;color:var(--muted)">${escapeHTML(m.notas)}</p>` : ''}
-    <h3 style="font-size:14px;margin-top:16px">📊 Asistencia</h3>
+
+    <h3 style="font-size:14px;margin-top:20px">📊 Asistencia</h3>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
       <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
         <div style="font-size:18px;font-weight:800;color:var(--ok)">${stats.presentes}</div>
@@ -1520,20 +1624,18 @@ function abrirDetalleMateria(id){
         <small style="font-size:10.5px;color:var(--muted);font-weight:700">AUSENTE</small>
       </div>
     </div>
-    ${fechasAsist.length ? `
-      <p class="hint" style="margin:6px 0">Marcá o corregí asistencia:</p>
-      ${fechasAsist.slice(0,15).map(f => {
-        const est = mapaAsist[f];
-        return `<div class="asist-row">
-          <span class="as-fecha">${fmtFechaCorta(f)}</span>
-          <div class="as-btns">
-            ${['presente','tarde','justificado','ausente'].map(k => `
-              <button class="asist-btn ${est===k?'on '+k:''}" data-asist2="${id}|${f}|${k}">${({presente:'✓',tarde:'⏱',justificado:'📝',ausente:'✗'})[k]}</button>
-            `).join('')}
-          </div>
-        </div>`;
-      }).join('')}
-    ` : '<p class="hint">Sin registros de asistencia todavía. Los podés marcar en "Hoy".</p>'}
+    ${fechasAsist.length ? fechasAsist.slice(0,15).map(f => {
+      const est = mapaAsist[f];
+      return `<div class="asist-row">
+        <span class="as-fecha">${fmtFechaCorta(f)}</span>
+        <div class="as-btns">
+          ${['presente','tarde','justificado','ausente'].map(k => `
+            <button class="asist-btn ${est===k?'on '+k:''}" data-asist2="${id}|${f}|${k}">${({presente:'✓',tarde:'⏱',justificado:'📝',ausente:'✗'})[k]}</button>
+          `).join('')}
+        </div>
+      </div>`;
+    }).join('') : '<p class="hint">Sin registros de asistencia todavía.</p>'}
+
     ${tareasMat.length ? `
       <h3 style="font-size:14px;margin-top:20px">📝 Tareas pendientes (${tareasMat.length})</h3>
       ${tareasMat.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px">• ${escapeHTML(t.titulo)}${t.fechaEntrega?' <span style="color:var(--muted);font-size:12px">· '+fmtFechaCorta(t.fechaEntrega)+'</span>':''}</div>`).join('')}
@@ -1542,11 +1644,14 @@ function abrirDetalleMateria(id){
       <h3 style="font-size:14px;margin-top:16px">🎯 Exámenes próximos (${examenesMat.length})</h3>
       ${examenesMat.map(e => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px">• ${escapeHTML(e.titulo)} <span style="color:var(--muted);font-size:12px">· ${fmtFechaCorta(e.fecha)}</span></div>`).join('')}
     ` : ''}
+
     <div style="display:flex;gap:8px;margin-top:20px">
       <button class="btn btn-secondary" style="flex:1" id="editarMateriaBtn">✏️ Editar</button>
       <button class="btn btn-danger" style="flex:1" id="borrarMateriaBtn">🗑️ Eliminar</button>
     </div>
   `;
+
+  /* Handlers de asistencia */
   body.querySelectorAll('[data-asist2]').forEach(b => {
     b.onclick = () => {
       const [mat, fecha, estado] = b.dataset.asist2.split('|');
@@ -1556,6 +1661,23 @@ function abrirDetalleMateria(id){
       renderHoy(); renderMaterias();
     };
   });
+
+  /* Handlers de unidades */
+  body.querySelectorAll('[data-edit-u]').forEach(b => {
+    b.onclick = () => abrirSheetUnidad(id, b.dataset.editU);
+  });
+  body.querySelectorAll('[data-del-u]').forEach(b => {
+    b.onclick = () => {
+      if (!confirm('¿Eliminar esta unidad?')) return;
+      Dominio.materias.borrarUnidad(id, b.dataset.delU);
+      abrirDetalleMateria(id);
+      renderMaterias();
+    };
+  });
+  const addUBtn = $('#agregarUnidadBtn');
+  if (addUBtn) addUBtn.onclick = () => abrirSheetUnidad(id, null);
+
+  /* Handlers de materia */
   $('#editarMateriaBtn').onclick = () => { cerrarSheets(); setTimeout(() => abrirSheetMateria(m), 150); };
   $('#borrarMateriaBtn').onclick = () => {
     if (!confirm('¿Eliminar la materia y todo su contenido asociado?')) return;
@@ -1563,12 +1685,47 @@ function abrirDetalleMateria(id){
     cerrarSheets();
     toast('Materia eliminada');
     renderMaterias(); renderTareas(); renderExamenes(); renderHorario(); renderApuntes(); renderHoy();
+    renderDrawerMaterias();
   };
-  renderDrawerMaterias();
   abrirSheet('sheetDetalleMateria');
 }
 
 /* =====================================================================
+   SHEET UNIDAD
+   ===================================================================== */
+function abrirSheetUnidad(materiaId, unidadId){
+  const m = Dominio.materias.get(materiaId);
+  if (!m) return;
+  const u = unidadId ? (m.unidades||[]).find(x => x.id === unidadId) : null;
+  $('#unidadTitle').textContent = u ? 'Editar unidad' : 'Nueva unidad';
+  $('#u-id').value = u ? u.id : '';
+  $('#u-materia').value = materiaId;
+  $('#u-numero').value = u ? u.numero : ((m.unidades||[]).length + 1);
+  $('#u-titulo').value = u ? (u.titulo||'') : '';
+  $('#u-contenidos').value = u ? (u.contenidos||'') : '';
+  abrirSheet('sheetUnidad');
+}
+$('#guardarUnidad').onclick = () => {
+  const materiaId = $('#u-materia').value;
+  const unidadId = $('#u-id').value;
+  const data = {
+    numero: parseInt($('#u-numero').value, 10) || 1,
+    titulo: $('#u-titulo').value.trim(),
+    contenidos: $('#u-contenidos').value.trim()
+  };
+  if (!data.titulo){ alert('Poné un título'); return; }
+  if (unidadId) Dominio.materias.editarUnidad(materiaId, unidadId, data);
+  else Dominio.materias.agregarUnidad(materiaId, data);
+  cerrarSheets();
+  toast('Unidad guardada ✅', 'ok');
+  setTimeout(() => {
+    abrirDetalleMateria(materiaId);
+    renderMaterias();
+    renderDrawerMaterias();
+  }, 120);
+};
+
+  /* =====================================================================
    RENDER: TAREAS
    ===================================================================== */
 let filtroTareas = 'pendientes';
