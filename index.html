@@ -875,8 +875,28 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
         <option value="obligatoria">Obligatoria</option>
         <option value="complementaria">Complementaria</option>
       </select></div>
-    <div class="field"><label>Fuente / nota</label>
+       <div class="field"><label>Fuente / nota</label>
       <input type="text" id="b-fuente" placeholder="Ej: Ficha de cátedra, cap. 3 del libro..."></div>
+    <div class="field"><label>Semana (opcional)</label>
+      <select id="b-semana">
+        <option value="">— Sin asignar —</option>
+        <option value="1">Semana 1</option>
+        <option value="2">Semana 2</option>
+        <option value="3">Semana 3</option>
+        <option value="4">Semana 4</option>
+        <option value="5">Semana 5</option>
+        <option value="6">Semana 6</option>
+        <option value="7">Semana 7</option>
+        <option value="8">Semana 8</option>
+        <option value="9">Semana 9</option>
+        <option value="10">Semana 10</option>
+        <option value="11">Semana 11</option>
+        <option value="12">Semana 12</option>
+        <option value="13">Semana 13</option>
+        <option value="14">Semana 14</option>
+        <option value="15">Semana 15</option>
+        <option value="16">Semana 16</option>
+      </select></div>
     <div class="sheet-actions">
       <button class="btn btn-secondary" data-close-sheet>Cancelar</button>
       <button class="btn btn-primary" id="guardarBib">Guardar</button>
@@ -1944,18 +1964,21 @@ function abrirSheetBib(materiaId, unidadId, bibId){
   $('#b-anio').value = b ? (b.anio||'') : '';
   $('#b-tipo').value = b ? (b.tipo||'obligatoria') : 'obligatoria';
   $('#b-fuente').value = b ? (b.fuente||'') : '';
+  $('#b-semana').value = b && b.semana !== null && b.semana !== undefined ? String(b.semana) : '';
   abrirSheet('sheetBib');
 }
 $('#guardarBib').onclick = () => {
   const materiaId = $('#b-materia').value;
   const unidadId = $('#b-unidad').value;
   const bibId = $('#b-id').value;
+  const semanaVal = $('#b-semana').value;
   const data = {
     titulo: $('#b-titulo').value.trim(),
     autor: $('#b-autor').value.trim(),
     anio: parseInt($('#b-anio').value, 10) || null,
     tipo: $('#b-tipo').value,
-    fuente: $('#b-fuente').value.trim()
+    fuente: $('#b-fuente').value.trim(),
+    semana: semanaVal ? parseInt(semanaVal, 10) : null
   };
   if (!data.titulo){ alert('Poné un título'); return; }
   if (bibId) Dominio.materias.editarBib(materiaId, unidadId, bibId, data);
