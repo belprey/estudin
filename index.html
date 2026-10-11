@@ -529,6 +529,56 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .semana-btn:active{transform:scale(.95)}
 .semana-btn.on{background:var(--primary);color:#fff;border-color:var(--primary)}
   
+ /* ==== LISTA DE IMPRESIÓN ==== */
+.imp-materia{background:#fff;border-radius:16px;padding:14px;
+  box-shadow:var(--shadow);margin-bottom:12px;
+  border-left:6px solid var(--primary)}
+.imp-materia-head{display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.imp-materia-head .imp-nombre{font-size:15px;font-weight:800;
+  display:flex;align-items:center;gap:8px;flex:1;min-width:0;
+  letter-spacing:-.2px}
+.imp-materia-head .imp-nombre .imp-dot{width:12px;height:12px;
+  border-radius:50%;flex:none}
+.imp-materia-head .imp-prog{font-size:11.5px;font-weight:800;
+  padding:3px 9px;border-radius:99px;background:#eef1fb;color:var(--primary-dark);
+  flex:none}
+.imp-materia-head .imp-prog.completo{background:#dbf3e5;color:#149a5a}
+
+.imp-unidad{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+.imp-unidad:first-of-type{border-top:none;padding-top:0;margin-top:0}
+.imp-unidad-titulo{font-size:11.5px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;font-weight:800;margin:0 0 6px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px}
+.imp-unidad-titulo .imp-u-n{font-size:10.5px;color:var(--muted);
+  font-weight:700;letter-spacing:0;text-transform:none}
+
+.imp-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;
+  border-bottom:1px solid var(--line)}
+.imp-item:last-child{border-bottom:none}
+.imp-chk{width:22px;height:22px;flex:none;border:2px solid var(--line);
+  border-radius:6px;background:#fff;cursor:pointer;display:grid;
+  place-items:center;font-size:13px;color:#fff;transition:.15s;margin-top:2px}
+.imp-chk.done{background:var(--ok);border-color:var(--ok)}
+.imp-chk.done::after{content:"✓"}
+.imp-body{flex:1;min-width:0}
+.imp-body strong{font-size:13.5px;display:block;margin-bottom:2px;
+  line-height:1.35;font-weight:600}
+.imp-body small{font-size:11.5px;color:var(--muted);display:block;
+  line-height:1.4}
+.imp-body .tipo{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.4px;padding:2px 6px;border-radius:99px;display:inline-block;
+  margin-top:4px}
+.imp-body .tipo.obligatoria{background:#fde9e9;color:#c92c32}
+.imp-body .tipo.complementaria{background:#e8ecff;color:var(--primary-dark)}
+.imp-body .sem-tag{font-size:10px;font-weight:700;padding:2px 6px;
+  border-radius:99px;background:#fff2e8;color:#c95a1f;margin-left:5px}
+.imp-item.impreso .imp-body strong{text-decoration:line-through;
+  color:var(--muted)}
+
+.imp-vacio{text-align:center;color:var(--muted);font-size:13px;
+  padding:20px 12px;line-height:1.5;background:#f6f8fd;border-radius:12px}
+  
   @media (max-width:380px){
   .h1{font-size:18px}
   .racha-grid{grid-template-columns:1fr}
@@ -634,6 +684,23 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
       <div id="lecturasContenido"></div>
     </section>
     
+        <!-- ============ LISTA DE IMPRESIÓN ============ -->
+    <section class="view" id="view-impresion">
+      <h1 class="h1">🖨️ Lista de impresión</h1>
+      <p class="sub">Todos los textos de todas las materias. Tildá lo que ya imprimiste.</p>
+      <div class="card" style="padding:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <strong style="font-size:14px">Progreso</strong>
+          <span class="pill info" id="impresionPct">0 / 0</span>
+        </div>
+        <div style="height:10px;background:#e6ecf8;border-radius:99px;overflow:hidden">
+          <div id="impresionBar" style="height:100%;width:0%;background:linear-gradient(90deg,#22b573,#4cd28c);transition:width .4s"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px" id="impresionFiltros"></div>
+      <div id="impresionLista"></div>
+    </section>
+
     <!-- ============ APUNTES ============ -->
     <section class="view" id="view-apuntes">
       <h1 class="h1">📓 Apuntes</h1>
@@ -786,6 +853,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     <button class="nav-item" data-view="examenes"><span class="ico">🎯</span> Exámenes</button>
     <button class="nav-item" data-view="horario"><span class="ico">🗓️</span> Horario</button>
     <button class="nav-item" data-view="apuntes"><span class="ico">📓</span> Apuntes</button>
+   <button class="nav-item" data-view="impresion"><span class="ico">🖨️</span> Lista de impresión</button> 
     <button class="nav-item" data-view="estudio"><span class="ico">⏱️</span> Estudiar</button>
     <button class="nav-item" data-view="mindfulness"><span class="ico">🧘</span> Mindfulness</button>
     <button class="nav-item" data-view="rachas"><span class="ico">🔥</span> Rachas</button>
@@ -1340,6 +1408,17 @@ const Dominio = {
       const b = (u.bibliografia || []).find(x => x.id === bibId);
       if (!b) return;
       b.semana = (semana === null || semana === undefined) ? null : Number(semana);
+      Storage.guardar(K.materias, materias);
+    }
+  },
+    toggleImpresoBib(materiaId, unidadId, bibId){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return;
+      const u = m.unidades.find(x => x.id === unidadId);
+      if (!u) return;
+      const b = (u.bibliografia || []).find(x => x.id === bibId);
+      if (!b) return;
+      b.impreso = !b.impreso;
       Storage.guardar(K.materias, materias);
     }
   },
@@ -2744,6 +2823,120 @@ function abrirSheetSemanaLectura(materiaId, unidadId, bibId){
 }
   
   /* =====================================================================
+   RENDER: LISTA DE IMPRESIÓN
+   ===================================================================== */
+let filtroImpresion = 'pendientes';
+
+function impresionFiltrosHTML(){
+  const opciones = [
+    { id:'pendientes', label:'Pendientes' },
+    { id:'todos', label:'Todos' },
+    { id:'impresos', label:'Impresos' }
+  ];
+  return opciones.map(o => `
+    <button class="filtro-lect ${filtroImpresion===o.id?'on':''}" data-filtro-imp="${o.id}">${o.label}</button>
+  `).join('');
+}
+
+function renderImpresion(){
+  const todos = Dominio.materias.recolectarTodos();
+
+  /* Filtros */
+  $('#impresionFiltros').innerHTML = impresionFiltrosHTML();
+  $('#impresionFiltros').querySelectorAll('[data-filtro-imp]').forEach(b => {
+    b.onclick = () => {
+      filtroImpresion = b.dataset.filtroImp;
+      renderImpresion();
+    };
+  });
+
+  /* Barra de progreso */
+  const total = todos.length;
+  const impresos = todos.filter(x => x.bib.impreso).length;
+  const pct = total ? Math.round(impresos/total*100) : 0;
+  $('#impresionPct').textContent = `${impresos} / ${total}`;
+  $('#impresionBar').style.width = pct + '%';
+
+  const cont = $('#impresionLista');
+
+  if (!total){
+    cont.innerHTML = `<div class="imp-vacio">
+      Todavía no cargaste textos.<br>
+      Andá a <b>Materias</b> → una materia → una unidad → <b>➕ Texto</b>.
+    </div>`;
+    return;
+  }
+
+  /* Agrupar por materia → unidad */
+  let html = '';
+  Dominio.materias.listar().forEach(m => {
+    const unidades = Dominio.materias.unidadesDe(m.id);
+    if (!unidades.length) return;
+
+    /* Filtrar unidades con textos que pasen el filtro */
+    const unidadesFiltradas = unidades.map(u => {
+      const bibs = (u.bibliografia || []).filter(b => {
+        if (filtroImpresion === 'pendientes') return !b.impreso;
+        if (filtroImpresion === 'impresos') return b.impreso;
+        return true;
+      });
+      return { unidad: u, bibs };
+    }).filter(x => x.bibs.length > 0);
+
+    if (!unidadesFiltradas.length) return;
+
+    /* Progreso de la materia (siempre sobre el total real, sin filtrar) */
+    const totalMat = unidades.reduce((a, u) => a + (u.bibliografia||[]).length, 0);
+    const impMat = unidades.reduce((a, u) => a + (u.bibliografia||[]).filter(b => b.impreso).length, 0);
+    const completo = impMat === totalMat && totalMat > 0;
+
+    html += `<div class="imp-materia" style="border-left-color:${m.color}">
+      <div class="imp-materia-head">
+        <div class="imp-nombre">
+          <span class="imp-dot" style="background:${m.color}"></span>
+          ${escapeHTML(m.nombre)}
+        </div>
+        <span class="imp-prog ${completo?'completo':''}">${impMat}/${totalMat}</span>
+      </div>
+      ${unidadesFiltradas.map(({ unidad, bibs }) => `
+        <div class="imp-unidad">
+          <div class="imp-unidad-titulo">
+            <span>Unidad ${unidad.numero}${unidad.titulo ? ' · ' + escapeHTML(unidad.titulo) : ''}</span>
+            <span class="imp-u-n">${bibs.length} texto${bibs.length===1?'':'s'}</span>
+          </div>
+          ${bibs.map(b => {
+            const meta = [b.autor, b.anio].filter(Boolean).join(' · ');
+            const semTag = (b.semana !== null && b.semana !== undefined)
+              ? `<span class="sem-tag">S${b.semana}</span>` : '';
+            return `<div class="imp-item ${b.impreso?'impreso':''}">
+              <div class="imp-chk ${b.impreso?'done':''}" data-imp-toggle="${m.id}|${unidad.id}|${b.id}"></div>
+              <div class="imp-body">
+                <strong>${escapeHTML(b.titulo)}${semTag}</strong>
+                ${meta ? `<small>${escapeHTML(meta)}</small>` : ''}
+                ${b.fuente ? `<small style="font-style:italic">${escapeHTML(b.fuente)}</small>` : ''}
+                <span class="tipo ${b.tipo}">${b.tipo}</span>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      `).join('')}
+    </div>`;
+  });
+
+  cont.innerHTML = html || `<div class="imp-vacio">Nada para mostrar con este filtro.</div>`;
+
+  /* Handlers de tilde */
+  cont.querySelectorAll('[data-imp-toggle]').forEach(el => {
+    el.onclick = () => {
+      const [mId, uId, bId] = el.dataset.impToggle.split('|');
+      Dominio.materias.toggleImpresoBib(mId, uId, bId);
+      chime(700, 0.15, 0.08);
+      renderImpresion();
+    };
+  });
+}
+
+  /* =====================================================================
    RENDER: APUNTES
    ===================================================================== */
 function renderApuntes(){
@@ -3478,7 +3671,8 @@ function irA(vista){
   if (vista==='tareas') renderTareas();
   if (vista==='examenes') renderExamenes();
   if (vista==='horario') renderHorario();
-  if (vista==='lecturas') renderLecturas(); 
+  if (vista==='lecturas') renderLecturas();
+  if (vista==='impresion') renderImpresion();
   if (vista==='apuntes') renderApuntes();
   if (vista==='estudio'){ renderPomoHero(); renderSesiones(); renderTecnicas(); }
   if (vista==='mindfulness') renderMindfulness();
@@ -3645,6 +3839,7 @@ function iniciar(){
   renderExamenes();
   renderHorario();
   renderLecturas();
+  renderImpresion();
   renderApuntes();
   renderSesiones();
   renderTecnicas();
