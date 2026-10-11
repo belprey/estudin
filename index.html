@@ -759,12 +759,12 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   <nav class="drawer-nav" id="nav">
     <button class="nav-item active" data-view="hoy"><span class="ico">🏠</span> Hoy</button>
     <button class="nav-item" data-view="chat"><span class="ico">💬</span> Hablar con Estudín</button>
+    <button class="nav-item" data-view="lecturas"><span class="ico">📖</span> Lecturas</button>
     <button class="nav-item" data-view="materias"><span class="ico">📚</span> Materias</button>
     <div id="drawerMaterias"></div>
     <button class="nav-item" data-view="tareas"><span class="ico">📝</span> Tareas</button>
     <button class="nav-item" data-view="examenes"><span class="ico">🎯</span> Exámenes</button>
     <button class="nav-item" data-view="horario"><span class="ico">🗓️</span> Horario</button>
-    <button class="nav-item" data-view="lecturas"><span class="ico">📖</span> Lecturas</button>
     <button class="nav-item" data-view="apuntes"><span class="ico">📓</span> Apuntes</button>
     <button class="nav-item" data-view="estudio"><span class="ico">⏱️</span> Estudiar</button>
     <button class="nav-item" data-view="mindfulness"><span class="ico">🧘</span> Mindfulness</button>
@@ -1539,23 +1539,54 @@ function renderHoy(){
   }
   html += `</div>`;
 
-  /* QUICK STATS */
-  html += `<div class="card" style="padding:14px">
-    <div class="row-3">
-      <div style="text-align:center">
-        <div style="font-size:26px;font-weight:800;color:var(--primary-dark)">${tareasHoy.length + tareasVencidas.length}</div>
-        <small style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px">PARA HOY</small>
+    /* LECTURAS */
+  const todosLect = Dominio.materias.recolectarTodos();
+  if (todosLect.length){
+    const leidosL = todosLect.filter(x => x.bib.estado === 'leido');
+    const enCursoL = todosLect.filter(x => x.bib.estado === 'leyendo');
+    const pendientesL = todosLect.filter(x => !x.bib.estado || x.bib.estado === 'pendiente');
+    const pctL = todosLect.length ? Math.round(leidosL.length/todosLect.length*100) : 0;
+
+    /* Sugerido: primero el en curso, si no el pendiente con menor semana, si no el primer pendiente */
+    let sugerido = enCursoL[0] || null;
+    if (!sugerido && pendientesL.length){
+      const conSem = pendientesL
+        .filter(x => x.bib.semana != null)
+        .sort((a,b) => Number(a.bib.semana) - Number(b.bib.semana));
+      sugerido = conSem[0] || pendientesL[0];
+    }
+
+    html += `<div class="card">
+      <h3>📖 Lecturas
+        <span class="h3-actions"><button class="h3-btn" data-ir="lecturas">Ver todas</button></span>
+      </h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:var(--primary-dark);line-height:1;font-variant-numeric:tabular-nums">${leidosL.length} <span style="font-size:15px;color:var(--muted);font-weight:600">de ${todosLect.length}</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">textos leídos este cuatrimestre</div>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--primary-dark);font-variant-numeric:tabular-nums">${pctL}%</div>
       </div>
-      <div style="text-align:center">
-        <div style="font-size:26px;font-weight:800;color:var(--primary-dark)">${tareasProx.length}</div>
-        <small style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px">ESTA SEMANA</small>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:26px;font-weight:800;color:var(--primary-dark)">${examenesProx.length}</div>
-        <small style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px">EXÁMENES</small>
-      </div>
-    </div>
-  </div>`;
+      ${sugerido ? `
+        <div style="background:#f6f8fd;border-radius:12px;padding:12px;margin-bottom:10px;border-left:4px solid ${sugerido.materia.color}">
+          <div style="font-size:10.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
+            ${enCursoL.length ? '📖 Continuar leyendo' : '🔥 Próximo a leer'}
+          </div>
+          <div style="font-size:14px;font-weight:600;line-height:1.35;margin-bottom:5px">${escapeHTML(sugerido.bib.titulo)}</div>
+          <div style="font-size:11.5px;color:var(--muted);line-height:1.4">
+            <span style="color:${sugerido.materia.color};font-weight:700">${escapeHTML(sugerido.materia.nombre)}</span>
+            · Unidad ${sugerido.unidad.numero}
+            ${sugerido.bib.semana ? '· Semana ' + sugerido.bib.semana : ''}
+          </div>
+        </div>
+      ` : `
+        <div style="background:#dbf3e5;border-radius:12px;padding:12px;margin-bottom:10px;color:#149a5a;font-size:13px;text-align:center;font-weight:600">
+          ✅ ¡Todos los textos leídos!
+        </div>
+      `}
+      <button class="btn btn-primary" style="width:100%" data-ir="lecturas">📖 ${sugerido ? 'Ir a leer' : 'Ver lecturas'}</button>
+    </div>`;
+  }
 
   /* ENTREGAS */
   const entregasMostrar = [...tareasVencidas, ...tareasHoy, ...tareasProx].slice(0,5);
@@ -1602,21 +1633,6 @@ function renderHoy(){
     }).join('');
     html += `</div>`;
   }
-
-  /* POMODORO RÁPIDO */
-  html += `<div class="card" style="padding:14px;background:linear-gradient(135deg,#eef1fb,#f8f9ff);border:1px solid #c8cffb">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <span style="font-size:26px">⏱️</span>
-      <div style="flex:1">
-        <strong style="font-size:14.5px">¿Arrancamos a estudiar?</strong>
-        <div style="font-size:12px;color:var(--muted);margin-top:2px">${minHoy>0 ? 'Hoy llevás ' + minHoy + ' min' : 'Sesión de ' + ajustes.pomoTrabajo + ' min'}</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-primary" style="flex:1" data-ir="estudio">▶ Pomodoro</button>
-      <button class="btn btn-secondary" style="flex:1" data-sesion="1">➕ Registrar sesión</button>
-    </div>
-  </div>`;
 
   /* MINDFULNESS RÁPIDO */
   html += `<div class="card" style="padding:14px">
