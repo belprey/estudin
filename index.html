@@ -449,6 +449,66 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   text-transform:none}
 .bib-add-btn:active{transform:scale(.95)}
   
+  /* ==== LECTURAS ==== */
+.lect-grupo{margin-bottom:18px}
+.lect-grupo-titulo{font-size:12px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--muted);margin:0 0 8px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lect-grupo-titulo.curso{color:var(--primary-dark)}
+.lect-grupo-titulo.esta-semana{color:var(--accent)}
+.lect-grupo-titulo.prox{color:var(--warn)}
+.lect-grupo-titulo.sin-asignar{color:var(--muted)}
+.lect-grupo-titulo.leidos{color:var(--ok)}
+.lect-grupo-titulo .n{font-size:11px;font-weight:700;
+  background:#eef1fb;color:var(--primary-dark);padding:2px 8px;border-radius:99px;
+  letter-spacing:0;text-transform:none}
+.lect-grupo-titulo.esta-semana .n{background:#fff2e8;color:#c95a1f}
+.lect-grupo-titulo.prox .n{background:#fef3dd;color:#a76a00}
+.lect-grupo-titulo.leidos .n{background:#dbf3e5;color:#149a5a}
+
+.lect-item{background:#fff;border-radius:14px;padding:12px 14px;
+  box-shadow:var(--shadow);margin-bottom:8px;
+  border-left:5px solid var(--line);position:relative}
+.lect-item.curso{border-left-color:var(--primary)}
+.lect-item.esta-semana{border-left-color:var(--accent)}
+.lect-item.prox{border-left-color:var(--warn)}
+.lect-item.leido{border-left-color:var(--ok);opacity:.75}
+.lect-item h4{margin:0 0 4px;font-size:14px;letter-spacing:-.2px;
+  line-height:1.35;font-weight:600}
+.lect-item.leido h4{text-decoration:line-through;color:var(--muted)}
+.lect-item .meta{font-size:11.5px;color:var(--muted);display:flex;
+  gap:8px;flex-wrap:wrap;align-items:center;line-height:1.4}
+.lect-item .materia-tag{font-size:10.5px;font-weight:700;padding:2px 7px;
+  border-radius:99px;background:#eef1fb;color:var(--primary-dark)}
+.lect-item .sem-tag{font-size:10.5px;font-weight:700;padding:2px 7px;
+  border-radius:99px;background:#fff2e8;color:#c95a1f}
+.lect-item .leido-tag{font-size:10.5px;font-weight:700;padding:2px 7px;
+  border-radius:99px;background:#dbf3e5;color:#149a5a}
+
+.lect-vacio{text-align:center;color:var(--muted);font-size:13px;
+  padding:20px 12px;line-height:1.5;background:#f6f8fd;border-radius:12px}
+
+.lect-resumen{background:linear-gradient(135deg,#eef1fb,#f8f9ff);
+  border:1px solid #c8cffb;border-radius:14px;padding:14px;
+  display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.lect-resumen .lr-ico{font-size:26px;flex:none}
+.lect-resumen .lr-txt{flex:1;min-width:0}
+.lect-resumen .lr-txt strong{font-size:14px;display:block;margin-bottom:2px}
+.lect-resumen .lr-txt small{font-size:12px;color:var(--muted);display:block;line-height:1.4}
+.lect-resumen .lr-pct{font-size:18px;font-weight:800;
+  color:var(--primary-dark);flex:none;font-variant-numeric:tabular-nums}
+
+.lect-btn-toggle{background:#eef1fb;border:none;color:var(--primary-dark);
+  padding:6px 12px;border-radius:9px;font-family:inherit;font-size:12px;
+  font-weight:700;cursor:pointer;transition:.15s}
+.lect-btn-toggle:active{transform:scale(.95)}
+
+.filtro-lect{border:1px solid var(--line);background:#fff;color:var(--text);
+  padding:7px 13px;border-radius:999px;font-size:12.5px;font-weight:600;
+  cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap;flex:none}
+.filtro-lect:active{transform:scale(.95)}
+.filtro-lect.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+  
   @media (max-width:380px){
   .h1{font-size:18px}
   .racha-grid{grid-template-columns:1fr}
@@ -546,6 +606,14 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
       <div id="horarioGrid"></div>
     </section>
 
+    <!-- ============ LECTURAS ============ -->
+    <section class="view" id="view-lecturas">
+      <h1 class="h1">📖 Lecturas</h1>
+      <p class="sub">Todos tus textos, agrupados por lo que toca leer.</p>
+      <div id="lecturasFiltros" style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px"></div>
+      <div id="lecturasContenido"></div>
+    </section>
+    
     <!-- ============ APUNTES ============ -->
     <section class="view" id="view-apuntes">
       <h1 class="h1">📓 Apuntes</h1>
@@ -696,6 +764,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     <button class="nav-item" data-view="tareas"><span class="ico">📝</span> Tareas</button>
     <button class="nav-item" data-view="examenes"><span class="ico">🎯</span> Exámenes</button>
     <button class="nav-item" data-view="horario"><span class="ico">🗓️</span> Horario</button>
+    <button class="nav-item" data-view="lecturas"><span class="ico">📖</span> Lecturas</button>
     <button class="nav-item" data-view="apuntes"><span class="ico">📓</span> Apuntes</button>
     <button class="nav-item" data-view="estudio"><span class="ico">⏱️</span> Estudiar</button>
     <button class="nav-item" data-view="mindfulness"><span class="ico">🧘</span> Mindfulness</button>
@@ -1188,12 +1257,53 @@ const Dominio = {
       Storage.guardar(K.materias, materias);
       return b;
     },
-    borrarBib(materiaId, unidadId, bibId){
+       borrarBib(materiaId, unidadId, bibId){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return;
       const u = m.unidades.find(x => x.id === unidadId);
       if (!u) return;
       u.bibliografia = (u.bibliografia || []).filter(x => x.id !== bibId);
+      Storage.guardar(K.materias, materias);
+    },
+
+    /* ===== LECTURAS (vista global) ===== */
+    recolectarTodos(){
+      const out = [];
+      materias.forEach(m => {
+        (m.unidades || []).forEach(u => {
+          (u.bibliografia || []).forEach(b => {
+            out.push({
+              materiaId: m.id,
+              unidadId: u.id,
+              bibId: b.id,
+              materia: m,
+              unidad: u,
+              bib: b
+            });
+          });
+        });
+      });
+      return out;
+    },
+    cambiarEstadoBib(materiaId, unidadId, bibId, nuevoEstado){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return;
+      const u = m.unidades.find(x => x.id === unidadId);
+      if (!u) return;
+      const b = (u.bibliografia || []).find(x => x.id === bibId);
+      if (!b) return;
+      b.estado = nuevoEstado;
+      if (nuevoEstado === 'leido') b.leidoTs = Date.now();
+      Storage.guardar(K.materias, materias);
+    },
+    setSemanaBib(materiaId, unidadId, bibId, semana){
+      const m = this.get(materiaId);
+      if (!m || !m.unidades) return;
+      const u = m.unidades.find(x => x.id === unidadId);
+      if (!u) return;
+      const b = (u.bibliografia || []).find(x => x.id === bibId);
+      if (!b) return;
+      b.semana = (semana === null || semana === undefined) ? null : Number(semana);
       Storage.guardar(K.materias, materias);
     }
   },
@@ -2251,6 +2361,221 @@ function renderHorario(){
 }
 
 /* =====================================================================
+   RENDER: LECTURAS (vista global)
+   ===================================================================== */
+let filtroLecturaMateria = 'todas';
+
+function lecturasFiltrosHTML(){
+  const total = Dominio.materias.recolectarTodos().length;
+  if (!materias.length || !total) return '';
+  let html = `<button class="filtro-lect ${filtroLecturaMateria==='todas'?'on':''}" data-filtro-lect="todas">Todas</button>`;
+  materias.forEach(m => {
+    const n = Dominio.materias.recolectarTodos().filter(x => x.materiaId === m.id).length;
+    if (!n) return;
+    html += `<button class="filtro-lect ${filtroLecturaMateria===m.id?'on':''}" data-filtro-lect="${m.id}">
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.color};margin-right:5px;vertical-align:middle"></span>${escapeHTML(m.nombre)}
+    </button>`;
+  });
+  return html;
+}
+
+function lecturasAgrupar(todos){
+  const enCurso = todos.filter(x => x.bib.estado === 'leyendo');
+  const leidos = todos.filter(x => x.bib.estado === 'leido')
+    .sort((a,b) => (b.bib.leidoTs||0) - (a.bib.leidoTs||0));
+  const pendientes = todos.filter(x => !x.bib.estado || x.bib.estado === 'pendiente');
+
+  const conSemana = {};
+  const sinAsignar = [];
+  pendientes.forEach(x => {
+    if (x.bib.semana === null || x.bib.semana === undefined){
+      sinAsignar.push(x);
+    } else {
+      const s = Number(x.bib.semana);
+      (conSemana[s] = conSemana[s] || []).push(x);
+    }
+  });
+
+  const semanasOrdenadas = Object.keys(conSemana).map(Number).sort((a,b) => a - b);
+  let estaSemana = null;
+  let semanaQueViene = null;
+  if (semanasOrdenadas.length){
+    estaSemana = semanasOrdenadas[0];
+    semanaQueViene = semanasOrdenadas[1] || null;
+  }
+
+  return { enCurso, leidos, pendientes, conSemana, sinAsignar, semanasOrdenadas, estaSemana, semanaQueViene };
+}
+
+function lectItemHTML(x, tipo){
+  const m = x.materia;
+  const b = x.bib;
+  const meta = [b.autor, b.anio].filter(Boolean).join(' · ');
+  const cls = tipo === 'curso' ? 'curso' :
+              tipo === 'esta-semana' ? 'esta-semana' :
+              tipo === 'prox' ? 'prox' :
+              tipo === 'leido' ? 'leido' : '';
+  const semTag = (b.semana !== null && b.semana !== undefined && tipo !== 'leido')
+    ? `<span class="sem-tag">Semana ${b.semana}</span>` : '';
+  const leidoTag = (tipo === 'leido' && b.leidoTs)
+    ? `<span class="leido-tag">Leído ${fmtFechaCorta(isoDe(new Date(b.leidoTs)))}</span>` : '';
+  return `<div class="lect-item ${cls}">
+    <h4>${escapeHTML(b.titulo)}</h4>
+    <div class="meta">
+      <span class="materia-tag" style="background:${m.color}22;color:${m.color}">
+        ${escapeHTML(m.nombre)} · U${x.unidad.numero}
+      </span>
+      ${meta ? `<span>${escapeHTML(meta)}</span>` : ''}
+      ${semTag}
+      ${leidoTag}
+    </div>
+  </div>`;
+}
+
+function renderLecturas(){
+  const todos = Dominio.materias.recolectarTodos();
+
+  /* Filtros */
+  $('#lecturasFiltros').innerHTML = lecturasFiltrosHTML();
+  $('#lecturasFiltros').querySelectorAll('[data-filtro-lect]').forEach(b => {
+    b.onclick = () => {
+      filtroLecturaMateria = b.dataset.filtroLect;
+      renderLecturas();
+    };
+  });
+
+  const cont = $('#lecturasContenido');
+
+  if (!todos.length){
+    cont.innerHTML = `<div class="lect-vacio">
+      Todavía no cargaste textos.<br>
+      Andá a <b>Materias</b> → una materia → una unidad → <b>➕ Texto</b>.
+    </div>`;
+    return;
+  }
+
+  /* Aplicar filtro */
+  const filtrados = filtroLecturaMateria === 'todas'
+    ? todos
+    : todos.filter(x => x.materiaId === filtroLecturaMateria);
+
+  const g = lecturasAgrupar(filtrados);
+  const total = filtrados.length;
+  const totalLeidos = g.leidos.length;
+  const pct = total ? Math.round(totalLeidos/total*100) : 0;
+
+  let html = `
+    <div class="lect-resumen">
+      <span class="lr-ico">📚</span>
+      <div class="lr-txt">
+        <strong>${totalLeidos} de ${total} textos leídos</strong>
+        <small>${filtroLecturaMateria==='todas' ? 'Todas las materias' : escapeHTML(Dominio.materias.nombreDe(filtroLecturaMateria))}</small>
+      </div>
+      <span class="lr-pct">${pct}%</span>
+    </div>
+  `;
+
+  /* EN CURSO */
+  if (g.enCurso.length){
+    html += `<div class="lect-grupo">
+      <div class="lect-grupo-titulo curso">
+        <span>📖 En curso</span><span class="n">${g.enCurso.length}</span>
+      </div>
+      ${g.enCurso.map(x => lectItemHTML(x, 'curso')).join('')}
+    </div>`;
+  }
+
+  /* ESTA SEMANA */
+  if (g.estaSemana !== null){
+    const items = g.conSemana[g.estaSemana] || [];
+    html += `<div class="lect-grupo">
+      <div class="lect-grupo-titulo esta-semana">
+        <span>🔥 Semana ${g.estaSemana} (esta semana)</span>
+        <span class="n">${items.length}</span>
+      </div>
+      ${items.map(x => lectItemHTML(x, 'esta-semana')).join('')}
+    </div>`;
+  }
+
+  /* SEMANA QUE VIENE */
+  if (g.semanaQueViene !== null){
+    const items = g.conSemana[g.semanaQueViene] || [];
+    html += `<div class="lect-grupo">
+      <div class="lect-grupo-titulo prox">
+        <span>📅 Semana ${g.semanaQueViene} (la que viene)</span>
+        <span class="n">${items.length}</span>
+      </div>
+      ${items.map(x => lectItemHTML(x, 'prox')).join('')}
+    </div>`;
+  }
+
+  /* MÁS ADELANTE */
+  const semanasRestantes = g.semanasOrdenadas.filter(s => s !== g.estaSemana && s !== g.semanaQueViene);
+  if (semanasRestantes.length){
+    const totalRestantes = semanasRestantes.reduce((a, s) => a + g.conSemana[s].length, 0);
+    html += `<div class="lect-grupo">
+      <div class="lect-grupo-titulo">
+        <span>🗓️ Más adelante (semanas ${semanasRestantes[0]}–${semanasRestantes[semanasRestantes.length-1]})</span>
+        <span class="n">${totalRestantes}</span>
+      </div>
+      ${semanasRestantes.map(s => `
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin:0 0 4px 2px">Semana ${s}</div>
+          ${g.conSemana[s].map(x => lectItemHTML(x, '')).join('')}
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  /* SIN ASIGNAR */
+  if (g.sinAsignar.length){
+    html += `<div class="lect-grupo">
+      <div class="lect-grupo-titulo sin-asignar">
+        <span>📌 Sin semana asignada</span>
+        <span class="n">${g.sinAsignar.length}</span>
+      </div>
+      ${g.sinAsignar.map(x => lectItemHTML(x, '')).join('')}
+    </div>`;
+  }
+
+  /* LEÍDOS RECIENTES */
+  if (g.leidos.length){
+    const visibles = g.leidos.slice(0, 5);
+    const resto = g.leidos.slice(5);
+    html += `<div class="lect-grupo">
+      <div class="lect-grupo-titulo leidos">
+        <span>✅ Leídos recientes</span>
+        <span class="n">${g.leidos.length}</span>
+      </div>
+      ${visibles.map(x => lectItemHTML(x, 'leido')).join('')}
+      ${resto.length ? `<div style="text-align:center;margin-top:6px">
+        <button class="lect-btn-toggle" id="verLeidosTodos">▼ Ver todos los leídos (${g.leidos.length})</button>
+      </div>` : ''}
+    </div>`;
+  }
+
+  if (!filtrados.length){
+    html += `<div class="lect-vacio">Esta materia todavía no tiene textos cargados.</div>`;
+  }
+
+  cont.innerHTML = html;
+
+  /* Ver todos los leídos */
+  const vl = $('#verLeidosTodos');
+  if (vl) vl.onclick = () => {
+    const visibles = g.leidos;
+    cont.querySelectorAll('.lect-grupo.leidos, .lect-grupo-titulo.leidos')
+    const grupo = [...cont.querySelectorAll('.lect-grupo')].find(el =>
+      el.querySelector('.lect-grupo-titulo.leidos'));
+    if (grupo){
+      const extras = g.leidos.slice(5).map(x => lectItemHTML(x, 'leido')).join('');
+      vl.parentElement.insertAdjacentHTML('beforebegin', extras);
+      vl.remove();
+    }
+  };
+}
+  
+  /* =====================================================================
    RENDER: APUNTES
    ===================================================================== */
 function renderApuntes(){
@@ -2963,6 +3288,7 @@ function irA(vista){
   if (vista==='tareas') renderTareas();
   if (vista==='examenes') renderExamenes();
   if (vista==='horario') renderHorario();
+  if (vista==='lecturas') renderLecturas(); 
   if (vista==='apuntes') renderApuntes();
   if (vista==='estudio'){ renderPomoHero(); renderSesiones(); renderTecnicas(); }
   if (vista==='mindfulness') renderMindfulness();
@@ -3128,6 +3454,7 @@ function iniciar(){
   renderTareas();
   renderExamenes();
   renderHorario();
+  renderLecturas();
   renderApuntes();
   renderSesiones();
   renderTecnicas();
