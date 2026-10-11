@@ -971,7 +971,20 @@ let asistencia = Storage.cargar(K.asistencia, {}); // { materiaId: { fecha: 'pre
 let mindfulnessHist = Storage.cargar(K.mindfulness, []);
 let historialChat = Storage.cargar(K.chat, []);
 let pomoStats = Storage.cargar(K.pomo, { ciclos:0, minutos:0, hoy:{} });
-
+/* Migración: asegurar campos nuevos en textos ya cargados */
+(function migrarBibliografia(){
+  let cambios = false;
+  materias.forEach(m => {
+    (m.unidades || []).forEach(u => {
+      (u.bibliografia || []).forEach(b => {
+        if (b.estado === undefined){ b.estado = 'pendiente'; cambios = true; }
+        if (b.semana === undefined){ b.semana = null; cambios = true; }
+      });
+    });
+  });
+  if (cambios) Storage.guardar(K.materias, materias);
+})();
+  
 /* ===== HELPERS ===== */
 const $ = (s,c=document) => c.querySelector(s);
 const $$ = (s,c=document) => [...c.querySelectorAll(s)];
@@ -1123,7 +1136,7 @@ const Dominio = {
       const u = m.unidades.find(x => x.id === unidadId);
       return u ? (u.bibliografia || []) : [];
     },
-    agregarBib(materiaId, unidadId, data){
+     agregarBib(materiaId, unidadId, data){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return null;
       const u = m.unidades.find(x => x.id === unidadId);
@@ -1136,7 +1149,9 @@ const Dominio = {
         anio: data.anio || null,
         tipo: data.tipo || 'obligatoria',
         fuente: data.fuente || '',
-        impreso: false
+        impreso: false,
+        estado: data.estado || 'pendiente',
+        semana: data.semana || null
       };
       u.bibliografia.push(b);
       Storage.guardar(K.materias, materias);
