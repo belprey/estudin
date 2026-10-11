@@ -508,6 +508,26 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap;flex:none}
 .filtro-lect:active{transform:scale(.95)}
 .filtro-lect.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+  /* ==== ACCIONES DE LECTURA ==== */
+.lect-acciones{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.lect-btn{border:none;border-radius:9px;font-family:inherit;font-size:12px;
+  font-weight:700;padding:7px 12px;cursor:pointer;transition:.15s;
+  display:inline-flex;align-items:center;gap:5px}
+.lect-btn:active{transform:scale(.95)}
+.lect-btn.play{background:var(--primary);color:#fff}
+.lect-btn.play.continuar{background:linear-gradient(135deg,#ff8a4c,#e56a2c)}
+.lect-btn.terminar{background:var(--ok);color:#fff}
+.lect-btn.revertir{background:#eef1fb;color:var(--muted)}
+.lect-btn.semana{background:#fef3dd;color:#a76a00}
+.lect-btn.semana.con-sem{background:#fff2e8;color:#c95a1f}
+
+.semana-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.semana-btn{padding:12px 4px;border:1px solid var(--line);background:#fff;
+  border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;
+  color:var(--text);cursor:pointer;transition:.15s}
+.semana-btn:active{transform:scale(.95)}
+.semana-btn.on{background:var(--primary);color:#fff;border-color:var(--primary)}
   
   @media (max-width:380px){
   .h1{font-size:18px}
@@ -997,7 +1017,21 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   </div>
 </section>
   
-<!-- ============ OVERLAY RESPIRACIÓN ============ -->
+<!-- ============ SHEET ASIGNAR SEMANA ============ -->
+<section class="sheet" id="sheetSemanaLectura">
+  <div class="sheet-head"><h2 id="semanaLecturaTitle">Asignar semana</h2>
+    <button class="icon-btn" data-close-sheet>✕</button></div>
+  <div class="sheet-body">
+    <input type="hidden" id="sl-materia">
+    <input type="hidden" id="sl-unidad">
+    <input type="hidden" id="sl-bib">
+    <p class="hint" id="semanaLecturaTexto" style="margin-bottom:14px"></p>
+    <div class="semana-grid" id="sl-grid"></div>
+    <button class="btn btn-secondary" style="width:100%;margin-top:14px" id="sl-quitar">📌 Sin asignar</button>
+  </div>
+</section>
+
+ <!-- ============ OVERLAY RESPIRACIÓN ============ -->
 <div class="breath-overlay" id="breathOverlay">
   <div class="breath-top">
     <div class="btitle" id="bTitle">Respiración</div>
@@ -2435,6 +2469,25 @@ function lectItemHTML(x, tipo){
     ? `<span class="sem-tag">Semana ${b.semana}</span>` : '';
   const leidoTag = (tipo === 'leido' && b.leidoTs)
     ? `<span class="leido-tag">Leído ${fmtFechaCorta(isoDe(new Date(b.leidoTs)))}</span>` : '';
+
+  const esLeido = b.estado === 'leido';
+  const esLeyendo = b.estado === 'leyendo';
+
+  let acciones = '';
+  if (esLeido){
+    acciones = `<button class="lect-btn revertir" data-lect-revertir="${m.id}|${x.unidadId}|${b.id}">↩ Volver a pendiente</button>`;
+  } else {
+    acciones = `
+      <button class="lect-btn play ${esLeyendo?'continuar':''}" data-lect-play="${m.id}|${x.unidadId}|${b.id}">
+        ${esLeyendo ? '▶ Continuar' : '▶ Empezar a leer'}
+      </button>
+      <button class="lect-btn terminar" data-lect-terminar="${m.id}|${x.unidadId}|${b.id}">✅ Terminé</button>
+      <button class="lect-btn semana ${b.semana!=null?'con-sem':''}" data-lect-semana="${m.id}|${x.unidadId}|${b.id}">
+        📅 ${b.semana!=null ? 'Semana ' + b.semana : 'Semana'}
+      </button>
+    `;
+  }
+
   return `<div class="lect-item ${cls}">
     <h4>${escapeHTML(b.titulo)}</h4>
     <div class="meta">
@@ -2445,6 +2498,7 @@ function lectItemHTML(x, tipo){
       ${semTag}
       ${leidoTag}
     </div>
+    <div class="lect-acciones">${acciones}</div>
   </div>`;
 }
 
@@ -2579,8 +2633,6 @@ function renderLecturas(){
   /* Ver todos los leídos */
   const vl = $('#verLeidosTodos');
   if (vl) vl.onclick = () => {
-    const visibles = g.leidos;
-    cont.querySelectorAll('.lect-grupo.leidos, .lect-grupo-titulo.leidos')
     const grupo = [...cont.querySelectorAll('.lect-grupo')].find(el =>
       el.querySelector('.lect-grupo-titulo.leidos'));
     if (grupo){
@@ -2589,6 +2641,89 @@ function renderLecturas(){
       vl.remove();
     }
   };
+
+  /* Acciones de lectura */
+  cont.querySelectorAll('[data-lect-play]').forEach(b => {
+    b.onclick = () => {
+      const [mId, uId, bId] = b.dataset.lectPlay.split('|');
+      Dominio.materias.cambiarEstadoBib(mId, uId, bId, 'leyendo');
+      chime(660, 0.15, 0.08);
+      hablar('Dale, a leer.');
+      renderLecturas();
+      renderHoy();
+    };
+  });
+
+  cont.querySelectorAll('[data-lect-terminar]').forEach(b => {
+    b.onclick = () => {
+      const [mId, uId, bId] = b.dataset.lectTerminar.split('|');
+      Dominio.materias.cambiarEstadoBib(mId, uId, bId, 'leido');
+      chime(880, 0.3, 0.12);
+      hablar('¡Excelente! Un texto menos.');
+      toast('📖 Texto marcado como leído', 'ok');
+      renderLecturas();
+      renderHoy();
+    };
+  });
+
+  cont.querySelectorAll('[data-lect-revertir]').forEach(b => {
+    b.onclick = () => {
+      const [mId, uId, bId] = b.dataset.lectRevertir.split('|');
+      Dominio.materias.cambiarEstadoBib(mId, uId, bId, 'pendiente');
+      renderLecturas();
+      renderHoy();
+    };
+  });
+
+  cont.querySelectorAll('[data-lect-semana]').forEach(b => {
+    b.onclick = () => {
+      const [mId, uId, bId] = b.dataset.lectSemana.split('|');
+      abrirSheetSemanaLectura(mId, uId, bId);
+    };
+  });
+}
+
+/* =====================================================================
+   SHEET ASIGNAR SEMANA A TEXTO
+   ===================================================================== */
+function abrirSheetSemanaLectura(materiaId, unidadId, bibId){
+  const m = Dominio.materias.get(materiaId);
+  if (!m) return;
+  const u = (m.unidades||[]).find(x => x.id === unidadId);
+  if (!u) return;
+  const b = (u.bibliografia||[]).find(x => x.id === bibId);
+  if (!b) return;
+
+  $('#sl-materia').value = materiaId;
+  $('#sl-unidad').value = unidadId;
+  $('#sl-bib').value = bibId;
+  $('#semanaLecturaTitle').textContent = 'Asignar semana';
+  $('#semanaLecturaTexto').innerHTML = `<strong>${escapeHTML(b.titulo)}</strong><br>${escapeHTML(m.nombre)} · Unidad ${u.numero}`;
+
+  const grid = $('#sl-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= 16; i++){
+    const btn = document.createElement('button');
+    btn.className = 'semana-btn' + (Number(b.semana) === i ? ' on' : '');
+    btn.textContent = i;
+    btn.onclick = () => {
+      Dominio.materias.setSemanaBib(materiaId, unidadId, bibId, i);
+      chime(700, 0.15, 0.08);
+      cerrarSheets();
+      renderLecturas();
+      renderHoy();
+    };
+    grid.appendChild(btn);
+  }
+
+  $('#sl-quitar').onclick = () => {
+    Dominio.materias.setSemanaBib(materiaId, unidadId, bibId, null);
+    cerrarSheets();
+    renderLecturas();
+    renderHoy();
+  };
+
+  abrirSheet('sheetSemanaLectura');
 }
   
   /* =====================================================================
