@@ -1071,7 +1071,8 @@ const K = {
   asistencia:'estudin.v1.asistencia',
   mindfulness:'estudin.v1.mindfulness',
   chat:'estudin.v1.chat',
-  pomo:'estudin.v1.pomo'
+  pomo:'estudin.v1.pomo',
+  lecturaActual:'estudin.v1.lecturaActual'
 };
 
 const Storage = {
@@ -1094,6 +1095,7 @@ let asistencia = Storage.cargar(K.asistencia, {}); // { materiaId: { fecha: 'pre
 let mindfulnessHist = Storage.cargar(K.mindfulness, []);
 let historialChat = Storage.cargar(K.chat, []);
 let pomoStats = Storage.cargar(K.pomo, { ciclos:0, minutos:0, hoy:{} });
+let lecturaActual = Storage.cargar(K.lecturaActual, null);  
 /* Migración: asegurar campos nuevos en textos ya cargados */
 (function migrarBibliografia(){
   let cambios = false;
@@ -2643,28 +2645,43 @@ function renderLecturas(){
   };
 
   /* Acciones de lectura */
-  cont.querySelectorAll('[data-lect-play]').forEach(b => {
+   cont.querySelectorAll('[data-lect-play]').forEach(b => {
     b.onclick = () => {
       const [mId, uId, bId] = b.dataset.lectPlay.split('|');
       Dominio.materias.cambiarEstadoBib(mId, uId, bId, 'leyendo');
+      const m = Dominio.materias.get(mId);
+      const u = (m.unidades||[]).find(x => x.id === uId);
+      const bib = (u.bibliografia||[]).find(x => x.id === bId);
+      lecturaActual = {
+        materiaId: mId,
+        unidadId: uId,
+        bibId: bId,
+        titulo: bib ? bib.titulo : 'Texto',
+        materiaNombre: m ? m.nombre : '',
+        numeroUnidad: u ? u.numero : null
+      };
+      Storage.guardar(K.lecturaActual, lecturaActual);
       chime(660, 0.15, 0.08);
       hablar('Dale, a leer.');
-      renderLecturas();
-      renderHoy();
+      irA('estudio');
     };
   });
 
-  cont.querySelectorAll('[data-lect-terminar]').forEach(b => {
+   cont.querySelectorAll('[data-lect-terminar]').forEach(b => {
     b.onclick = () => {
       const [mId, uId, bId] = b.dataset.lectTerminar.split('|');
       Dominio.materias.cambiarEstadoBib(mId, uId, bId, 'leido');
+      if (lecturaActual && lecturaActual.bibId === bId){
+        lecturaActual = null;
+        Storage.guardar(K.lecturaActual, null);
+      }
       chime(880, 0.3, 0.12);
       hablar('¡Excelente! Un texto menos.');
       toast('📖 Texto marcado como leído', 'ok');
       renderLecturas();
       renderHoy();
     };
-  });
+  }); 
 
   cont.querySelectorAll('[data-lect-revertir]').forEach(b => {
     b.onclick = () => {
@@ -2802,8 +2819,18 @@ function renderPomoHero(){
 
   const materiasOpts = materias.map(m => `<option value="${m.id}" ${pomoEstado.materiaId===m.id?'selected':''}>${escapeHTML(m.nombre)}</option>`).join('');
 
+   const lecturaHTML = lecturaActual ? `
+    <div style="background:rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;margin-bottom:14px;text-align:left">
+      <div style="font-size:10.5px;opacity:.85;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📖 Leyendo</div>
+      <div style="font-size:13.5px;font-weight:700;line-height:1.3;margin-bottom:2px">${escapeHTML(lecturaActual.titulo)}</div>
+      <div style="font-size:11.5px;opacity:.8">${escapeHTML(lecturaActual.materiaNombre)}${lecturaActual.numeroUnidad ? ' · Unidad ' + lecturaActual.numeroUnidad : ''}</div>
+      <button id="pomoSoltarLectura" style="background:rgba(255,255,255,.2);border:none;color:#fff;font-family:inherit;font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;margin-top:8px;cursor:pointer">✕ Dejar de leer este texto</button>
+    </div>
+  ` : '';
+
   $('#pomoHero').innerHTML = `
     <div class="pomo-hero">
+      ${lecturaHTML}
       <div class="pomo-ring">
         <svg viewBox="0 0 200 200" width="200" height="200">
           <circle class="ring-bg" cx="100" cy="100" r="${R}"></circle>
@@ -2846,6 +2873,13 @@ function renderPomoHero(){
     renderPomoHero();
     hablar('A descansar.');
   };
+  const soltarBtn = $('#pomoSoltarLectura');
+  if (soltarBtn) soltarBtn.onclick = () => {
+    lecturaActual = null;
+    Storage.guardar(K.lecturaActual, null);
+    renderPomoHero();
+    toast('Ya no estás vinculado a ese texto');
+  };
 }
 
 function iniciarPomodoro(){
@@ -2865,12 +2899,15 @@ function tick(){
     const eraTrabajo = pomoEstado.modo === 'trabajo';
     if (eraTrabajo){
       // Log sesión
+      const temaTxt = lecturaActual ? lecturaActual.titulo : 'Pomodoro';
+      const materiaIdParaSesion = lecturaActual ? lecturaActual.materiaId : pomoEstado.materiaId;
       Dominio.sesiones.guardar({
         fecha: hoyISO(),
-        materiaId: pomoEstado.materiaId,
+        materiaId: materiaIdParaSesion,
         minutos: ajustes.pomoTrabajo,
-        tema: 'Pomodoro',
-        notas: ''
+        tema: temaTxt,
+        notas: '',
+        bibId: lecturaActual ? lecturaActual.bibId : null
       });
       pomoStats.ciclos = (pomoStats.ciclos || 0) + 1;
       Storage.guardar(K.pomo, pomoStats);
@@ -2921,15 +2958,16 @@ function terminarPomodoro(){
   if (pomoEstado.modo === 'trabajo' && pomoEstado.duracionSeg > pomoEstado.restanteSeg){
     const transcurrido = Math.floor((pomoEstado.duracionSeg - pomoEstado.restanteSeg) / 60);
     if (transcurrido >= 5){
+            const temaTxt = lecturaActual ? lecturaActual.titulo : 'Sesión parcial';
+      const materiaIdParaSesion = lecturaActual ? lecturaActual.materiaId : pomoEstado.materiaId;
       Dominio.sesiones.guardar({
         fecha: hoyISO(),
-        materiaId: pomoEstado.materiaId,
+        materiaId: materiaIdParaSesion,
         minutos: transcurrido,
-        tema: 'Sesión parcial',
-        notas: ''
+        tema: temaTxt,
+        notas: '',
+        bibId: lecturaActual ? lecturaActual.bibId : null
       });
-      renderSesiones(); renderHoy(); renderRachas();
-    }
   }
   pomoEstado = { activo:false, modo:'trabajo', restanteSeg:0, duracionSeg:ajustes.pomoTrabajo*60, intervalo:null, materiaId:null };
   renderPomoHero();
