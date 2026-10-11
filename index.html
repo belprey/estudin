@@ -1400,7 +1400,8 @@ const Dominio = {
       if (nuevoEstado === 'leido') b.leidoTs = Date.now();
       Storage.guardar(K.materias, materias);
     },
-    setSemanaBib(materiaId, unidadId, bibId, semana){
+    
+     setSemanaBib(materiaId, unidadId, bibId, semana){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return;
       const u = m.unidades.find(x => x.id === unidadId);
@@ -1409,8 +1410,7 @@ const Dominio = {
       if (!b) return;
       b.semana = (semana === null || semana === undefined) ? null : Number(semana);
       Storage.guardar(K.materias, materias);
-    }
-  },
+    },
     toggleImpresoBib(materiaId, unidadId, bibId){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return;
@@ -1422,7 +1422,7 @@ const Dominio = {
       Storage.guardar(K.materias, materias);
     }
   },
-        
+  
   tareas: {
     listar(filtro = 'pendientes'){
       if (filtro === 'completadas') return tareas.filter(t => t.estado === 'completada').sort((a,b) => (b.completadaTs||0) - (a.completadaTs||0));
