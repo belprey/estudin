@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#5b6ef5">
+<meta name="theme-color" content="#f2703a">
 <title>Estudín — Organizador de facultad</title>
 <style>
 :root{
-  --primary:#5b6ef5; --primary-dark:#4353d4; --accent:#ff8a4c;
+  --primary:#f2703a; --primary-dark:#d9531e; --accent:#ffb020;
   --ok:#22b573; --warn:#f0a020; --danger:#e5484d;
-  --bg:#eef1fb; --surface:#fff; --text:#16223a; --muted:#6b7a90;
-  --line:#e0e5f5; --shadow:0 8px 30px rgba(22,34,58,.10); --r:18px;
+  --bg:#fef6f0; --surface:#fff; --text:#2a1f1a; --muted:#8a6a5c;
+  --line:#f5e0d3; --shadow:0 8px 30px rgba(42,31,26,.10); --r:18px;
   --mind:#22b573; --mind-dark:#149a5a;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -23,14 +23,14 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   background:rgba(255,255,255,.9);backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line);z-index:20;flex:none}
 .icon-btn{width:40px;height:40px;display:grid;place-items:center;border:none;
-  border-radius:13px;background:#eef1fb;color:var(--text);font-size:18px;cursor:pointer;
+  border-radius:13px;background:#fef0e8;color:var(--text);font-size:18px;cursor:pointer;
   transition:.15s;flex:none}
 .icon-btn:active{transform:scale(.92)}
 .brand{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
   font-weight:800;font-size:16px}
 .brand svg{width:26px;height:32px}
 .badge-rol{font-size:10px;font-weight:700;padding:3px 7px;border-radius:99px;
-  background:#e8ecff;color:var(--primary-dark);letter-spacing:.3px;text-transform:uppercase}
+  background:#fde4d5;color:var(--primary-dark);letter-spacing:.3px;text-transform:uppercase}
 .views{flex:1;overflow-y:auto;position:relative}
 .view{display:none;padding:14px 14px 24px;animation:fade .25s ease}
 .view.active{display:block}
@@ -42,7 +42,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .card h3{margin:0 0 10px;font-size:15px;letter-spacing:-.2px;
   display:flex;align-items:center;gap:8px;justify-content:space-between}
 .card h3 .h3-actions{display:flex;gap:6px}
-.card h3 .h3-btn{background:#eef1fb;border:none;border-radius:8px;
+.card h3 .h3-btn{background:#fef0e8;border:none;border-radius:8px;
   padding:5px 9px;font-size:12px;font-weight:700;color:var(--primary-dark);
   cursor:pointer;font-family:inherit;transition:.15s}
 .card h3 .h3-btn:active{transform:scale(.95)}
@@ -52,14 +52,14 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .pill.ok{background:#dbf3e5;color:#149a5a}
 .pill.warn{background:#fef3dd;color:#a76a00}
 .pill.danger{background:#fde9e9;color:#c92c32}
-.pill.info{background:#e8ecff;color:var(--primary-dark)}
+.pill.info{background:#fde4d5;color:var(--primary-dark)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
   padding:12px 18px;border:none;border-radius:14px;font-family:inherit;
   font-size:14.5px;font-weight:700;cursor:pointer;transition:.15s}
 .btn:active{transform:scale(.97)}
 .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  color:#fff;box-shadow:0 8px 20px rgba(91,110,245,.3);width:100%}
-.btn-secondary{background:#eef1fb;color:var(--text)}
+  color:#fff;box-shadow:0 8px 20px rgba(242,112,58,.3);width:100%}
+.btn-secondary{background:#fef0e8;color:var(--text)}
 .btn-danger{background:#fdecec;color:var(--danger)}
 .btn-mini{padding:6px 11px;font-size:12.5px;border-radius:10px;width:auto}
 .field{margin-bottom:14px}
@@ -68,7 +68,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .field input[type=text],.field input[type=number],.field input[type=date],
 .field input[type=time],.field textarea,.field select{width:100%;padding:11px 13px;
   border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14.5px;
-  background:#f6f8fd;outline:none;transition:.15s;color:var(--text)}
+  background:#fdf5ef;outline:none;transition:.15s;color:var(--text)}
 .field textarea{resize:vertical;min-height:70px;line-height:1.4}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--primary);background:#fff}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -79,7 +79,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .switch-row span{font-size:14px;font-weight:600;flex:1;min-width:0}
 .switch{position:relative;width:48px;height:28px;flex:none}
 .switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;inset:0;background:#cdd8e8;border-radius:99px;cursor:pointer;transition:.2s}
+.slider{position:absolute;inset:0;background:#e8d5c8;border-radius:99px;cursor:pointer;transition:.2s}
 .slider::before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;
   background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 5px rgba(0,0,0,.2)}
 .switch input:checked + .slider{background:var(--primary)}
@@ -115,19 +115,19 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .tarea-body.done strong{text-decoration:line-through;color:var(--muted)}
 .tarea-body .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .tarea-body .materia-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;
-  background:#eef1fb;color:var(--primary-dark)}
+  background:#fef0e8;color:var(--primary-dark)}
 .tarea-del{background:none;border:none;color:var(--danger);font-size:15px;cursor:pointer;padding:4px;flex:none}
 .grupo-titulo{font-size:12px;font-weight:800;text-transform:uppercase;
   letter-spacing:.6px;color:var(--muted);margin:16px 0 6px}
 .grupo-titulo:first-child{margin-top:0}
 .grupo-titulo.urgente{color:var(--danger)}
-.grupo-titulo.hoy{color:var(--accent)}
+.grupo-titulo.hoy{color:var(--primary)}
 .grupo-titulo.manana{color:var(--warn)}
 
 /* ==== EXAMEN ==== */
 .examen-card{background:#fff;border-radius:16px;padding:14px;
   box-shadow:var(--shadow);margin-bottom:10px;display:flex;gap:14px;align-items:center;
-  border-left:6px solid var(--accent);cursor:pointer;transition:.15s}
+  border-left:6px solid var(--primary);cursor:pointer;transition:.15s}
 .examen-card:active{transform:scale(.99)}
 .examen-count{flex:none;text-align:center;min-width:60px}
 .examen-count b{display:block;font-size:28px;font-weight:800;line-height:1;
@@ -145,7 +145,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 /* ==== HORARIO ==== */
 .horario-dia{background:#fff;border-radius:16px;padding:14px;
   box-shadow:var(--shadow);margin-bottom:10px}
-.horario-dia.hoy{background:linear-gradient(135deg,#eef1fb,#f8f9ff);
+.horario-dia.hoy{background:linear-gradient(135deg,#fef0e8,#fff8f2);
   border:1.5px solid var(--primary)}
 .horario-dia h4{margin:0 0 10px;font-size:14px;letter-spacing:-.2px;
   display:flex;align-items:center;justify-content:space-between}
@@ -186,9 +186,9 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   display:flex;gap:8px;justify-content:space-between;align-items:center}
 
 /* ==== POMODORO ==== */
-.pomo-hero{background:linear-gradient(135deg,#5b6ef5,#7a5cff);color:#fff;
+.pomo-hero{background:linear-gradient(135deg,#f2703a,#ff8a4c);color:#fff;
   border-radius:var(--r);padding:26px 20px;text-align:center;
-  box-shadow:0 12px 30px rgba(91,110,245,.32);margin-bottom:14px}
+  box-shadow:0 12px 30px rgba(242,112,58,.32);margin-bottom:14px}
 .pomo-ring{position:relative;width:200px;height:200px;margin:0 auto 12px}
 .pomo-ring svg{transform:rotate(-90deg)}
 .pomo-ring .ring-bg{fill:none;stroke:rgba(255,255,255,.22);stroke-width:12}
@@ -225,9 +225,9 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   box-shadow:var(--shadow);display:flex;gap:14px;align-items:center;
   cursor:pointer;transition:.15s;border-left:5px solid var(--mind)}
 .mind-card:active{transform:scale(.99)}
-.mind-card.blue{border-left-color:#5b6ef5}
+.mind-card.blue{border-left-color:var(--primary)}
 .mind-card.orange{border-left-color:var(--accent)}
-.mind-card.purple{border-left-color:#9b59b6}
+.mind-card.purple{border-left-color:#b07a5c}
 .mind-ico{font-size:28px;flex:none;line-height:1;width:38px;text-align:center}
 .mind-body{flex:1;min-width:0}
 .mind-body h3{margin:0 0 4px;font-size:14.5px;letter-spacing:-.2px}
@@ -249,19 +249,18 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 /* ==== MASCOTA ==== */
 .mascot{width:100%;height:100%;display:block;overflow:visible}
 .mascot .body{fill:var(--primary)}
-.mascot .screen{fill:#f2f4ff}
+.mascot .screen{fill:#fff}
 .mascot .ant{stroke:var(--primary-dark);stroke-width:4;stroke-linecap:round}
 .mascot .ant-ball{fill:var(--accent);animation:antGlow 2.4s infinite}
-.mascot .eye{fill:#16223a;transform-box:fill-box;transform-origin:center;animation:eyeBlink 4.6s infinite}
+.mascot .eye{fill:#2a1f1a;transform-box:fill-box;transform-origin:center;animation:eyeBlink 4.6s infinite}
 .mascot .eye.right{animation-delay:.07s}
-.mascot .mouth{fill:none;stroke:#16223a;stroke-width:3.4;stroke-linecap:round;
+.mascot .mouth{fill:none;stroke:#2a1f1a;stroke-width:3.4;stroke-linecap:round;
   transform-box:fill-box;transform-origin:center}
 .mascot .cheek{fill:#ff9db1;opacity:.55}
-.mascot .home{fill:#f2f4ff;opacity:.85}
 /* ANTEJOS DE ESTUDIOSO */
-.mascot .glens{fill:none;stroke:#16223a;stroke-width:2.5;stroke-linecap:round}
-.mascot .gbridge{fill:none;stroke:#16223a;stroke-width:2.5;stroke-linecap:round}
-.mascot .garm{fill:none;stroke:#16223a;stroke-width:2.5;stroke-linecap:round}
+.mascot .glens{fill:none;stroke:#2a1f1a;stroke-width:2.5;stroke-linecap:round}
+.mascot .gbridge{fill:none;stroke:#2a1f1a;stroke-width:2.5;stroke-linecap:round}
+.mascot .garm{fill:none;stroke:#2a1f1a;stroke-width:2.5;stroke-linecap:round}
 @keyframes eyeBlink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
 @keyframes antGlow{0%,100%{opacity:1}50%{opacity:.45}}
 .mascot.talking .mouth{animation:talk .26s infinite alternate}
@@ -280,9 +279,9 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
 .row.bot .bubble{background:#fff;border-bottom-left-radius:6px;box-shadow:var(--shadow)}
 .row.user .bubble{background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  color:#fff;border-bottom-right-radius:6px;box-shadow:0 8px 22px rgba(91,110,245,.32)}
+  color:#fff;border-bottom-right-radius:6px;box-shadow:0 8px 22px rgba(242,112,58,.32)}
 .typing{display:flex;gap:4px;padding:4px 2px}
-.typing i{width:7px;height:7px;border-radius:50%;background:#b7c6dc;animation:blink 1.2s infinite}
+.typing i{width:7px;height:7px;border-radius:50%;background:#e0c8b8;animation:blink 1.2s infinite}
 .typing i:nth-child(2){animation-delay:.2s}
 .typing i:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
@@ -296,24 +295,24 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   padding:10px 12px calc(env(safe-area-inset-bottom) + 10px);
   background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
 #chatInput{flex:1;min-height:44px;max-height:120px;padding:12px 16px;
-  border:1px solid var(--line);border-radius:22px;background:#f6f8fd;
+  border:1px solid var(--line);border-radius:22px;background:#fdf5ef;
   font-family:inherit;font-size:15px;color:var(--text);resize:none;outline:none;
   line-height:1.35;transition:.15s}
 #chatInput:focus{border-color:var(--primary);background:#fff}
 .round-btn{width:44px;height:44px;flex:none;border:none;border-radius:50%;
   display:grid;place-items:center;font-size:18px;cursor:pointer;transition:.15s}
 .round-btn:active{transform:scale(.9)}
-#micBtn{background:#eef1fb;color:var(--primary)}
+#micBtn{background:#fef0e8;color:var(--primary)}
 #micBtn.listening{background:var(--danger);color:#fff;animation:pulse 1.3s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.5)}70%{box-shadow:0 0 0 14px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
-#sendBtn{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 6px 16px rgba(91,110,245,.35)}
+#sendBtn{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 6px 16px rgba(242,112,58,.35)}
 
 /* ==== SHEETS ==== */
 .sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);
   width:100%;max-width:520px;max-height:88dvh;background:#fff;
   border-radius:26px 26px 0 0;z-index:60;transition:transform .32s cubic-bezier(.4,0,.2,1);
   display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom);
-  box-shadow:0 -10px 40px rgba(16,26,45,.2)}
+  box-shadow:0 -10px 40px rgba(42,31,26,.2)}
 .sheet.show{transform:translate(-50%,0)}
 .sheet-head{display:flex;align-items:center;justify-content:space-between;
   padding:18px 20px 12px;border-bottom:1px solid var(--line);flex:none}
@@ -323,7 +322,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .sheet-actions .btn{flex:1}
 
 /* ==== OVERLAY ==== */
-.overlay{position:fixed;inset:0;background:rgba(16,26,45,.45);opacity:0;
+.overlay{position:fixed;inset:0;background:rgba(42,20,10,.45);opacity:0;
   pointer-events:none;transition:.25s;z-index:40}
 .overlay.show{opacity:1;pointer-events:auto}
 
@@ -331,10 +330,10 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .drawer{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:82vw;
   background:#fff;z-index:50;transform:translateX(-102%);
   transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;
-  padding-top:env(safe-area-inset-top);box-shadow:12px 0 40px rgba(16,26,45,.18)}
+  padding-top:env(safe-area-inset-top);box-shadow:12px 0 40px rgba(42,31,26,.18)}
 .drawer.show{transform:translateX(0)}
 .drawer-head{display:flex;align-items:center;gap:12px;padding:18px 16px 14px;
-  background:linear-gradient(135deg,#5b6ef5,#8b5cff);color:#fff}
+  background:linear-gradient(135deg,#f2703a,#ff8a4c);color:#fff}
 .drawer-head svg{width:40px;height:50px;flex:none}
 .drawer-head strong{display:block;font-size:16px}
 .drawer-head span{font-size:12px;opacity:.9}
@@ -342,15 +341,15 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;
   border:none;background:none;border-radius:13px;font-family:inherit;font-size:14.5px;
   font-weight:600;color:var(--text);cursor:pointer;text-align:left;transition:.15s}
-.nav-item:hover,.nav-item:active{background:#eef1fb}
-.nav-item.active{background:#e8ecff;color:var(--primary-dark)}
+.nav-item:hover,.nav-item:active{background:#fef0e8}
+.nav-item.active{background:#fde4d5;color:var(--primary-dark)}
 .nav-item .ico{font-size:18px;width:24px;text-align:center;flex:none}
 .drawer-foot{padding:12px 16px calc(env(safe-area-inset-bottom) + 14px);
   font-size:11px;color:var(--muted);border-top:1px solid var(--line)}
 
 /* ==== TOAST ==== */
 .toast{position:fixed;top:calc(env(safe-area-inset-top) + 70px);left:50%;
-  transform:translateX(-50%);background:#16223a;color:#fff;padding:12px 18px;
+  transform:translateX(-50%);background:#2a1f1a;color:#fff;padding:12px 18px;
   border-radius:14px;font-size:14px;font-weight:600;z-index:500;
   box-shadow:0 8px 24px rgba(0,0,0,.3);animation:fade .3s ease;max-width:88vw;
   text-align:center;line-height:1.35}
@@ -358,36 +357,36 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .toast.warn{background:linear-gradient(135deg,#f0a020,#c07a00)}
 
 /* ==== RESPIRACIÓN ==== */
-.breath-overlay{position:fixed;inset:0;background:#0b1424;color:#e6edfa;z-index:200;
+.breath-overlay{position:fixed;inset:0;background:#1a0f0a;color:#f5e0d3;z-index:200;
   display:none;flex-direction:column;align-items:center;justify-content:center;
   padding:calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 20px);
   overflow:hidden}
 .breath-overlay.show{display:flex}
 .breath-top{position:absolute;top:calc(env(safe-area-inset-top) + 16px);left:16px;right:16px;
   display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:2}
-.breath-top .btitle{font-size:13px;color:#8fa2c4;font-weight:700;letter-spacing:.3px}
-.breath-top .bclose{background:rgba(255,255,255,.1);color:#e6edfa;border:none;
+.breath-top .btitle{font-size:13px;color:#c9b0a2;font-weight:700;letter-spacing:.3px}
+.breath-top .bclose{background:rgba(255,255,255,.1);color:#f5e0d3;border:none;
   padding:9px 14px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700}
 .breath-stage{position:relative;width:min(72vw,320px);height:min(72vw,320px);
   display:flex;align-items:center;justify-content:center;margin-bottom:30px}
 .breath-circle{position:absolute;width:100%;height:100%;border-radius:50%;
-  background:radial-gradient(circle at 50% 40%,rgba(91,110,245,.55),rgba(91,110,245,.15));
-  border:2px solid rgba(91,110,245,.6);
+  background:radial-gradient(circle at 50% 40%,rgba(242,112,58,.55),rgba(242,112,58,.15));
+  border:2px solid rgba(242,112,58,.6);
   transform:scale(.6);transition:transform linear;
-  box-shadow:0 0 80px rgba(91,110,245,.4)}
+  box-shadow:0 0 80px rgba(242,112,58,.4)}
 .breath-stage .b-text{position:relative;z-index:2;text-align:center;pointer-events:none}
 .breath-stage .b-fase{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
 .breath-stage .b-cont{font-size:52px;font-weight:800;font-variant-numeric:tabular-nums;
   line-height:1;letter-spacing:-2px;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.4)}
-.breath-info{text-align:center;font-size:13px;color:#8fa2c4;line-height:1.5;max-width:340px}
-.breath-info strong{color:#e6edfa;display:block;margin-bottom:2px}
+.breath-info{text-align:center;font-size:13px;color:#c9b0a2;line-height:1.5;max-width:340px}
+.breath-info strong{color:#f5e0d3;display:block;margin-bottom:2px}
 .breath-controls{margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.breath-controls button{background:rgba(255,255,255,.12);color:#e6edfa;border:none;
+.breath-controls button{background:rgba(255,255,255,.12);color:#f5e0d3;border:none;
   padding:12px 22px;border-radius:12px;font-family:inherit;font-weight:700;
   font-size:14px;cursor:pointer;transition:.15s}
 .breath-controls button:active{transform:scale(.95)}
-.breath-controls button.primary{background:linear-gradient(135deg,#5b6ef5,#8b5cff);color:#fff;
-  box-shadow:0 8px 22px rgba(91,110,245,.4)}
+.breath-controls button.primary{background:linear-gradient(135deg,#f2703a,#ff8a4c);color:#fff;
+  box-shadow:0 8px 22px rgba(242,112,58,.4)}
 
 /* ==== MATERIAS EN EL DRAWER ==== */
 .drawer-materias-label{font-size:10px;font-weight:800;text-transform:uppercase;
@@ -397,18 +396,18 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   padding:9px 14px;border:none;background:none;border-radius:11px;
   font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text);
   cursor:pointer;text-align:left;transition:.15s}
-.drawer-materia:hover,.drawer-materia:active{background:#eef1fb}
+.drawer-materia:hover,.drawer-materia:active{background:#fef0e8}
 .drawer-materia .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .drawer-materia .label{flex:1;min-width:0;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
 .drawer-materia .count{font-size:10.5px;color:var(--muted);font-weight:700;flex:none}
-  
+
 /* ==== UNIDADES ==== */
 .unidad-card{background:#fff;border-radius:16px;padding:14px;
   box-shadow:var(--shadow);margin-bottom:10px;border-left:6px solid var(--primary)}
 .unidad-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .unidad-head .u-num{font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;
-  background:#eef1fb;color:var(--primary-dark);letter-spacing:.3px;flex:none}
+  background:#fef0e8;color:var(--primary-dark);letter-spacing:.3px;flex:none}
 .unidad-head h4{margin:0;font-size:14.5px;letter-spacing:-.2px;flex:1;min-width:0;
   overflow:hidden;text-overflow:ellipsis}
 .unidad-cont{font-size:12.5px;color:var(--muted);line-height:1.45;margin:0;
@@ -417,7 +416,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 .unidad-foot .u-meta{font-size:12px;color:var(--muted);font-weight:700}
 .unidad-acciones{display:flex;gap:4px}
-.unidad-acciones button{border:none;background:#eef1fb;width:32px;height:32px;
+.unidad-acciones button{border:none;background:#fef0e8;width:32px;height:32px;
   border-radius:9px;cursor:pointer;font-size:14px;transition:.15s}
 .unidad-acciones button:active{transform:scale(.9)}
 .unidad-acciones button.danger{background:#fdecec;color:var(--danger)}
@@ -433,9 +432,9 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .bib-body .tipo{font-size:10px;font-weight:800;text-transform:uppercase;
   letter-spacing:.4px;padding:2px 6px;border-radius:99px;display:inline-block;margin-top:4px}
 .bib-body .tipo.obligatoria{background:#fde9e9;color:#c92c32}
-.bib-body .tipo.complementaria{background:#e8ecff;color:var(--primary-dark)}
+.bib-body .tipo.complementaria{background:#fde4d5;color:var(--primary-dark)}
 .bib-acciones{display:flex;gap:4px;flex:none}
-.bib-acciones button{border:none;background:#eef1fb;width:28px;height:28px;
+.bib-acciones button{border:none;background:#fef0e8;width:28px;height:28px;
   border-radius:8px;cursor:pointer;font-size:12px;transition:.15s}
 .bib-acciones button:active{transform:scale(.9)}
 .bib-acciones button.danger{background:#fdecec;color:var(--danger)}
@@ -448,19 +447,19 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   font-weight:700;cursor:pointer;letter-spacing:0;transition:.15s;
   text-transform:none}
 .bib-add-btn:active{transform:scale(.95)}
-  
-  /* ==== LECTURAS ==== */
+
+/* ==== LECTURAS ==== */
 .lect-grupo{margin-bottom:18px}
 .lect-grupo-titulo{font-size:12px;font-weight:800;text-transform:uppercase;
   letter-spacing:.6px;color:var(--muted);margin:0 0 8px;
   display:flex;align-items:center;justify-content:space-between;gap:8px}
 .lect-grupo-titulo.curso{color:var(--primary-dark)}
-.lect-grupo-titulo.esta-semana{color:var(--accent)}
+.lect-grupo-titulo.esta-semana{color:var(--primary)}
 .lect-grupo-titulo.prox{color:var(--warn)}
 .lect-grupo-titulo.sin-asignar{color:var(--muted)}
 .lect-grupo-titulo.leidos{color:var(--ok)}
 .lect-grupo-titulo .n{font-size:11px;font-weight:700;
-  background:#eef1fb;color:var(--primary-dark);padding:2px 8px;border-radius:99px;
+  background:#fef0e8;color:var(--primary-dark);padding:2px 8px;border-radius:99px;
   letter-spacing:0;text-transform:none}
 .lect-grupo-titulo.esta-semana .n{background:#fff2e8;color:#c95a1f}
 .lect-grupo-titulo.prox .n{background:#fef3dd;color:#a76a00}
@@ -470,7 +469,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   box-shadow:var(--shadow);margin-bottom:8px;
   border-left:5px solid var(--line);position:relative}
 .lect-item.curso{border-left-color:var(--primary)}
-.lect-item.esta-semana{border-left-color:var(--accent)}
+.lect-item.esta-semana{border-left-color:var(--primary)}
 .lect-item.prox{border-left-color:var(--warn)}
 .lect-item.leido{border-left-color:var(--ok);opacity:.75}
 .lect-item h4{margin:0 0 4px;font-size:14px;letter-spacing:-.2px;
@@ -479,17 +478,17 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .lect-item .meta{font-size:11.5px;color:var(--muted);display:flex;
   gap:8px;flex-wrap:wrap;align-items:center;line-height:1.4}
 .lect-item .materia-tag{font-size:10.5px;font-weight:700;padding:2px 7px;
-  border-radius:99px;background:#eef1fb;color:var(--primary-dark)}
+  border-radius:99px;background:#fef0e8;color:var(--primary-dark)}
 .lect-item .sem-tag{font-size:10.5px;font-weight:700;padding:2px 7px;
   border-radius:99px;background:#fff2e8;color:#c95a1f}
 .lect-item .leido-tag{font-size:10.5px;font-weight:700;padding:2px 7px;
   border-radius:99px;background:#dbf3e5;color:#149a5a}
 
 .lect-vacio{text-align:center;color:var(--muted);font-size:13px;
-  padding:20px 12px;line-height:1.5;background:#f6f8fd;border-radius:12px}
+  padding:20px 12px;line-height:1.5;background:#fdf5ef;border-radius:12px}
 
-.lect-resumen{background:linear-gradient(135deg,#eef1fb,#f8f9ff);
-  border:1px solid #c8cffb;border-radius:14px;padding:14px;
+.lect-resumen{background:linear-gradient(135deg,#fef0e8,#fff8f2);
+  border:1px solid #fbd4bd;border-radius:14px;padding:14px;
   display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .lect-resumen .lr-ico{font-size:26px;flex:none}
 .lect-resumen .lr-txt{flex:1;min-width:0}
@@ -498,7 +497,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .lect-resumen .lr-pct{font-size:18px;font-weight:800;
   color:var(--primary-dark);flex:none;font-variant-numeric:tabular-nums}
 
-.lect-btn-toggle{background:#eef1fb;border:none;color:var(--primary-dark);
+.lect-btn-toggle{background:#fef0e8;border:none;color:var(--primary-dark);
   padding:6px 12px;border-radius:9px;font-family:inherit;font-size:12px;
   font-weight:700;cursor:pointer;transition:.15s}
 .lect-btn-toggle:active{transform:scale(.95)}
@@ -509,16 +508,16 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .filtro-lect:active{transform:scale(.95)}
 .filtro-lect.on{background:var(--primary);color:#fff;border-color:var(--primary)}
 
-  /* ==== ACCIONES DE LECTURA ==== */
+/* ==== ACCIONES DE LECTURA ==== */
 .lect-acciones{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
 .lect-btn{border:none;border-radius:9px;font-family:inherit;font-size:12px;
   font-weight:700;padding:7px 12px;cursor:pointer;transition:.15s;
   display:inline-flex;align-items:center;gap:5px}
 .lect-btn:active{transform:scale(.95)}
 .lect-btn.play{background:var(--primary);color:#fff}
-.lect-btn.play.continuar{background:linear-gradient(135deg,#ff8a4c,#e56a2c)}
+.lect-btn.play.continuar{background:linear-gradient(135deg,#f2703a,#d9531e)}
 .lect-btn.terminar{background:var(--ok);color:#fff}
-.lect-btn.revertir{background:#eef1fb;color:var(--muted)}
+.lect-btn.revertir{background:#fef0e8;color:var(--muted)}
 .lect-btn.semana{background:#fef3dd;color:#a76a00}
 .lect-btn.semana.con-sem{background:#fff2e8;color:#c95a1f}
 
@@ -528,8 +527,8 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color:var(--text);cursor:pointer;transition:.15s}
 .semana-btn:active{transform:scale(.95)}
 .semana-btn.on{background:var(--primary);color:#fff;border-color:var(--primary)}
-  
- /* ==== LISTA DE IMPRESIÓN ==== */
+
+/* ==== LISTA DE IMPRESIÓN ==== */
 .imp-materia{background:#fff;border-radius:16px;padding:14px;
   box-shadow:var(--shadow);margin-bottom:12px;
   border-left:6px solid var(--primary)}
@@ -541,7 +540,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .imp-materia-head .imp-nombre .imp-dot{width:12px;height:12px;
   border-radius:50%;flex:none}
 .imp-materia-head .imp-prog{font-size:11.5px;font-weight:800;
-  padding:3px 9px;border-radius:99px;background:#eef1fb;color:var(--primary-dark);
+  padding:3px 9px;border-radius:99px;background:#fef0e8;color:var(--primary-dark);
   flex:none}
 .imp-materia-head .imp-prog.completo{background:#dbf3e5;color:#149a5a}
 
@@ -570,16 +569,16 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   letter-spacing:.4px;padding:2px 6px;border-radius:99px;display:inline-block;
   margin-top:4px}
 .imp-body .tipo.obligatoria{background:#fde9e9;color:#c92c32}
-.imp-body .tipo.complementaria{background:#e8ecff;color:var(--primary-dark)}
+.imp-body .tipo.complementaria{background:#fde4d5;color:var(--primary-dark)}
 .imp-body .sem-tag{font-size:10px;font-weight:700;padding:2px 6px;
   border-radius:99px;background:#fff2e8;color:#c95a1f;margin-left:5px}
 .imp-item.impreso .imp-body strong{text-decoration:line-through;
   color:var(--muted)}
 
 .imp-vacio{text-align:center;color:var(--muted);font-size:13px;
-  padding:20px 12px;line-height:1.5;background:#f6f8fd;border-radius:12px}
-  
-  @media (max-width:380px){
+  padding:20px 12px;line-height:1.5;background:#fdf5ef;border-radius:12px}
+
+@media (max-width:380px){
   .h1{font-size:18px}
   .racha-grid{grid-template-columns:1fr}
   .row-2,.row-3{grid-template-columns:1fr}
@@ -590,26 +589,30 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 </head>
 <body>
 
-<!-- ============ MASCOTA CON ANTEJOS DE ESTUDIOSO ============ -->
+<!-- ============ MASCOTA CUADRADA CON CARITA Y ANTEJOS ============ -->
 <template id="tplMascota">
   <svg class="mascot" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <line class="ant" x1="50" y1="30" x2="50" y2="11"/>
-    <circle class="ant-ball" cx="50" cy="8" r="6"/>
-    <rect class="body" x="16" y="26" width="68" height="98" rx="21"/>
-    <rect class="screen" x="25" y="36" width="50" height="62" rx="12"/>
-    <ellipse class="eye left" cx="39" cy="58" rx="5.2" ry="7"/>
-    <ellipse class="eye right" cx="61" cy="58" rx="5.2" ry="7"/>
-    <circle class="cheek" cx="31" cy="73" r="4.2"/>
-    <circle class="cheek" cx="69" cy="73" r="4.2"/>
+    <!-- Antena con bolita -->
+    <line class="ant" x1="50" y1="30" x2="50" y2="14"/>
+    <circle class="ant-ball" cx="50" cy="10" r="6"/>
+    <!-- Cuerpo: cuadrado redondeado -->
+    <rect class="body" x="16" y="28" width="68" height="90" rx="18"/>
+    <!-- Brillo interior -->
+    <rect class="screen" x="26" y="38" width="48" height="60" rx="14" opacity="0.15"/>
+    <!-- Ojos -->
+    <ellipse class="eye left" cx="39" cy="60" rx="5.2" ry="7"/>
+    <ellipse class="eye right" cx="61" cy="60" rx="5.2" ry="7"/>
+    <!-- Cachetes -->
+    <circle class="cheek" cx="30" cy="73" r="4.2"/>
+    <circle class="cheek" cx="70" cy="73" r="4.2"/>
+    <!-- Boca -->
     <path class="mouth" d="M42 73 Q50 82 58 73"/>
-    <circle class="home" cx="50" cy="109" r="6"/>
-
- <!-- ANTEJOS DE ESTUDIOSO (oversized, más grandes que la cara) -->
-    <circle class="glens" cx="34" cy="58" r="15"/>
-    <circle class="glens" cx="66" cy="58" r="15"/>
-    <path class="gbridge" d="M49 58 L51 58"/>
-    <path class="garm" d="M19.9 53 L14 49"/>
-    <path class="garm" d="M80.1 53 L86 49"/>
+    <!-- Anteojos de estudioso (oversized) -->
+    <circle class="glens" cx="34" cy="60" r="14"/>
+    <circle class="glens" cx="66" cy="60" r="14"/>
+    <path class="gbridge" d="M48 60 L52 60"/>
+    <path class="garm" d="M20 56 L14 52"/>
+    <path class="garm" d="M80 56 L86 52"/>
   </svg>
 </template>
 
@@ -683,8 +686,8 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
       <div id="lecturasFiltros" style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px"></div>
       <div id="lecturasContenido"></div>
     </section>
-    
-        <!-- ============ LISTA DE IMPRESIÓN ============ -->
+
+    <!-- ============ LISTA DE IMPRESIÓN ============ -->
     <section class="view" id="view-impresion">
       <h1 class="h1">🖨️ Lista de impresión</h1>
       <p class="sub">Todos los textos de todas las materias. Tildá lo que ya imprimiste.</p>
@@ -693,7 +696,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
           <strong style="font-size:14px">Progreso</strong>
           <span class="pill info" id="impresionPct">0 / 0</span>
         </div>
-        <div style="height:10px;background:#e6ecf8;border-radius:99px;overflow:hidden">
+        <div style="height:10px;background:#fbe0d0;border-radius:99px;overflow:hidden">
           <div id="impresionBar" style="height:100%;width:0%;background:linear-gradient(90deg,#22b573,#4cd28c);transition:width .4s"></div>
         </div>
       </div>
@@ -728,7 +731,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
       <p class="sub">Guiado por voz, para bajar revoluciones antes o después de estudiar.</p>
       <div class="mind-grid">
         <div class="mind-card blue" data-patron="cuadrada">
-          <div class="mind-ico">🟦</div>
+          <div class="mind-ico">🟧</div>
           <div class="mind-body">
             <h3>Respiración cuadrada</h3>
             <p>Inhalá · Sostené · Exhalá · Sostené. 4 tiempos cada uno.</p>
@@ -853,7 +856,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     <button class="nav-item" data-view="examenes"><span class="ico">🎯</span> Exámenes</button>
     <button class="nav-item" data-view="horario"><span class="ico">🗓️</span> Horario</button>
     <button class="nav-item" data-view="apuntes"><span class="ico">📓</span> Apuntes</button>
-   <button class="nav-item" data-view="impresion"><span class="ico">🖨️</span> Lista de impresión</button> 
+    <button class="nav-item" data-view="impresion"><span class="ico">🖨️</span> Lista de impresión</button>
     <button class="nav-item" data-view="estudio"><span class="ico">⏱️</span> Estudiar</button>
     <button class="nav-item" data-view="mindfulness"><span class="ico">🧘</span> Mindfulness</button>
     <button class="nav-item" data-view="rachas"><span class="ico">🔥</span> Rachas</button>
@@ -1032,7 +1035,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
         <option value="obligatoria">Obligatoria</option>
         <option value="complementaria">Complementaria</option>
       </select></div>
-       <div class="field"><label>Fuente / nota</label>
+    <div class="field"><label>Fuente / nota</label>
       <input type="text" id="b-fuente" placeholder="Ej: Ficha de cátedra, cap. 3 del libro..."></div>
     <div class="field"><label>Semana (opcional)</label>
       <select id="b-semana">
@@ -1061,7 +1064,6 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   </div>
 </section>
 
-  
 <!-- ============ SHEET UNIDAD ============ -->
 <section class="sheet" id="sheetUnidad">
   <div class="sheet-head"><h2 id="unidadTitle">Nueva unidad</h2>
@@ -1084,7 +1086,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     </div>
   </div>
 </section>
-  
+
 <!-- ============ SHEET ASIGNAR SEMANA ============ -->
 <section class="sheet" id="sheetSemanaLectura">
   <div class="sheet-head"><h2 id="semanaLecturaTitle">Asignar semana</h2>
@@ -1099,7 +1101,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   </div>
 </section>
 
- <!-- ============ OVERLAY RESPIRACIÓN ============ -->
+<!-- ============ OVERLAY RESPIRACIÓN ============ -->
 <div class="breath-overlay" id="breathOverlay">
   <div class="breath-top">
     <div class="btitle" id="bTitle">Respiración</div>
@@ -1159,11 +1161,12 @@ let tareas = Storage.cargar(K.tareas, []);
 let examenes = Storage.cargar(K.examenes, []);
 let apuntes = Storage.cargar(K.apuntes, []);
 let sesiones = Storage.cargar(K.sesiones, []);
-let asistencia = Storage.cargar(K.asistencia, {}); // { materiaId: { fecha: 'presente'|'ausente'|'tarde'|'justificado' } }
+let asistencia = Storage.cargar(K.asistencia, {});
 let mindfulnessHist = Storage.cargar(K.mindfulness, []);
 let historialChat = Storage.cargar(K.chat, []);
 let pomoStats = Storage.cargar(K.pomo, { ciclos:0, minutos:0, hoy:{} });
-let lecturaActual = Storage.cargar(K.lecturaActual, null);  
+let lecturaActual = Storage.cargar(K.lecturaActual, null);
+
 /* Migración: asegurar campos nuevos en textos ya cargados */
 (function migrarBibliografia(){
   let cambios = false;
@@ -1177,7 +1180,7 @@ let lecturaActual = Storage.cargar(K.lecturaActual, null);
   });
   if (cambios) Storage.guardar(K.materias, materias);
 })();
-  
+
 /* ===== HELPERS ===== */
 const $ = (s,c=document) => c.querySelector(s);
 const $$ = (s,c=document) => [...c.querySelectorAll(s)];
@@ -1190,7 +1193,7 @@ const fmtFechaCorta = iso => new Date(iso+'T12:00').toLocaleDateString('es-AR',{
 const fmtHora = h => h && /^\d{2}:\d{2}$/.test(h) ? h : '';
 const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const DIAS_CORTOS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-const PALETA = ['#5b6ef5','#8b5cff','#e5484d','#f0a020','#22b573','#2ea8e0','#ec4899','#14b8a6'];
+const PALETA = ['#f2703a','#d9531e','#ffb020','#e5484d','#22b573','#2ea8e0','#ec4899','#14b8a6'];
 
 const dormir = ms => new Promise(r => setTimeout(r, ms));
 
@@ -1284,7 +1287,7 @@ const Dominio = {
       Storage.guardar(K.apuntes, apuntes);
       Storage.guardar(K.asistencia, asistencia);
     },
-        colorDe(id){ const m = this.get(id); return m ? m.color : '#5b6ef5'; },
+    colorDe(id){ const m = this.get(id); return m ? m.color : '#f2703a'; },
     nombreDe(id){ const m = this.get(id); return m ? m.nombre : ''; },
 
     /* ===== UNIDADES ===== */
@@ -1315,7 +1318,7 @@ const Dominio = {
       Storage.guardar(K.materias, materias);
       return u;
     },
-       borrarUnidad(materiaId, unidadId){
+    borrarUnidad(materiaId, unidadId){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return;
       m.unidades = m.unidades.filter(x => x.id !== unidadId);
@@ -1329,7 +1332,7 @@ const Dominio = {
       const u = m.unidades.find(x => x.id === unidadId);
       return u ? (u.bibliografia || []) : [];
     },
-     agregarBib(materiaId, unidadId, data){
+    agregarBib(materiaId, unidadId, data){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return null;
       const u = m.unidades.find(x => x.id === unidadId);
@@ -1361,7 +1364,7 @@ const Dominio = {
       Storage.guardar(K.materias, materias);
       return b;
     },
-       borrarBib(materiaId, unidadId, bibId){
+    borrarBib(materiaId, unidadId, bibId){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return;
       const u = m.unidades.find(x => x.id === unidadId);
@@ -1400,8 +1403,7 @@ const Dominio = {
       if (nuevoEstado === 'leido') b.leidoTs = Date.now();
       Storage.guardar(K.materias, materias);
     },
-    
-     setSemanaBib(materiaId, unidadId, bibId, semana){
+    setSemanaBib(materiaId, unidadId, bibId, semana){
       const m = this.get(materiaId);
       if (!m || !m.unidades) return;
       const u = m.unidades.find(x => x.id === unidadId);
@@ -1422,7 +1424,7 @@ const Dominio = {
       Storage.guardar(K.materias, materias);
     }
   },
-  
+
   tareas: {
     listar(filtro = 'pendientes'){
       if (filtro === 'completadas') return tareas.filter(t => t.estado === 'completada').sort((a,b) => (b.completadaTs||0) - (a.completadaTs||0));
@@ -1619,7 +1621,7 @@ function renderHoy(){
   `;
 
   if (rachaEst >= 3){
-    html += `<div class="card" style="background:linear-gradient(135deg,#fff7e8,#ffefd0);border-left:5px solid var(--accent);padding:14px">
+    html += `<div class="card" style="background:linear-gradient(135deg,#fff7e8,#ffefd0);border-left:5px solid var(--primary);padding:14px">
       <div style="display:flex;align-items:center;gap:10px">
         <span style="font-size:28px">🔥</span>
         <div>
@@ -1654,7 +1656,7 @@ function renderHoy(){
   }
   html += `</div>`;
 
-    /* LECTURAS */
+  /* LECTURAS */
   const todosLect = Dominio.materias.recolectarTodos();
   if (todosLect.length){
     const leidosL = todosLect.filter(x => x.bib.estado === 'leido');
@@ -1662,7 +1664,6 @@ function renderHoy(){
     const pendientesL = todosLect.filter(x => !x.bib.estado || x.bib.estado === 'pendiente');
     const pctL = todosLect.length ? Math.round(leidosL.length/todosLect.length*100) : 0;
 
-    /* Sugerido: primero el en curso, si no el pendiente con menor semana, si no el primer pendiente */
     let sugerido = enCursoL[0] || null;
     if (!sugerido && pendientesL.length){
       const conSem = pendientesL
@@ -1683,7 +1684,7 @@ function renderHoy(){
         <div style="font-size:22px;font-weight:800;color:var(--primary-dark);font-variant-numeric:tabular-nums">${pctL}%</div>
       </div>
       ${sugerido ? `
-        <div style="background:#f6f8fd;border-radius:12px;padding:12px;margin-bottom:10px;border-left:4px solid ${sugerido.materia.color}">
+        <div style="background:#fdf5ef;border-radius:12px;padding:12px;margin-bottom:10px;border-left:4px solid ${sugerido.materia.color}">
           <div style="font-size:10.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
             ${enCursoL.length ? '📖 Continuar leyendo' : '🔥 Próximo a leer'}
           </div>
@@ -1759,7 +1760,7 @@ function renderHoy(){
       </div>
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-secondary" style="flex:1" data-patron="cuadrada">🟦 Respirar</button>
+      <button class="btn btn-secondary" style="flex:1" data-patron="cuadrada">🟧 Respirar</button>
       <button class="btn btn-secondary" style="flex:1" data-patron="478">🌙 4-7-8</button>
     </div>
   </div>`;
@@ -1825,7 +1826,7 @@ function renderDrawerMaterias(){
     };
   });
 }
-  
+
 /* =====================================================================
    RENDER: MATERIAS
    ===================================================================== */
@@ -1874,7 +1875,7 @@ function renderHorariosEditor(){
     return;
   }
   cont.innerHTML = horariosTemp.map((h, i) => `
-    <div style="background:#f6f8fd;border-radius:12px;padding:10px;margin-bottom:8px">
+    <div style="background:#fdf5ef;border-radius:12px;padding:10px;margin-bottom:8px">
       <div style="display:flex;gap:6px;margin-bottom:6px">
         <select data-h="${i}" data-campo="dia" style="flex:1;padding:8px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;background:#fff">
           ${[1,2,3,4,5,6].map(d => `<option value="${d}" ${Number(h.dia)===d?'selected':''}>${DIAS[d]}</option>`).join('')}
@@ -1943,7 +1944,6 @@ $('#guardarMateria').onclick = () => {
    DETALLE DE MATERIA · construido por bloques
    ===================================================================== */
 
-/* --- Bloque: Unidades + Bibliografía --- */
 function bloqueUnidades(m){
   const unidades = Dominio.materias.unidadesDe(m.id);
   if (!unidades.length){
@@ -2009,7 +2009,6 @@ function bloqueUnidades(m){
   return html;
 }
 
-/* --- Bloque: Horarios --- */
 function bloqueHorarios(m){
   if (!(m.horarios||[]).length) return '';
   return `
@@ -2018,7 +2017,6 @@ function bloqueHorarios(m){
   `;
 }
 
-/* --- Bloque: Notas --- */
 function bloqueNotas(m){
   if (!m.notas) return '';
   return `
@@ -2027,7 +2025,6 @@ function bloqueNotas(m){
   `;
 }
 
-/* --- Bloque: Asistencia --- */
 function bloqueAsistencia(m){
   const stats = Dominio.asistencia.stats(m.id);
   const mapaAsist = asistencia[m.id] || {};
@@ -2035,19 +2032,19 @@ function bloqueAsistencia(m){
   return `
     <h3 style="font-size:14px;margin-top:20px">📊 Asistencia</h3>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
-      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+      <div style="text-align:center;background:#fdf5ef;border-radius:10px;padding:8px">
         <div style="font-size:18px;font-weight:800;color:var(--ok)">${stats.presentes}</div>
         <small style="font-size:10.5px;color:var(--muted);font-weight:700">PRESENTE</small>
       </div>
-      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+      <div style="text-align:center;background:#fdf5ef;border-radius:10px;padding:8px">
         <div style="font-size:18px;font-weight:800;color:var(--warn)">${stats.tardes}</div>
         <small style="font-size:10.5px;color:var(--muted);font-weight:700">TARDE</small>
       </div>
-      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+      <div style="text-align:center;background:#fdf5ef;border-radius:10px;padding:8px">
         <div style="font-size:18px;font-weight:800;color:var(--primary-dark)">${stats.justificados}</div>
         <small style="font-size:10.5px;color:var(--muted);font-weight:700">JUSTIF.</small>
       </div>
-      <div style="text-align:center;background:#f6f8fd;border-radius:10px;padding:8px">
+      <div style="text-align:center;background:#fdf5ef;border-radius:10px;padding:8px">
         <div style="font-size:18px;font-weight:800;color:var(--danger)">${stats.ausentes}</div>
         <small style="font-size:10.5px;color:var(--muted);font-weight:700">AUSENTE</small>
       </div>
@@ -2066,7 +2063,6 @@ function bloqueAsistencia(m){
   `;
 }
 
-/* --- Bloque: Tareas y exámenes --- */
 function bloqueTareasExamenes(m){
   const tareasMat = tareas.filter(t => t.materiaId === m.id && t.estado !== 'completada');
   const examenesMat = examenes.filter(e => e.materiaId === m.id && e.fecha >= hoyISO());
@@ -2087,7 +2083,6 @@ function bloqueTareasExamenes(m){
   return html;
 }
 
-/* --- Bloque: Botones de acción (editar / eliminar materia) --- */
 function bloqueAccionesMateria(){
   return `
     <div style="display:flex;gap:8px;margin-top:20px">
@@ -2097,11 +2092,9 @@ function bloqueAccionesMateria(){
   `;
 }
 
-/* --- Enganchar TODOS los handlers del detalle --- */
 function engancharHandlersDetalle(id){
   const body = $('#detalleBody');
 
-  /* Asistencia */
   body.querySelectorAll('[data-asist2]').forEach(b => {
     b.onclick = () => {
       const [mat, fecha, estado] = b.dataset.asist2.split('|');
@@ -2112,7 +2105,6 @@ function engancharHandlersDetalle(id){
     };
   });
 
-  /* Unidades */
   body.querySelectorAll('[data-edit-u]').forEach(b => {
     b.onclick = () => abrirSheetUnidad(id, b.dataset.editU);
   });
@@ -2127,7 +2119,6 @@ function engancharHandlersDetalle(id){
   const addUBtn = $('#agregarUnidadBtn');
   if (addUBtn) addUBtn.onclick = () => abrirSheetUnidad(id, null);
 
-  /* Bibliografía */
   body.querySelectorAll('[data-add-bib]').forEach(b => {
     b.onclick = () => abrirSheetBib(id, b.dataset.addBib, null);
   });
@@ -2147,7 +2138,6 @@ function engancharHandlersDetalle(id){
     };
   });
 
-  /* Materia */
   $('#editarMateriaBtn').onclick = () => {
     const m = Dominio.materias.get(id);
     cerrarSheets(); setTimeout(() => abrirSheetMateria(m), 150);
@@ -2162,7 +2152,6 @@ function engancharHandlersDetalle(id){
   };
 }
 
-/* --- Función madre (solo arma el rompecabezas) --- */
 function abrirDetalleMateria(id){
   const m = Dominio.materias.get(id);
   if (!m) return;
@@ -2232,7 +2221,6 @@ $('#guardarBib').onclick = () => {
   }, 120);
 };
 
-  
 /* =====================================================================
    SHEET UNIDAD
    ===================================================================== */
@@ -2268,7 +2256,7 @@ $('#guardarUnidad').onclick = () => {
   }, 120);
 };
 
-  /* =====================================================================
+/* =====================================================================
    RENDER: TAREAS
    ===================================================================== */
 let filtroTareas = 'pendientes';
@@ -2288,10 +2276,8 @@ function renderTareas(){
     return;
   }
   if (filtroTareas === 'completadas' || filtroTareas === 'todas'){
-    // Lista simple
     cont.innerHTML = lista.map(t => tareaItemHTML(t)).join('');
   } else {
-    // Agrupar por urgencia
     const hoy = hoyISO();
     const grupos = { vencidas:[], hoy:[], manana:[], semana:[], masTarde:[], sinFecha:[] };
     lista.forEach(t => {
@@ -2405,7 +2391,7 @@ function renderExamenes(){
     const txt = dd < 0 ? 'Pasado' : dd === 0 ? '¡HOY!' : dd === 1 ? 'Mañana' : `Faltan ${dd} días`;
     const urgente = dd >= 0 && dd <= 7;
     const tipoTxt = ({parcial:'Parcial',final:'Final',tp:'TP',recuperatorio:'Recup.',otro:'Examen'})[e.tipo] || 'Examen';
-    return `<div class="examen-card" data-examen="${e.id}" style="border-left-color:${Dominio.materias.colorDe(e.materiaId)||'var(--accent)'}">
+    return `<div class="examen-card" data-examen="${e.id}" style="border-left-color:${Dominio.materias.colorDe(e.materiaId)||'var(--primary)'}">
       <div class="examen-count ${urgente?'urgente':''}">
         <b>${dd >= 0 ? dd : '—'}</b>
         <small>${dd >= 0 ? (dd===0?'HOY':'días') : 'pasado'}</small>
@@ -2586,7 +2572,6 @@ function lectItemHTML(x, tipo){
 function renderLecturas(){
   const todos = Dominio.materias.recolectarTodos();
 
-  /* Filtros */
   $('#lecturasFiltros').innerHTML = lecturasFiltrosHTML();
   $('#lecturasFiltros').querySelectorAll('[data-filtro-lect]').forEach(b => {
     b.onclick = () => {
@@ -2605,7 +2590,6 @@ function renderLecturas(){
     return;
   }
 
-  /* Aplicar filtro */
   const filtrados = filtroLecturaMateria === 'todas'
     ? todos
     : todos.filter(x => x.materiaId === filtroLecturaMateria);
@@ -2626,7 +2610,6 @@ function renderLecturas(){
     </div>
   `;
 
-  /* EN CURSO */
   if (g.enCurso.length){
     html += `<div class="lect-grupo">
       <div class="lect-grupo-titulo curso">
@@ -2636,7 +2619,6 @@ function renderLecturas(){
     </div>`;
   }
 
-  /* ESTA SEMANA */
   if (g.estaSemana !== null){
     const items = g.conSemana[g.estaSemana] || [];
     html += `<div class="lect-grupo">
@@ -2648,7 +2630,6 @@ function renderLecturas(){
     </div>`;
   }
 
-  /* SEMANA QUE VIENE */
   if (g.semanaQueViene !== null){
     const items = g.conSemana[g.semanaQueViene] || [];
     html += `<div class="lect-grupo">
@@ -2660,7 +2641,6 @@ function renderLecturas(){
     </div>`;
   }
 
-  /* MÁS ADELANTE */
   const semanasRestantes = g.semanasOrdenadas.filter(s => s !== g.estaSemana && s !== g.semanaQueViene);
   if (semanasRestantes.length){
     const totalRestantes = semanasRestantes.reduce((a, s) => a + g.conSemana[s].length, 0);
@@ -2678,7 +2658,6 @@ function renderLecturas(){
     </div>`;
   }
 
-  /* SIN ASIGNAR */
   if (g.sinAsignar.length){
     html += `<div class="lect-grupo">
       <div class="lect-grupo-titulo sin-asignar">
@@ -2689,7 +2668,6 @@ function renderLecturas(){
     </div>`;
   }
 
-  /* LEÍDOS RECIENTES */
   if (g.leidos.length){
     const visibles = g.leidos.slice(0, 5);
     const resto = g.leidos.slice(5);
@@ -2711,7 +2689,6 @@ function renderLecturas(){
 
   cont.innerHTML = html;
 
-  /* Ver todos los leídos */
   const vl = $('#verLeidosTodos');
   if (vl) vl.onclick = () => {
     const grupo = [...cont.querySelectorAll('.lect-grupo')].find(el =>
@@ -2723,8 +2700,7 @@ function renderLecturas(){
     }
   };
 
-  /* Acciones de lectura */
-   cont.querySelectorAll('[data-lect-play]').forEach(b => {
+  cont.querySelectorAll('[data-lect-play]').forEach(b => {
     b.onclick = () => {
       const [mId, uId, bId] = b.dataset.lectPlay.split('|');
       Dominio.materias.cambiarEstadoBib(mId, uId, bId, 'leyendo');
@@ -2746,7 +2722,7 @@ function renderLecturas(){
     };
   });
 
-   cont.querySelectorAll('[data-lect-terminar]').forEach(b => {
+  cont.querySelectorAll('[data-lect-terminar]').forEach(b => {
     b.onclick = () => {
       const [mId, uId, bId] = b.dataset.lectTerminar.split('|');
       Dominio.materias.cambiarEstadoBib(mId, uId, bId, 'leido');
@@ -2760,7 +2736,7 @@ function renderLecturas(){
       renderLecturas();
       renderHoy();
     };
-  }); 
+  });
 
   cont.querySelectorAll('[data-lect-revertir]').forEach(b => {
     b.onclick = () => {
@@ -2821,8 +2797,8 @@ function abrirSheetSemanaLectura(materiaId, unidadId, bibId){
 
   abrirSheet('sheetSemanaLectura');
 }
-  
-  /* =====================================================================
+
+/* =====================================================================
    RENDER: LISTA DE IMPRESIÓN
    ===================================================================== */
 let filtroImpresion = 'pendientes';
@@ -2841,7 +2817,6 @@ function impresionFiltrosHTML(){
 function renderImpresion(){
   const todos = Dominio.materias.recolectarTodos();
 
-  /* Filtros */
   $('#impresionFiltros').innerHTML = impresionFiltrosHTML();
   $('#impresionFiltros').querySelectorAll('[data-filtro-imp]').forEach(b => {
     b.onclick = () => {
@@ -2850,7 +2825,6 @@ function renderImpresion(){
     };
   });
 
-  /* Barra de progreso */
   const total = todos.length;
   const impresos = todos.filter(x => x.bib.impreso).length;
   const pct = total ? Math.round(impresos/total*100) : 0;
@@ -2867,13 +2841,11 @@ function renderImpresion(){
     return;
   }
 
-  /* Agrupar por materia → unidad */
   let html = '';
   Dominio.materias.listar().forEach(m => {
     const unidades = Dominio.materias.unidadesDe(m.id);
     if (!unidades.length) return;
 
-    /* Filtrar unidades con textos que pasen el filtro */
     const unidadesFiltradas = unidades.map(u => {
       const bibs = (u.bibliografia || []).filter(b => {
         if (filtroImpresion === 'pendientes') return !b.impreso;
@@ -2885,7 +2857,6 @@ function renderImpresion(){
 
     if (!unidadesFiltradas.length) return;
 
-    /* Progreso de la materia (siempre sobre el total real, sin filtrar) */
     const totalMat = unidades.reduce((a, u) => a + (u.bibliografia||[]).length, 0);
     const impMat = unidades.reduce((a, u) => a + (u.bibliografia||[]).filter(b => b.impreso).length, 0);
     const completo = impMat === totalMat && totalMat > 0;
@@ -2925,7 +2896,6 @@ function renderImpresion(){
 
   cont.innerHTML = html || `<div class="imp-vacio">Nada para mostrar con este filtro.</div>`;
 
-  /* Handlers de tilde */
   cont.querySelectorAll('[data-imp-toggle]').forEach(el => {
     el.onclick = () => {
       const [mId, uId, bId] = el.dataset.impToggle.split('|');
@@ -2936,7 +2906,7 @@ function renderImpresion(){
   });
 }
 
-  /* =====================================================================
+/* =====================================================================
    RENDER: APUNTES
    ===================================================================== */
 function renderApuntes(){
@@ -2991,7 +2961,7 @@ $('#guardarApunte').onclick = () => {
    ===================================================================== */
 let pomoEstado = {
   activo:false,
-  modo:'trabajo', // 'trabajo' | 'descanso'
+  modo:'trabajo',
   restanteSeg:0,
   duracionSeg:0,
   intervalo:null,
@@ -3012,7 +2982,7 @@ function renderPomoHero(){
 
   const materiasOpts = materias.map(m => `<option value="${m.id}" ${pomoEstado.materiaId===m.id?'selected':''}>${escapeHTML(m.nombre)}</option>`).join('');
 
-   const lecturaHTML = lecturaActual ? `
+  const lecturaHTML = lecturaActual ? `
     <div style="background:rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;margin-bottom:14px;text-align:left">
       <div style="font-size:10.5px;opacity:.85;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📖 Leyendo</div>
       <div style="font-size:13.5px;font-weight:700;line-height:1.3;margin-bottom:2px">${escapeHTML(lecturaActual.titulo)}</div>
@@ -3091,7 +3061,6 @@ function tick(){
     pomoEstado.activo = false;
     const eraTrabajo = pomoEstado.modo === 'trabajo';
     if (eraTrabajo){
-      // Log sesión
       const temaTxt = lecturaActual ? lecturaActual.titulo : 'Pomodoro';
       const materiaIdParaSesion = lecturaActual ? lecturaActual.materiaId : pomoEstado.materiaId;
       Dominio.sesiones.guardar({
@@ -3125,7 +3094,6 @@ function tick(){
     }
     return;
   }
-  // Update ring without re-render
   const total = pomoEstado.duracionSeg;
   const restante = pomoEstado.restanteSeg;
   const pct = 1 - (restante/total);
@@ -3151,7 +3119,7 @@ function terminarPomodoro(){
   if (pomoEstado.modo === 'trabajo' && pomoEstado.duracionSeg > pomoEstado.restanteSeg){
     const transcurrido = Math.floor((pomoEstado.duracionSeg - pomoEstado.restanteSeg) / 60);
     if (transcurrido >= 5){
-            const temaTxt = lecturaActual ? lecturaActual.titulo : 'Sesión parcial';
+      const temaTxt = lecturaActual ? lecturaActual.titulo : 'Sesión parcial';
       const materiaIdParaSesion = lecturaActual ? lecturaActual.materiaId : pomoEstado.materiaId;
       Dominio.sesiones.guardar({
         fecha: hoyISO(),
@@ -3162,7 +3130,7 @@ function terminarPomodoro(){
         bibId: lecturaActual ? lecturaActual.bibId : null
       });
     }
-  }  
+  }
   pomoEstado = { activo:false, modo:'trabajo', restanteSeg:0, duracionSeg:ajustes.pomoTrabajo*60, intervalo:null, materiaId:null };
   renderPomoHero();
 }
@@ -3448,7 +3416,7 @@ async function correrBodyScan(){
   for (const frase of guion){
     if (!sesionMind || sesionMind.cancelado) return;
     $('#bFase').textContent = 'Body scan';
-    $('#bInfo').innerHTML = `<em style="font-size:14.5px;color:#e6edfa;font-style:normal;line-height:1.5">${escapeHTML(frase)}</em>`;
+    $('#bInfo').innerHTML = `<em style="font-size:14.5px;color:#f5e0d3;font-style:normal;line-height:1.5">${escapeHTML(frase)}</em>`;
     hablar(frase);
     await esperar(9000);
   }
@@ -3472,7 +3440,6 @@ function renderRachas(){
   const hoy = hoyISO();
   const estudioRacha = Dominio.sesiones.racha();
   const mindRacha = Dominio.mindfulness.racha();
-  // Tareas: contar días seguidos donde haya completado al menos una tarea
   const tareasPorDia = {};
   tareas.filter(t => t.estado === 'completada' && t.completadaTs).forEach(t => {
     const d = new Date(t.completadaTs);
@@ -3487,7 +3454,6 @@ function renderRachas(){
     else break;
     d0.setDate(d0.getDate()-1);
   }
-  // Asistencia: días seguidos con marca
   const asistenciaDias = new Set();
   Object.values(asistencia).forEach(m => Object.keys(m).forEach(f => asistenciaDias.add(f)));
   let asistRacha = 0; const d1 = new Date();
