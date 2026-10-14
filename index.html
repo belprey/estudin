@@ -514,23 +514,24 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .lect-grupo-titulo.prox .n{background:#f5ead2;color:#8a6a13}
 .lect-grupo-titulo.leidos .n{background:#dbf3e5;color:#149a5a}
 
-.lect-item{background:#fff;border-radius:14px;padding:12px 14px;
-  box-shadow:var(--shadow);margin-bottom:8px;
-  border-left:5px solid var(--line);position:relative}
+.lect-item{background:#fff;border-radius:16px;padding:18px 18px 16px;
+  box-shadow:var(--shadow);margin-bottom:12px;
+  border-left:6px solid var(--line);position:relative}
 .lect-item.curso{border-left-color:var(--primary)}
 .lect-item.esta-semana{border-left-color:var(--primary)}
 .lect-item.prox{border-left-color:var(--warn)}
 .lect-item.leido{border-left-color:var(--ok);opacity:.75}
-.lect-item h4{margin:0 0 4px;font-size:14.5px;letter-spacing:-.2px;
-  line-height:1.35;font-weight:600}
+.lect-item h4{margin:0 0 10px;font-size:17px;letter-spacing:-.3px;
+  line-height:1.35;font-weight:700}
 .lect-item.leido h4{text-decoration:line-through;color:var(--muted)}
-.lect-item .meta{font-size:12px;color:var(--muted);display:flex;
-  gap:8px;flex-wrap:wrap;align-items:center;line-height:1.4}
-.lect-item .materia-tag{font-size:11px;font-weight:700;padding:2px 7px;
+.lect-item .meta{font-size:13.5px;color:var(--muted);display:flex;
+  gap:10px;flex-wrap:wrap;align-items:center;line-height:1.5;
+  margin-bottom:4px}
+.lect-item .materia-tag{font-size:12.5px;font-weight:700;padding:4px 10px;
   border-radius:99px;background:var(--soft);color:var(--primary-dark)}
-.lect-item .sem-tag{font-size:11px;font-weight:700;padding:2px 7px;
+.lect-item .sem-tag{font-size:12.5px;font-weight:700;padding:4px 10px;
   border-radius:99px;background:var(--soft);color:var(--primary-dark)}
-.lect-item .leido-tag{font-size:11px;font-weight:700;padding:2px 7px;
+.lect-item .leido-tag{font-size:12.5px;font-weight:700;padding:4px 10px;
   border-radius:99px;background:#dbf3e5;color:#149a5a}
 
 .lect-vacio{text-align:center;color:var(--muted);font-size:13.5px;
@@ -558,10 +559,11 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 .filtro-lect.on{background:var(--primary);color:#fff;border-color:var(--primary)}
 
 /* ACCIONES DE LECTURA */
-.lect-acciones{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.lect-btn{border:none;border-radius:9px;font-family:inherit;font-size:12.5px;
-  font-weight:700;padding:7px 12px;cursor:pointer;transition:.15s;
-  display:inline-flex;align-items:center;gap:5px}
+.lect-acciones{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.lect-btn{border:none;border-radius:11px;font-family:inherit;font-size:14px;
+  font-weight:700;padding:11px 16px;cursor:pointer;transition:.15s;
+  display:inline-flex;align-items:center;gap:6px;flex:1;min-width:0;
+          justify-content:center}
 .lect-btn:active{transform:scale(.95)}
 .lect-btn.play{background:var(--primary);color:#fff}
 .lect-btn.play.continuar{background:linear-gradient(135deg,#c86f43,#a55329)}
